@@ -1,0 +1,2028 @@
+/* ========================================
+   HOME MODULE CSS - VERSIÓN RESPONSIVE
+   Optimizado para móviles, tablets y desktop
+   ======================================== */
+
+.home {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+  padding: var(--spacing-xl);
+}
+
+.contenedorHome {
+  display: flex;
+  width: 100%;
+  max-width: var(--container-lg);
+  flex-direction: column;
+  background-color: var(--bg-card);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-2xl);
+  box-shadow: var(--shadow-xl);
+  gap: var(--spacing-lg);
+  animation: fadeInUp 0.6s ease-out;
+  border: 1px solid var(--card-border);
+}
+
+/* ========== CABECERA ========== */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  position: relative;
+  min-height: 3rem;
+}
+
+.avatarContainer {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.avatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary-200), var(--color-secondary-200));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  box-shadow: var(--shadow-md);
+  border: 3px solid white;
+}
+
+.avatar:hover {
+  transform: scale(1.1);
+}
+
+/* ========== BOTÓN DE CERRAR SESIÓN ========== */
+.logoutButton {
+  width: 2.5rem;
+  height: 2.5rem;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-terciary-200), var(--color-terciary-250));
+  color: white;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(211, 36, 65, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  position: absolute;
+  right: 0;
+  z-index: 10;
+}
+
+.logoutButton:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(211, 36, 65, 0.5);
+  background: linear-gradient(135deg, var(--color-terciary-250), var(--color-terciary-300));
+}
+
+.logoutButton:active {
+  transform: scale(0.95);
+}
+
+.bienvenidaTotal {
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, var(--color-secondary-100) 0%, var(--color-secondary-150) 100%);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-md);
+  border: 2px solid var(--color-secondary-200);
+}
+
+/* ========== BIENVENIDA ========== */
+.bienvenida {
+  display: flex;
+  text-align: center;
+  flex-direction: column;
+  margin-bottom: var(--spacing-md);
+}
+
+.bienvenida h1 {
+  color: var(--color-primary-350);
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 800;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  word-break: break-word;
+}
+
+/* ========== SALDO ========== */
+.saldoCard {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  border: 2px solid var(--color-secondary-250);
+}
+
+.saldoLabel {
+  color: var(--color-secondary-400);
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin: 0 0 var(--spacing-xs) 0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.saldoMonto {
+  color: var(--color-primary-250);
+  font-size: clamp(1.75rem, 5vw, 2.5rem);
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -0.02em;
+  word-break: break-all;
+}
+
+/* ========== CUERPO ========== */
+.cuerpo {
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-xl);
+  align-items: center;
+  padding: var(--spacing-lg) 0;
+}
+
+/* Gráfico de Aro */
+.graficoContainer {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+  padding: var(--spacing-lg);
+  background-color: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 2px solid var(--card-border);
+}
+
+.graficoAro {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+}
+
+.graficoCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  background-color: var(--bg-card);
+  padding: var(--spacing-md);
+  border-radius: 50%;
+}
+
+.graficoCenterLabel {
+  color: var(--text-tertiary);
+  font-size: clamp(0.75rem, 2vw, 0.875rem);
+  margin: 0 0 var(--spacing-xs) 0;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.graficoCenterMonto {
+  color: var(--text-body);
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  font-weight: 800;
+  margin: 0;
+}
+
+/* Resumen */
+.resumenContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+.resumenItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background-color: var(--bg-card);
+  border-radius: var(--radius-md);
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  border: 2px solid var(--card-border);
+  min-height: 80px;
+}
+
+.resumenItem:hover {
+  transform: translateX(8px);
+  box-shadow: var(--shadow-md);
+}
+
+.resumenItem.ingresos:hover {
+  border-color: var(--color-primary-150);
+}
+
+.resumenItem.gastos:hover {
+  border-color: var(--color-terciary-250);
+}
+
+.resumenIcono {
+  width: 3.5rem;
+  height: 3.5rem;
+  min-width: 3.5rem;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.resumenInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.resumenLabelGastos {
+  color: var(--color-terciary-250);
+  font-size: clamp(0.75rem, 2vw, 0.875rem);
+  margin: 0 0 var(--spacing-xs) 0;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.resumenLabelIngresos {
+  color: var(--color-primary-250);
+  font-size: clamp(0.75rem, 2vw, 0.875rem);
+  margin: 0 0 var(--spacing-xs) 0;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.resumenMonto {
+  font-size: clamp(1.25rem, 4vw, 1.75rem);
+  font-weight: 800;
+  margin: 0;
+  word-break: break-all;
+}
+
+/* ========== HISTORIAL ========== */
+.historial {
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+  position: relative;
+}
+
+.historialHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.historialTitulo {
+  color: var(--text-body);
+  font-size: clamp(1.25rem, 3vw, 1.5rem);
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+/* ========== MODAL DE DETALLES ========== */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+  padding: var(--spacing-lg);
+}
+
+.modalContent {
+  background-color: var(--bg-card);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  border: 2px solid var(--card-border);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease-out;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-xl);
+  border-bottom: 2px solid var(--bg-tertiary);
+  background: linear-gradient(135deg, var(--color-secondary-100) 0%, var(--color-secondary-150) 100%);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.modalTitulo {
+  color: var(--color-primary-350);
+  font-size: clamp(1.25rem, 3vw, 1.5rem);
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -0.01em;
+  word-break: break-word;
+  flex: 1;
+  padding-right: var(--spacing-md);
+}
+
+.modalCloseButton {
+  width: 2.5rem;
+  height: 2.5rem;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-terciary-200), var(--color-terciary-250));
+  color: white;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(211, 36, 65, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.modalCloseButton:hover {
+  transform: scale(1.1) rotate(90deg);
+  box-shadow: 0 6px 16px rgba(211, 36, 65, 0.5);
+  background: linear-gradient(135deg, var(--color-terciary-250), var(--color-terciary-300));
+}
+
+.modalCloseButton:active {
+  transform: scale(0.95);
+}
+
+.modalBody {
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.modalDetalleItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--card-border);
+  transition: all 0.3s ease;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.modalDetalleItem:hover {
+  transform: translateX(4px);
+  box-shadow: var(--shadow-sm);
+}
+
+.modalDetalleLabel {
+  color: var(--text-tertiary);
+  font-size: clamp(0.75rem, 2vw, 0.875rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.modalDetalleValor {
+  color: var(--text-body);
+  font-size: clamp(1rem, 2.5vw, 1.125rem);
+  font-weight: 600;
+  text-align: right;
+  word-break: break-word;
+}
+
+/* ========== FAB BUTTON ========== */
+.fabButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 3.5rem;
+  height: 3.5rem;
+  min-width: 3.5rem;
+  min-height: 3.5rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary-200), var(--color-primary-250));
+  color: white;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 122, 51, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.fabButton:hover {
+  transform: scale(1.1) rotate(90deg);
+  box-shadow: 0 8px 24px rgba(0, 122, 51, 0.6);
+  background: linear-gradient(135deg, var(--color-primary-250), var(--color-primary-300));
+}
+
+.fabButton:active {
+  transform: scale(0.95);
+}
+
+.botonNuevaTransaccion {
+  background: linear-gradient(135deg, var(--color-primary-200), var(--color-primary-250));
+  color: white;
+  border: 2px solid var(--color-primary-250);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  white-space: nowrap;
+  min-height: 44px;
+}
+
+.botonNuevaTransaccion:hover {
+  background: linear-gradient(135deg, var(--color-primary-250), var(--color-primary-300));
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.botonNuevaTransaccion:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ========== BADGES ========== */
+.historialBadges {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.badge {
+  padding: var(--spacing-xs) var(--spacing-md);
+  border: 2px solid var(--card-border);
+  border-radius: var(--radius-full);
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-size: clamp(0.75rem, 2vw, 0.875rem);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.badge:hover {
+  background-color: var(--bg-tertiary);
+  border-color: var(--color-primary-200);
+}
+
+.badgeTodos.badgeActivo {
+  background: linear-gradient(135deg, var(--color-secondary-200), var(--color-secondary-250));
+  border-color: var(--color-secondary-300);
+  color: white;
+  box-shadow: 0 2px 8px rgba(137, 67, 250, 0.3);
+}
+
+.badgeGastos.badgeActivo {
+  background: linear-gradient(135deg, var(--color-terciary-200), var(--color-terciary-250));
+  border-color: var(--color-terciary-300);
+  color: white;
+  box-shadow: 0 2px 8px rgba(211, 36, 65, 0.3);
+}
+
+.badgeIngresos.badgeActivo {
+  background: linear-gradient(135deg, var(--color-primary-200), var(--color-primary-250));
+  border-color: var(--color-primary-300);
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 122, 51, 0.3);
+}
+
+/* ========== TRANSACCIONES ========== */
+.transaccionesList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.transaccionItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background-color: var(--bg-card);
+  border-radius: var(--radius-md);
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  border: 2px solid var(--card-border);
+  min-height: 70px;
+}
+
+.transaccionItem:hover {
+  transform: translateX(4px);
+  box-shadow: var(--shadow-md);
+}
+
+.transaccionItem.ingreso:hover {
+  border-color: var(--color-primary-150);
+}
+
+.transaccionItem.gasto:hover {
+  border-color: var(--color-terciary-200);
+}
+
+.transaccionIcono {
+  width: 2.5rem;
+  height: 2.5rem;
+  min-width: 2.5rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 2px solid;
+}
+
+.transaccionItem.gasto .transaccionIcono {
+  background-color: var(--color-terciary-50);
+  border-color: var(--color-terciary-150);
+}
+
+.transaccionItem.ingreso .transaccionIcono {
+  background-color: var(--color-primary-50);
+  border-color: var(--color-primary-150);
+}
+
+.transaccionInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.transaccionConcepto {
+  color: var(--text-body);
+  font-weight: 700;
+  margin: 0 0 var(--spacing-xs) 0;
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.transaccionFecha {
+  color: var(--text-tertiary);
+  font-size: clamp(0.75rem, 2vw, 0.875rem);
+  margin: 0;
+}
+
+.transaccionMonto {
+  font-size: clamp(1rem, 3vw, 1.25rem);
+  font-weight: 800;
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* ========== FORMULARIO ========== */
+.formularioContainer {
+  background-color: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-md);
+  border: 2px solid var(--card-border);
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.formGroup label {
+  color: var(--text-body);
+  font-weight: 700;
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.formGroup input {
+  padding: var(--spacing-md);
+  border: 2px solid var(--card-border);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-secondary);
+  color: var(--text-body);
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  transition: all 0.3s ease;
+  min-height: 44px;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: var(--color-primary-250);
+  box-shadow: 0 0 0 4px rgba(0, 122, 51, 0.1);
+}
+
+.formGroup input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.formGroup input[aria-invalid="true"] {
+  border-color: var(--color-terciary-250);
+}
+
+.botonesGrupo {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.botonTipo {
+  flex: 1;
+  padding: var(--spacing-md);
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  min-width: 0;
+  min-height: 48px;
+  box-sizing: border-box;
+}
+
+/* Estilos por defecto (NO activo) - Gris oscuro */
+.botonGasto {
+  background: linear-gradient(135deg, #4a4a4a, #5a5a5a);
+  color: white;
+  border: 2px solid #6a6a6a;
+  opacity: 0.6;
+}
+
+.botonGasto:hover {
+  opacity: 0.7;
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.botonGasto:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+.botonIngreso {
+  background: linear-gradient(135deg, #4a4a4a, #5a5a5a);
+  color: white;
+  border: 2px solid #6a6a6a;
+  opacity: 0.6;
+}
+
+.botonIngreso:hover {
+  opacity: 0.7;
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.botonIngreso:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Estilos cuando está ACTIVO - Color correspondiente */
+.botonGasto.botonActivo {
+  background: linear-gradient(135deg, var(--color-terciary-250), var(--color-terciary-350));
+  box-shadow: 0 0 0 4px rgba(211, 36, 65, 0.2);
+  transform: scale(1.05);
+  opacity: 1;
+  border: 2px solid var(--color-terciary-300);
+}
+
+.botonIngreso.botonActivo {
+  background: linear-gradient(135deg, var(--color-primary-250), var(--color-primary-350));
+  box-shadow: 0 0 0 4px rgba(0, 122, 51, 0.2);
+  transform: scale(1.05);
+  opacity: 1;
+  border: 2px solid var(--color-primary-300);
+}
+
+.error {
+  color: var(--color-terciary-250);
+  font-size: clamp(0.75rem, 2vw, 0.875rem);
+  margin: var(--spacing-xs) 0 0 0;
+  font-weight: 600;
+}
+
+.errorGeneral {
+  padding: var(--spacing-md);
+  background-color: var(--color-terciary-50);
+  border: 2px solid var(--color-terciary-200);
+  border-radius: var(--radius-md);
+  color: var(--color-terciary-300);
+  font-weight: 600;
+  margin-bottom: var(--spacing-md);
+  font-size: clamp(0.875rem, 2vw, 1rem);
+}
+
+.modalBotones,
+.formularioBotones {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.botonCancelar {
+  flex: 1;
+  min-width: 120px;
+  padding: var(--spacing-md);
+  border: 2px solid var(--card-border);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-secondary);
+  color: var(--text-body);
+  font-weight: 700;
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 48px;
+}
+
+.botonCancelar:hover {
+  background-color: var(--bg-tertiary);
+}
+
+.botonCancelar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.botonGuardar {
+  flex: 1;
+  min-width: 120px;
+  padding: var(--spacing-md);
+  border: 2px solid var(--color-primary-250);
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--color-primary-200), var(--color-primary-250));
+  color: white;
+  font-weight: 700;
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  min-height: 48px;
+}
+
+.botonGuardar:hover {
+  background: linear-gradient(135deg, var(--color-primary-250), var(--color-primary-300));
+  box-shadow: var(--shadow-md);
+}
+
+.botonGuardar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ========== ANIMACIONES ========== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================
+   MEDIA QUERIES - RESPONSIVE DESIGN
+   ========================================== */
+
+/* ========== TABLET (768px - 1024px) ========== */
+@media (max-width: 1024px) {
+  .home {
+    padding: var(--spacing-lg);
+  }
+
+  .contenedorHome {
+    padding: var(--spacing-xl);
+  }
+
+  .bienvenida h1 {
+    font-size: 1.75rem;
+  }
+
+  .saldoMonto {
+    font-size: 2rem;
+  }
+
+  .resumenMonto {
+    font-size: 1.5rem;
+  }
+}
+
+/* ========== MÓVIL GRANDE (481px - 768px) ========== */
+@media (max-width: 768px) {
+  .home {
+    padding: var(--spacing-md);
+  }
+
+  .contenedorHome {
+    padding: var(--spacing-lg);
+    gap: var(--spacing-md);
+  }
+
+  /* Header adaptado */
+  .header {
+    flex-wrap: wrap;
+    min-height: auto;
+  }
+
+  .avatarContainer {
+    position: static;
+    transform: none;
+    order: -1;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .logoutButton {
+    position: static;
+    margin-left: auto;
+  }
+
+  /* Bienvenida */
+  .bienvenida h1 {
+    font-size: 1.5rem;
+  }
+
+  .bienvenidaTotal {
+    padding: var(--spacing-lg);
+  }
+
+  .saldoCard {
+    padding: var(--spacing-md);
+  }
+
+  .saldoMonto {
+    font-size: 2rem;
+  }
+
+  /* Cuerpo en columna */
+  .cuerpo {
+    flex-direction: column;
+    gap: var(--spacing-lg);
+  }
+
+  .graficoContainer {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  /* Resumen */
+  .resumenItem {
+    padding: var(--spacing-md);
+  }
+
+  .resumenIcono {
+    width: 3rem;
+    height: 3rem;
+    min-width: 3rem;
+  }
+
+  .resumenMonto {
+    font-size: 1.5rem;
+  }
+
+  /* Historial */
+  .historialHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .historialTitulo {
+    font-size: 1.25rem;
+  }
+
+  .botonNuevaTransaccion {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Badges */
+  .historialBadges {
+    width: 100%;
+  }
+
+  .badge {
+    flex: 1 1 auto;
+    min-width: fit-content;
+  }
+
+  /* Transacciones */
+  .transaccionItem {
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+  }
+
+  .transaccionIcono {
+    width: 2rem;
+    height: 2rem;
+    min-width: 2rem;
+  }
+
+  .transaccionConcepto {
+    font-size: 0.875rem;
+  }
+
+  .transaccionFecha {
+    font-size: 0.75rem;
+  }
+
+  .transaccionMonto {
+    font-size: 1.125rem;
+  }
+
+  /* Modal */
+  .modalOverlay {
+    padding: var(--spacing-md);
+  }
+
+  .modalContent {
+    max-width: 100%;
+    border-radius: var(--radius-lg);
+  }
+
+  .modalHeader {
+    padding: var(--spacing-lg);
+  }
+
+  .modalTitulo {
+    font-size: 1.25rem;
+  }
+
+  .modalBody {
+    padding: var(--spacing-lg);
+    gap: var(--spacing-md);
+  }
+
+  .modalDetalleItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .modalDetalleValor {
+    text-align: left;
+    width: 100%;
+  }
+
+  /* Formulario */
+  .formularioContainer {
+    padding: var(--spacing-lg);
+  }
+
+  .formGroup label {
+    font-size: 0.8rem;
+  }
+
+  .formGroup input {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .botonesGrupo {
+    flex-direction: column;
+  }
+
+  .botonTipo {
+    width: 100%;
+  }
+
+  .modalBotones,
+  .formularioBotones {
+    flex-direction: column;
+  }
+
+  .botonCancelar,
+  .botonGuardar {
+    width: 100%;
+    min-width: 100%;
+  }
+}
+
+/* ========== MÓVIL PEQUEÑO (< 480px) ========== */
+@media (max-width: 480px) {
+  .home {
+    padding: var(--spacing-sm);
+  }
+
+  .contenedorHome {
+    padding: var(--spacing-md);
+    gap: var(--spacing-sm);
+    border-radius: var(--radius-lg);
+  }
+
+  /* Header compacto */
+  .header {
+    padding-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.25rem;
+    border-width: 2px;
+  }
+
+  .avatarContainer {
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .logoutButton {
+    width: 2.25rem;
+    height: 2.25rem;
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+    font-size: 1rem;
+  }
+
+  /* Bienvenida compacta */
+  .bienvenida h1 {
+    font-size: 1.25rem;
+  }
+
+  .bienvenidaTotal {
+    padding: var(--spacing-md);
+  }
+
+  .saldoCard {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .saldoLabel {
+    font-size: 0.75rem;
+  }
+
+  .saldoMonto {
+    font-size: 1.75rem;
+  }
+
+  /* Gráfico más pequeño */
+  .graficoContainer {
+    padding: var(--spacing-md);
+  }
+
+  .graficoCenterLabel {
+    font-size: 0.7rem;
+  }
+
+  .graficoCenterMonto {
+    font-size: 1.25rem;
+  }
+
+  /* Resumen compacto */
+  .resumenItem {
+    padding: var(--spacing-sm);
+    min-height: 70px;
+  }
+
+  .resumenIcono {
+    width: 2.5rem;
+    height: 2.5rem;
+    min-width: 2.5rem;
+  }
+
+  .resumenLabelGastos,
+  .resumenLabelIngresos {
+    font-size: 0.7rem;
+  }
+
+  .resumenMonto {
+    font-size: 1.25rem;
+  }
+
+  /* Historial compacto */
+  .historial {
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+  }
+
+  .historialHeader {
+    margin-bottom: var(--spacing-md);
+    gap: var(--spacing-sm);
+  }
+
+  .historialTitulo {
+    font-size: 1.125rem;
+  }
+
+  /* FAB más pequeño */
+  .fabButton {
+    width: 3rem;
+    height: 3rem;
+    min-width: 3rem;
+    min-height: 3rem;
+    font-size: 1.25rem;
+  }
+
+  .botonNuevaTransaccion {
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: 0.875rem;
+    min-height: 40px;
+  }
+
+  /* Badges compactos */
+  .historialBadges {
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .badge {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.75rem;
+    min-height: 32px;
+  }
+
+  /* Transacciones muy compactas */
+  .transaccionItem {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    gap: var(--spacing-xs);
+    min-height: 60px;
+  }
+
+  .transaccionIcono {
+    width: 1.75rem;
+    height: 1.75rem;
+    min-width: 1.75rem;
+    font-size: 0.875rem;
+  }
+
+  .transaccionConcepto {
+    font-size: 0.8rem;
+  }
+
+  .transaccionFecha {
+    font-size: 0.7rem;
+  }
+
+  .transaccionMonto {
+    font-size: 1rem;
+  }
+
+  /* Modal pantalla completa en muy pequeño */
+  .modalOverlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .modalContent {
+    max-height: 95vh;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+
+  .modalHeader {
+    padding: var(--spacing-md);
+  }
+
+  .modalTitulo {
+    font-size: 1.125rem;
+  }
+
+  .modalCloseButton {
+    width: 2.25rem;
+    height: 2.25rem;
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+    font-size: 1rem;
+  }
+
+  .modalBody {
+    padding: var(--spacing-md);
+    gap: var(--spacing-sm);
+  }
+
+  .modalDetalleItem {
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+
+  .modalDetalleLabel {
+    font-size: 0.7rem;
+  }
+
+  .modalDetalleValor {
+    font-size: 0.95rem;
+  }
+
+  /* Formulario compacto */
+  .formularioContainer {
+    padding: var(--spacing-md);
+  }
+
+  .formulario {
+    gap: var(--spacing-md);
+  }
+
+  .formGroup {
+    gap: var(--spacing-xs);
+  }
+
+  .formGroup label {
+    font-size: 0.75rem;
+  }
+
+  .formGroup input {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.875rem;
+    min-height: 40px;
+  }
+
+  .botonesGrupo {
+    gap: var(--spacing-xs);
+  }
+
+  .botonTipo {
+    padding: var(--spacing-sm);
+    font-size: 0.875rem;
+    min-height: 44px;
+  }
+
+  .error {
+    font-size: 0.75rem;
+  }
+
+  .errorGeneral {
+    padding: var(--spacing-sm);
+    font-size: 0.875rem;
+  }
+
+  .modalBotones,
+  .formularioBotones {
+    gap: var(--spacing-xs);
+  }
+
+  .botonCancelar,
+  .botonGuardar {
+    padding: var(--spacing-sm);
+    font-size: 0.875rem;
+    min-height: 44px;
+  }
+}
+
+/* ========== LANDSCAPE MÓVIL ========== */
+@media (max-height: 500px) and (orientation: landscape) {
+  .modalOverlay {
+    align-items: flex-start;
+    padding: var(--spacing-sm);
+  }
+
+  .modalContent {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modalHeader {
+    position: sticky;
+    top: 0;
+  }
+
+  .cuerpo {
+    flex-direction: row;
+  }
+
+  .graficoContainer {
+    max-width: 250px;
+  }
+}
+
+/* ========== DARK MODE ========== */
+.dark .logoutButton {
+  background: linear-gradient(135deg, var(--color-terciary-250), var(--color-terciary-300));
+  box-shadow: 0 4px 12px rgba(239, 83, 80, 0.3);
+}
+
+.dark .logoutButton:hover {
+  background: linear-gradient(135deg, var(--color-terciary-300), var(--color-terciary-350));
+  box-shadow: 0 6px 16px rgba(239, 83, 80, 0.5);
+}
+
+.dark .modalOverlay {
+  background-color: rgba(0, 0, 0, 0.85);
+}
+
+.dark .modalContent {
+  background-color: var(--bg-card);
+  border-color: var(--card-border);
+}
+
+.dark .modalHeader {
+  border-color: var(--card-border);
+  background: linear-gradient(135deg, var(--color-gray-300) 0%, var(--color-gray-250) 100%);
+}
+
+.dark .modalTitulo {
+  color: var(--text-light);
+}
+
+.dark .modalCloseButton {
+  background: linear-gradient(135deg, var(--color-terciary-250), var(--color-terciary-300));
+  box-shadow: 0 4px 12px rgba(239, 83, 80, 0.3);
+}
+
+.dark .modalCloseButton:hover {
+  background: linear-gradient(135deg, var(--color-terciary-300), var(--color-terciary-350));
+  box-shadow: 0 6px 16px rgba(239, 83, 80, 0.5);
+}
+
+.dark .modalDetalleItem {
+  background-color: var(--bg-tertiary);
+  border-color: var(--card-border);
+}
+
+.dark .modalDetalleLabel {
+  color: var(--text-tertiary);
+}
+
+.dark .modalDetalleValor {
+  color: var(--text-light);
+}
+
+.dark .formGroup input {
+  background-color: var(--bg-tertiary);
+  border-color: var(--card-border);
+  color: var(--text-light);
+}
+
+.dark .badge {
+  background-color: var(--bg-tertiary);
+  border-color: var(--card-border);
+  color: var(--text-light);
+}
+
+.dark .badge:hover {
+  background-color: var(--bg-card);
+  border-color: var(--color-primary-250);
+}
+
+.dark .badgeTodos.badgeActivo {
+  background: linear-gradient(135deg, var(--color-secondary-250), var(--color-secondary-300));
+  box-shadow: 0 2px 8px rgba(183, 133, 251, 0.4);
+}
+
+.dark .badgeGastos.badgeActivo {
+  background: linear-gradient(135deg, var(--color-terciary-250), var(--color-terciary-300));
+  box-shadow: 0 2px 8px rgba(239, 83, 80, 0.4);
+}
+
+.dark .badgeIngresos.badgeActivo {
+  background: linear-gradient(135deg, var(--color-primary-250), var(--color-primary-300));
+  box-shadow: 0 2px 8px rgba(57, 226, 127, 0.4);
+}
+
+.dark .resumenItem.ingresos:hover {
+  border-color: var(--color-primary-100);
+}
+
+.dark .resumenItem.gastos:hover {
+  border-color: var(--color-terciary-200);
+}
+
+.dark .botonGasto {
+  background: linear-gradient(135deg, #3a3a3a, #4a4a4a);
+  border-color: #5a5a5a;
+  opacity: 0.6;
+}
+
+.dark .botonGasto:hover {
+  opacity: 0.7;
+}
+
+.dark .botonGasto.botonActivo {
+  background: linear-gradient(135deg, var(--color-terciary-300), var(--color-terciary-400));
+  box-shadow: 0 0 0 4px rgba(239, 83, 80, 0.3);
+  opacity: 1;
+  border-color: var(--color-terciary-200);
+}
+
+.dark .botonIngreso {
+  background: linear-gradient(135deg, #3a3a3a, #4a4a4a);
+  border-color: #5a5a5a;
+  opacity: 0.6;
+}
+
+.dark .botonIngreso:hover {
+  opacity: 0.7;
+}
+
+.dark .botonIngreso.botonActivo {
+  background: linear-gradient(135deg, var(--color-primary-300), var(--color-primary-400));
+  box-shadow: 0 0 0 4px rgba(57, 226, 127, 0.3);
+  opacity: 1;
+  border-color: var(--color-primary-200);
+}
+
+.dark .botonCancelar {
+  background-color: var(--bg-tertiary);
+  border-color: var(--card-border);
+  color: var(--text-light);
+}
+
+.dark .transaccionItem.ingreso:hover {
+  border-color: var(--color-primary-100);
+}
+
+.dark .transaccionItem.gasto:hover {
+  border-color: var(--color-terciary-200);
+}
+
+.dark .transaccionItem.gasto .transaccionIcono {
+  background-color: rgba(236, 147, 169, 0.3);
+  border-color: var(--color-terciary-200);
+}
+
+.dark .transaccionItem.ingreso .transaccionIcono {
+  background-color: rgba(57, 226, 127, 0.3);
+  border-color: var(--color-primary-200);
+}
+
+.dark .fabButton {
+  background: linear-gradient(135deg, var(--color-primary-300), var(--color-primary-250));
+  box-shadow: 0 4px 12px rgba(57, 226, 127, 0.4);
+}
+
+.dark .fabButton:hover {
+  background: linear-gradient(135deg, var(--color-primary-250), var(--color-primary-200));
+  box-shadow: 0 8px 24px rgba(57, 226, 127, 0.6);
+}
+
+/* ========== ACCESIBILIDAD ========== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ========== IMPRESIÓN ========== */
+@media print {
+  .logoutButton,
+  .fabButton,
+  .botonNuevaTransaccion,
+  .modalOverlay {
+    display: none !important;
+  }
+
+  .home {
+    padding: 0;
+  }
+
+  .contenedorHome {
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+}
+/* ========================================
+   MODAL DE RESUMEN CON PAGINACIÓN
+   ======================================== */
+
+.modalResumen {
+  max-width: 800px;
+}
+
+.transaccionesResumenList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+}
+
+.transaccionResumenItem {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--card-border);
+  transition: all 0.3s ease;
+}
+
+.transaccionResumenItem:hover {
+  transform: translateX(4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary-150);
+}
+
+.transaccionResumenIcono {
+  width: 2.5rem;
+  height: 2.5rem;
+  min-width: 2.5rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 2px solid;
+}
+
+.transaccionResumenItem:has(svg[stroke*="terciary"]) .transaccionResumenIcono {
+  background-color: var(--color-terciary-50);
+  border-color: var(--color-terciary-150);
+}
+
+.transaccionResumenItem:has(svg[stroke*="primary"]) .transaccionResumenIcono {
+  background-color: var(--color-primary-50);
+  border-color: var(--color-primary-150);
+}
+
+.transaccionResumenInfo {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: var(--spacing-md);
+  min-width: 0;
+}
+
+.transaccionResumenConcepto {
+  color: var(--text-body);
+  font-weight: 700;
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.transaccionResumenFecha {
+  color: var(--text-tertiary);
+  font-size: clamp(0.75rem, 2vw, 0.875rem);
+  white-space: nowrap;
+}
+
+.transaccionResumenMonto {
+  font-size: clamp(1rem, 3vw, 1.25rem);
+  font-weight: 800;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.modalEmpty {
+  text-align: center;
+  padding: var(--spacing-2xl);
+  color: var(--text-tertiary);
+  font-size: clamp(0.875rem, 2vw, 1rem);
+}
+
+/* Paginación */
+.paginacion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg) 0;
+  border-top: 2px solid var(--bg-tertiary);
+}
+
+.botonPaginacion {
+  width: 2.5rem;
+  height: 2.5rem;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary-200), var(--color-primary-250));
+  color: white;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 122, 51, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.botonPaginacion:hover:not(:disabled) {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 122, 51, 0.5);
+  background: linear-gradient(135deg, var(--color-primary-250), var(--color-primary-300));
+}
+
+.botonPaginacion:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.botonPaginacion:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: var(--bg-tertiary);
+  box-shadow: none;
+}
+
+.paginacionInfo {
+  color: var(--text-body);
+  font-weight: 700;
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  min-width: 120px;
+  text-align: center;
+}
+
+/* ========== RESPONSIVE MODAL RESUMEN ========== */
+@media (max-width: 768px) {
+  .modalResumen {
+    max-width: 100%;
+  }
+
+  .transaccionResumenInfo {
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    gap: var(--spacing-xs);
+  }
+
+  .transaccionResumenConcepto {
+    grid-column: 1 / -1;
+  }
+
+  .transaccionResumenFecha {
+    justify-self: start;
+  }
+
+  .transaccionResumenMonto {
+    text-align: right;
+    justify-self: end;
+  }
+
+  .transaccionResumenAcciones {
+    grid-column: 1 / -1;
+    justify-self: end;
+    margin-top: var(--spacing-xs);
+  }
+
+  .paginacion {
+    gap: var(--spacing-sm);
+  }
+
+  .paginacionInfo {
+    font-size: 0.875rem;
+    min-width: 100px;
+  }
+
+  .botonPaginacion {
+    width: 2.25rem;
+    height: 2.25rem;
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .transaccionResumenItem {
+    padding: var(--spacing-sm);
+    gap: var(--spacing-sm);
+  }
+
+  .transaccionResumenIcono {
+    width: 2rem;
+    height: 2rem;
+    min-width: 2rem;
+  }
+
+  .transaccionResumenIcono svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .transaccionResumenConcepto {
+    font-size: 0.8rem;
+  }
+
+  .transaccionResumenFecha {
+    font-size: 0.7rem;
+  }
+
+  .transaccionResumenMonto {
+    font-size: 1rem;
+  }
+
+  .paginacion {
+    padding: var(--spacing-md) 0;
+  }
+
+  .botonPaginacion {
+    width: 2rem;
+    height: 2rem;
+    min-width: 2rem;
+    min-height: 2rem;
+    font-size: 0.75rem;
+  }
+
+  .paginacionInfo {
+    font-size: 0.75rem;
+    min-width: 90px;
+  }
+}
+
+/* ========== DARK MODE MODAL RESUMEN ========== */
+.dark .transaccionResumenItem {
+  background-color: var(--bg-tertiary);
+  border-color: var(--card-border);
+}
+
+.dark .transaccionResumenItem:hover {
+  border-color: var(--color-primary-200);
+}
+
+.dark .transaccionResumenItem:has(svg[stroke*="terciary"]) .transaccionResumenIcono {
+  background-color: rgba(236, 147, 169, 0.3);
+  border-color: var(--color-terciary-200);
+}
+
+.dark .transaccionResumenItem:has(svg[stroke*="primary"]) .transaccionResumenIcono {
+  background-color: rgba(57, 226, 127, 0.3);
+  border-color: var(--color-primary-200);
+}
+
+.dark .transaccionResumenConcepto {
+  color: var(--text-light);
+}
+
+.dark .transaccionResumenFecha {
+  color: var(--text-tertiary);
+}
+
+.dark .paginacion {
+  border-color: var(--card-border);
+}
+
+.dark .botonPaginacion {
+  background: linear-gradient(135deg, var(--color-primary-300), var(--color-primary-250));
+  box-shadow: 0 2px 8px rgba(57, 226, 127, 0.4);
+}
+
+.dark .botonPaginacion:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--color-primary-250), var(--color-primary-200));
+  box-shadow: 0 4px 12px rgba(57, 226, 127, 0.6);
+}
+
+.dark .botonPaginacion:disabled {
+  background: var(--bg-card);
+}
+
+.dark .paginacionInfo {
+  color: var(--text-light);
+}
+/* ========== BOTONES DE ACCIÓN EN TRANSACCIONES ========== */
+.transaccionAcciones {
+  display: flex;
+  gap: var(--spacing-xs);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  margin-left: auto;
+}
+
+.transaccionItem:hover .transaccionAcciones {
+  opacity: 1;
+  visibility: visible;
+}
+
+.botonEditar,
+.botonEliminar {
+  width: 2rem;
+  height: 2rem;
+  min-width: 2rem;
+  min-height: 2rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.botonEditar {
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-350);
+  box-shadow: 0 2px 4px rgba(0, 122, 51, 0.2);
+}
+
+.botonEditar:hover {
+  background-color: var(--color-primary-150);
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 122, 51, 0.3);
+}
+
+.botonEliminar {
+  background-color: var(--color-terciary-100);
+  color: var(--color-terciary-350);
+  box-shadow: 0 2px 4px rgba(211, 36, 65, 0.2);
+}
+
+.botonEliminar:hover {
+  background-color: var(--color-terciary-150);
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(211, 36, 65, 0.3);
+}
+
+.botonEditar:active,
+.botonEliminar:active {
+  transform: scale(0.95);
+}
+
+/* ========== BOTONES DE ACCIÓN EN RESUMEN ========== */
+.transaccionResumenAcciones {
+  display: flex;
+  gap: var(--spacing-xs);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  margin-left: auto;
+}
+
+.transaccionResumenItem:hover .transaccionResumenAcciones {
+  opacity: 1;
+  visibility: visible;
+}
+
+.botonEditarResumen,
+.botonEliminarResumen {
+  width: 2rem;
+  height: 2rem;
+  min-width: 2rem;
+  min-height: 2rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.botonEditarResumen {
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-350);
+  box-shadow: 0 2px 4px rgba(0, 122, 51, 0.2);
+}
+
+.botonEditarResumen:hover {
+  background-color: var(--color-primary-150);
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 122, 51, 0.3);
+}
+
+.botonEliminarResumen {
+  background-color: var(--color-terciary-100);
+  color: var(--color-terciary-350);
+  box-shadow: 0 2px 4px rgba(211, 36, 65, 0.2);
+}
+
+.botonEliminarResumen:hover {
+  background-color: var(--color-terciary-150);
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(211, 36, 65, 0.3);
+}
+
+.botonEditarResumen:active,
+.botonEliminarResumen:active {
+  transform: scale(0.95);
+}
+
+/* ========== ACCIONES DEL MODAL ========== */
+.modalAcciones {
+  display: flex;
+  gap: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 2px solid var(--bg-tertiary);
+}
+
+.modalBotonEditar,
+.modalBotonEliminar {
+  flex: 1;
+  padding: var(--spacing-md);
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  min-height: 44px;
+}
+
+.modalBotonEditar {
+  background: linear-gradient(135deg, var(--color-primary-200), var(--color-primary-250));
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 122, 51, 0.3);
+}
+
+.modalBotonEditar:hover {
+  background: linear-gradient(135deg, var(--color-primary-250), var(--color-primary-300));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 122, 51, 0.5);
+}
+
+.modalBotonEliminar {
+  background: linear-gradient(135deg, var(--color-terciary-200), var(--color-terciary-250));
+  color: white;
+  box-shadow: 0 2px 8px rgba(211, 36, 65, 0.3);
+}
+
+.modalBotonEliminar:hover {
+  background: linear-gradient(135deg, var(--color-terciary-250), var(--color-terciary-300));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(211, 36, 65, 0.5);
+}
+
+/* ========== RESPONSIVE - BOTONES DE ACCIÓN ========== */
+@media (max-width: 640px) {
+  /* En móvil, mostrar siempre los botones de acción */
+  .transaccionAcciones,
+  .transaccionResumenAcciones {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .modalAcciones {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,398 @@
+.transacciones {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+  padding: var(--spacing-xl);
+}
+
+.contenedorTransacciones {
+  display: flex;
+  width: 100%;
+  max-width: var(--container-lg);
+  flex-direction: column;
+  background-color: var(--bg-card);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-2xl);
+  box-shadow: var(--shadow-xl);
+  gap: var(--spacing-lg);
+  animation: fadeInUp 0.6s ease-out;
+  border: 1px solid var(--card-border);
+}
+
+/* ========== BOTONES SUPERIORES ========== */
+.topButtons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+/* ========== CABECERA ========== */
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  border-bottom: 2px solid var(--bg-tertiary);
+}
+
+.backButton {
+  background-color: var(--color-primary-200);
+  border: 2px solid var(--color-primary-250);
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: var(--shadow-sm);
+  font-size: 1.125rem;
+}
+
+.backButton:hover {
+  background-color: var(--color-primary-250);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.headerTitulo {
+  color: var(--text-body);
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+/* ========== RESUMEN TOTALES ========== */
+.resumenTotales {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--card-border);
+  animation: fadeInUp 0.3s ease-out;
+}
+
+.totalItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-md);
+  background-color: var(--bg-card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+}
+
+.totalItem:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.totalLabel {
+  color: var(--text-tertiary);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.totalMonto {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+/* ========== ACCIONES ========== */
+.accionesContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing-xl) 0;
+}
+
+.botonNueva {
+  background: linear-gradient(135deg, var(--color-primary-200), var(--color-primary-250));
+  color: white;
+  border: 2px solid var(--color-primary-250);
+  padding: var(--spacing-md) var(--spacing-2xl);
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 1.125rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.botonNueva:hover {
+  background: linear-gradient(135deg, var(--color-primary-250), var(--color-primary-300));
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ========== FORMULARIO INLINE ========== */
+.formularioContainer {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.formGroup label {
+  color: var(--text-body);
+  font-weight: 700;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.formGroup input {
+  padding: var(--spacing-md);
+  border: 2px solid var(--card-border);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  background-color: var(--bg-secondary);
+  color: var(--text-body);
+  transition: all 0.3s ease;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: var(--color-primary-250);
+  box-shadow: 0 0 0 3px var(--color-primary-100);
+}
+
+.formGroup input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.tipoSelector {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.tipoBoton {
+  flex: 1;
+  padding: var(--spacing-md);
+  border: 2px solid var(--card-border);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-secondary);
+  color: var(--text-body);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tipoBoton:hover {
+  border-color: var(--color-primary-200);
+  background-color: var(--color-primary-50);
+}
+
+.tipoGasto:hover {
+  border-color: var(--color-terciary-200);
+  background-color: var(--color-terciary-50);
+}
+
+.tipoGasto.activo {
+  background-color: var(--color-terciary-250);
+  border-color: var(--color-terciary-300);
+  color: white;
+}
+
+.tipoIngreso.activo {
+  background-color: var(--color-primary-200);
+  border-color: var(--color-primary-250);
+  color: white;
+}
+
+.error {
+  color: var(--color-terciary-250);
+  font-size: 0.875rem;
+  margin: var(--spacing-xs) 0 0 0;
+  font-weight: 600;
+}
+
+.errorGeneral {
+  padding: var(--spacing-md);
+  background-color: var(--color-terciary-50);
+  border: 2px solid var(--color-terciary-200);
+  border-radius: var(--radius-md);
+  color: var(--color-terciary-300);
+  font-weight: 600;
+  margin-bottom: var(--spacing-md);
+}
+
+.formularioBotones {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
+
+.botonCancelar {
+  flex: 1;
+  padding: var(--spacing-md);
+  border: 2px solid var(--card-border);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-secondary);
+  color: var(--text-body);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.botonCancelar:hover {
+  background-color: var(--bg-tertiary);
+}
+
+.botonCancelar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.botonGuardar {
+  flex: 1;
+  padding: var(--spacing-md);
+  border: 2px solid var(--color-primary-250);
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--color-primary-200), var(--color-primary-250));
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.botonGuardar:hover {
+  background: linear-gradient(135deg, var(--color-primary-250), var(--color-primary-300));
+  box-shadow: var(--shadow-md);
+}
+
+.botonGuardar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ========== ANIMACIONES ========== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 640px) {
+  .transacciones {
+    padding: var(--spacing-md);
+  }
+
+  .contenedorTransacciones {
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+  }
+
+  .headerTitulo {
+    font-size: 1.25rem;
+  }
+
+  .botonNueva {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .resumenTotales {
+    grid-template-columns: 1fr;
+  }
+
+  .totalMonto {
+    font-size: 1.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .contenedorTransacciones {
+    padding: var(--spacing-3xl);
+  }
+}
+
+/* ========== DARK MODE ========== */
+.dark .contenedorTransacciones {
+  background-color: var(--bg-card);
+  border-color: var(--card-border);
+}
+
+.dark .header {
+  border-color: var(--card-border);
+}
+
+.dark .backButton {
+  background-color: var(--color-primary-300);
+  border-color: var(--color-primary-200);
+}
+
+.dark .headerTitulo {
+  color: var(--text-light);
+}
+
+.dark .resumenTotales {
+  background-color: var(--bg-tertiary);
+  border-color: var(--card-border);
+}
+
+.dark .totalItem {
+  background-color: var(--bg-card);
+}
+
+.dark .formGroup input {
+  background-color: var(--bg-tertiary);
+  border-color: var(--card-border);
+  color: var(--text-light);
+}
+
+.dark .tipoBoton {
+  background-color: var(--bg-tertiary);
+  border-color: var(--card-border);
+  color: var(--text-light);
+}
+
+.dark .botonCancelar {
+  background-color: var(--bg-tertiary);
+  border-color: var(--card-border);
+  color: var(--text-light);
+}

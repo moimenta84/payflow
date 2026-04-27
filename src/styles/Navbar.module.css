@@ -1,0 +1,145 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  z-index: 100;
+  background-color: var(--bg-app);
+  border-bottom: 1px solid var(--card-border);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.contenedor {
+  max-width: 1280px;
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--spacing-xl);
+  gap: var(--spacing-lg);
+}
+
+/* ===== LOGO ===== */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.logoImg {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+
+.logoTexto {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.4px;
+}
+
+/* ===== NAV LINKS ===== */
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.link {
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-body);
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.link:hover {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.linkActivo {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* ===== DERECHA ===== */
+.derecha {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
+.usuario {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-xl);
+  background-color: var(--bg-tertiary);
+}
+
+.avatar {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.nombre {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-body);
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ===== LOGOUT ===== */
+.btnLogout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.btnLogout:hover {
+  background-color: var(--bdg-gastos-bg);
+  color: var(--bdg-gastos-color);
+  border-color: var(--bdg-gastos-border);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
+  .contenedor {
+    padding: 0 var(--spacing-md);
+  }
+
+  .navLinks {
+    display: none;
+  }
+
+  .nombre {
+    display: none;
+  }
+
+  .usuario {
+    padding: 0.35rem 0.5rem;
+  }
+}

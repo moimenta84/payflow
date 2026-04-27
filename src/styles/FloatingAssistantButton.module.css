@@ -1,0 +1,148 @@
+.floatingButton {
+  position: fixed;
+  bottom: var(--spacing-xl);
+  right: var(--spacing-xl);
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary-200), var(--color-secondary-200));
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-lg);
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  z-index: 9999;
+  animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(100px) scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.floatingButton:hover {
+  transform: scale(1.1);
+  box-shadow: var(--shadow-xl);
+}
+
+.floatingButton:active {
+  transform: scale(0.95);
+}
+
+.floatingButton.active {
+  background: linear-gradient(135deg, var(--color-terciary-200), var(--color-terciary-250));
+  transform: rotate(90deg);
+}
+
+.floatingButton.active:hover {
+  transform: rotate(90deg) scale(1.1);
+}
+
+/* Badge de notificación */
+.badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background-color: var(--color-terciary-200);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Ventana del asistente */
+.assistantWindow {
+  position: fixed;
+  bottom: 8rem;
+  right: var(--spacing-xl);
+  width: 400px;
+  height: 600px;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+  z-index: 9998;
+  animation: slideUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px) scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .floatingButton {
+    bottom: var(--spacing-lg);
+    right: var(--spacing-lg);
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+
+  .assistantWindow {
+    bottom: 7rem;
+    right: var(--spacing-md);
+    left: var(--spacing-md);
+    width: auto;
+    height: 500px;
+  }
+}
+
+@media (max-width: 480px) {
+  .assistantWindow {
+    bottom: 0;
+    right: 0;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+  }
+}
+
+/* Dark mode */
+.dark .floatingButton {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.dark .floatingButton:hover {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
+}
+
+.dark .assistantWindow {
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.dark .badge {
+  border-color: var(--color-gray-300);
+}
