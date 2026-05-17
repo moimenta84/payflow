@@ -1,0 +1,53 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: auth-public
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/login, /auth/register, /auth/reset-password
+
+        - id: auth-protected
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/me
+          filters:
+            - name: JwtAuthFilter
+
+        - id: transactions
+          uri: lb://transaction-service
+          predicates:
+            - Path=/transactions/**
+          filters:
+            - name: JwtAuthFilter
+
+        - id: orders
+          uri: lb://trading-service
+          predicates:
+            - Path=/orders/**, /portfolio/**
+          filters:
+            - name: JwtAuthFilter
+
+        - id: assets
+          uri: lb://trading-service
+          predicates:
+            - Path=/assets/**
+
+        - id: prices
+          uri: lb://price-service
+          predicates:
+            - Path=/prices/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:spendiq-super-secret-key-2024-tfg}

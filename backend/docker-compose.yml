@@ -1,0 +1,131 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: spendiq-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: spendiq
+      POSTGRES_PASSWORD: spendiq123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U spendiq"]
+      interval: 10s
+      retries: 5
+
+  ibmmq:
+    image: icr.io/ibm-messaging/mq:latest
+    container_name: spendiq-ibmmq
+    ports:
+      - "1414:1414"
+      - "9443:9443"
+    environment:
+      - LICENSE=accept
+      - MQ_QMGR_NAME=QM1
+      - MQ_APP_PASSWORD=passw0rd
+      - MQ_ADMIN_PASSWORD=passw0rd
+    volumes:
+      - mq_data:/mnt/mqm
+
+  discovery-service:
+    build: ./discovery-service
+    container_name: discovery-service
+    ports:
+      - "8761:8761"
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - discovery-service
+    environment:
+      - EUREKA_URI=http://discovery-service:8761/eureka
+      - JWT_SECRET=spendiq-super-secret-key-2024-tfg
+
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      discovery-service:
+        condition: service_started
+    environment:
+      - DB_URL=jdbc:postgresql://postgres:5432/auth_db
+      - DB_USER=spendiq
+      - DB_PASS=spendiq123
+      - EUREKA_URI=http://discovery-service:8761/eureka
+      - JWT_SECRET=spendiq-super-secret-key-2024-tfg
+
+  transaction-service:
+    build: ./transaction-service
+    container_name: transaction-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      discovery-service:
+        condition: service_started
+    environment:
+      - DB_URL=jdbc:postgresql://postgres:5432/transactions_db
+      - DB_USER=spendiq
+      - DB_PASS=spendiq123
+      - MQ_HOST=ibmmq
+      - MQ_PORT=1414
+      - MQ_CHANNEL=DEV.APP.SVRCONN
+      - MQ_QUEUE_MANAGER=QM1
+      - MQ_USER=app
+      - MQ_PASSWORD=passw0rd
+      - EUREKA_URI=http://discovery-service:8761/eureka
+
+  trading-service:
+    build: ./trading-service
+    container_name: trading-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      discovery-service:
+        condition: service_started
+    environment:
+      - DB_URL=jdbc:postgresql://postgres:5432/trading_db
+      - DB_USER=spendiq
+      - DB_PASS=spendiq123
+      - MQ_HOST=ibmmq
+      - MQ_PORT=1414
+      - MQ_CHANNEL=DEV.APP.SVRCONN
+      - MQ_QUEUE_MANAGER=QM1
+      - MQ_USER=app
+      - MQ_PASSWORD=passw0rd
+      - EUREKA_URI=http://discovery-service:8761/eureka
+
+  price-service:
+    build: ./price-service
+    container_name: price-service
+    ports:
+      - "8084:8084"
+    depends_on:
+      - discovery-service
+    environment:
+      - MQ_HOST=ibmmq
+      - MQ_PORT=1414
+      - MQ_CHANNEL=DEV.APP.SVRCONN
+      - MQ_QUEUE_MANAGER=QM1
+      - MQ_USER=app
+      - MQ_PASSWORD=passw0rd
+      - EUREKA_URI=http://discovery-service:8761/eureka
+
+volumes:
+  postgres_data:
+  mq_data:
