@@ -1,0 +1,61 @@
+package com.spendiq.transaction.controller;
+
+import com.spendiq.transaction.dto.SummaryResponse;
+import com.spendiq.transaction.dto.TransactionRequest;
+import com.spendiq.transaction.dto.TransactionResponse;
+import com.spendiq.transaction.service.TransactionService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/transactions")
+public class TransactionController {
+
+    private final TransactionService transactionService;
+
+    public TransactionController(TransactionService transactionService) {
+        this.transactionService = transactionService;
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // POST /transactions
+    // El gateway añade X-User-Id tras validar el JWT
+    // ─────────────────────────────────────────────────────────
+    @PostMapping
+    public ResponseEntity<TransactionResponse> create(
+            @RequestHeader("X-User-Id") String userId,
+            @RequestBody TransactionRequest request) {
+        return ResponseEntity.ok(transactionService.create(userId, request));
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // GET /transactions
+    // ─────────────────────────────────────────────────────────
+    @GetMapping
+    public ResponseEntity<List<TransactionResponse>> getAll(
+            @RequestHeader("X-User-Id") String userId) {
+        return ResponseEntity.ok(transactionService.getAll(userId));
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // GET /transactions/summary
+    // ─────────────────────────────────────────────────────────
+    @GetMapping("/summary")
+    public ResponseEntity<SummaryResponse> getSummary(
+            @RequestHeader("X-User-Id") String userId) {
+        return ResponseEntity.ok(transactionService.getSummary(userId));
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // DELETE /transactions/{id}
+    // ─────────────────────────────────────────────────────────
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(
+            @RequestHeader("X-User-Id") String userId,
+            @PathVariable String id) {
+        transactionService.delete(userId, id);
+        return ResponseEntity.noContent().build(); // 204 No Content
+    }
+}
