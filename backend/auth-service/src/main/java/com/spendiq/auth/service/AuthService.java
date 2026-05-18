@@ -3,6 +3,7 @@ package com.spendiq.auth.service;
 import com.spendiq.auth.dto.AuthResponse;
 import com.spendiq.auth.dto.LoginRequest;
 import com.spendiq.auth.dto.RegisterRequest;
+import com.spendiq.auth.dto.UserResponse;
 import com.spendiq.auth.entity.UserEntity;
 import com.spendiq.auth.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
@@ -74,7 +75,7 @@ public class AuthService {
         userRepository.save(user);
 
         // Generamos el JWT y devolvemos token + datos del usuario al frontend
-        return new AuthResponse(generateToken(user), user);
+        return new AuthResponse(generateToken(user), new UserResponse(user));
     }
 
     // ─────────────────────────────────────────────────────────
@@ -93,27 +94,29 @@ public class AuthService {
         }
 
         // Login correcto — generamos el JWT y devolvemos token + datos del usuario
-        return new AuthResponse(generateToken(user), user);
+        return new AuthResponse(generateToken(user), new UserResponse(user));
     }
 
     // ─────────────────────────────────────────────────────────
     // OBTENER PERFIL
     // ─────────────────────────────────────────────────────────
-    public UserEntity getUser(String userId) {
+    public UserResponse getUser(String userId) {
 
         // Buscamos por el id que viene en el header X-User-Id (puesto por el gateway)
         // Hibernate genera: SELECT * FROM users WHERE id = ?
-        return userRepository.findById(userId)
+        UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        return new UserResponse(user);
     }
 
     // ─────────────────────────────────────────────────────────
     // ACTUALIZAR PERFIL
     // ─────────────────────────────────────────────────────────
-    public UserEntity updateUser(String userId, RegisterRequest request) {
+    public UserResponse updateUser(String userId, RegisterRequest request) {
 
         // Recuperamos el usuario actual de la BD
-        UserEntity user = getUser(userId);
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         // Solo actualizamos los campos editables desde el perfil
         // No permitimos cambiar email ni rol desde este endpoint
@@ -122,7 +125,7 @@ public class AuthService {
         if (request.getSaldoInicial() != null) user.setSaldoInicial(request.getSaldoInicial());
 
         // Guardamos los cambios — Hibernate genera: UPDATE users SET ... WHERE id = ?
-        return userRepository.save(user);
+        return new UserResponse(userRepository.save(user));
     }
 
     // ─────────────────────────────────────────────────────────

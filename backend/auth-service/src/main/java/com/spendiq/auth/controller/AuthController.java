@@ -3,7 +3,7 @@ package com.spendiq.auth.controller;
 import com.spendiq.auth.dto.AuthResponse;
 import com.spendiq.auth.dto.LoginRequest;
 import com.spendiq.auth.dto.RegisterRequest;
-import com.spendiq.auth.entity.UserEntity;
+import com.spendiq.auth.dto.UserResponse;
 import com.spendiq.auth.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,9 +53,8 @@ public class AuthController {
     // El controlador lo recoge con @RequestHeader sin tocar el JWT directamente
     // ─────────────────────────────────────────────────────────
     @GetMapping("/me")
-    public ResponseEntity<UserEntity> me(@RequestHeader("X-User-Id") String userId) {
-        UserEntity user = authService.getUser(userId);
-        return ResponseEntity.ok(user); // 200 OK + datos usuario (sin contraseña)
+    public ResponseEntity<UserResponse> me(@RequestHeader("X-User-Id") String userId) {
+        return ResponseEntity.ok(authService.getUser(userId));
     }
 
     // ─────────────────────────────────────────────────────────
@@ -65,11 +64,10 @@ public class AuthController {
     // No permite cambiar email ni rol
     // ─────────────────────────────────────────────────────────
     @PutMapping("/me")
-    public ResponseEntity<UserEntity> updateMe(
+    public ResponseEntity<UserResponse> updateMe(
             @RequestHeader("X-User-Id") String userId,
             @RequestBody RegisterRequest request) {
-        UserEntity updated = authService.updateUser(userId, request);
-        return ResponseEntity.ok(updated); // 200 OK + datos actualizados
+        return ResponseEntity.ok(authService.updateUser(userId, request));
     }
 
     // ─────────────────────────────────────────────────────────
