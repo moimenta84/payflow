@@ -2,12 +2,15 @@ package com.spendiq.transaction.messaging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spendiq.transaction.dto.TransactionResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TransactionPublisher {
 
+    private static final Logger log = LoggerFactory.getLogger(TransactionPublisher.class);
     private static final String QUEUE = "TRANSACTION.CREATED";
 
     private final JmsTemplate jmsTemplate;
@@ -23,8 +26,7 @@ public class TransactionPublisher {
             String json = objectMapper.writeValueAsString(transaction);
             jmsTemplate.convertAndSend(QUEUE, json);
         } catch (Exception e) {
-            // El fallo de mensajería no debe bloquear la respuesta al usuario
-            throw new RuntimeException("Error al publicar la transacción en la cola", e);
+            log.error("No se pudo publicar la transacción {} en MQ: {}", transaction.getId(), e.getMessage());
         }
     }
 }
