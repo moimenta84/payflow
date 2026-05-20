@@ -18,8 +18,8 @@ function Navbar() {
       <div className={style.contenedor}>
 
         <NavLink to="/home" className={style.logo}>
-          <img src="/logo.png" alt="SpendIQ" className={style.logoImg} />
-          <span className={style.logoTexto}>SpendIQ</span>
+          <img src="/logo.png" alt="PayFlow" className={style.logoImg} />
+          <span className={style.logoTexto}>PayFlow</span>
         </NavLink>
 
         <div className={style.navLinks}>

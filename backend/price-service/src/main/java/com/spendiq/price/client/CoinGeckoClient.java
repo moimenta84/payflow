@@ -1,5 +1,6 @@
 package com.spendiq.price.client;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -13,7 +14,7 @@ public class CoinGeckoClient {
 
     private final WebClient webClient;
 
-    public CoinGeckoClient(WebClient webClient) {
+    public CoinGeckoClient(@Qualifier("coinGeckoWebClient") WebClient webClient) {
         this.webClient = webClient;
     }
 

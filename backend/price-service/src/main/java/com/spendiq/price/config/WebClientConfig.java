@@ -8,8 +8,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class WebClientConfig {
 
-    @Bean
-    public WebClient coinGeckoClient(@Value("${coingecko.base-url}") String baseUrl) {
+    @Bean("coinGeckoWebClient")
+    public WebClient coinGeckoWebClient(@Value("${coingecko.base-url}") String baseUrl) {
         return WebClient.builder().baseUrl(baseUrl).build();
     }
 }
