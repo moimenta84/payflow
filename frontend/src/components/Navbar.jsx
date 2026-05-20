@@ -39,6 +39,23 @@ function Navbar() {
           >
             Transacciones
           </NavLink>
+          <NavLink
+            to="/crypto"
+            className={({ isActive }) =>
+              isActive ? `${style.link} ${style.linkActivo}` : style.link
+            }
+          >
+            Crypto
+          </NavLink>
+          {user?.rol === 'ADMIN' && (
+            <a
+              href="/admin"
+              className={style.link}
+              style={{ color: 'var(--color-primary-250)' }}
+            >
+              Admin
+            </a>
+          )}
         </div>
 
         <div className={style.derecha}>
