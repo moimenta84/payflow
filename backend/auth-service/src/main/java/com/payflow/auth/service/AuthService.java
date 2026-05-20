@@ -3,11 +3,14 @@ package com.payflow.auth.service;
 import com.payflow.auth.dto.AuthResponse;
 import com.payflow.auth.dto.LoginRequest;
 import com.payflow.auth.dto.RegisterRequest;
+import com.payflow.auth.dto.RolRequest;
 import com.payflow.auth.dto.UserResponse;
 import com.payflow.auth.entity.UserEntity;
 import com.payflow.auth.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,12 +18,15 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 // @Service le dice a Spring que esta clase contiene lógica de negocio
 // Spring la registra como bean y permite inyectarla en otros componentes
 @Service
 public class AuthService {
+
+    private static final Logger log = LoggerFactory.getLogger(AuthService.class);
 
     private final UserRepository userRepository;
 
@@ -126,6 +132,38 @@ public class AuthService {
 
         // Guardamos los cambios — Hibernate genera: UPDATE users SET ... WHERE id = ?
         return new UserResponse(userRepository.save(user));
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // ADMIN — LISTAR TODOS LOS USUARIOS
+    // ─────────────────────────────────────────────────────────
+    public List<UserResponse> getAllUsers() {
+        log.info("Admin solicita listado completo de usuarios");
+        return userRepository.findAll().stream()
+                .map(UserResponse::new)
+                .toList();
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // ADMIN — CAMBIAR ROL DE UN USUARIO
+    // ─────────────────────────────────────────────────────────
+    public UserResponse changeRol(String userId, RolRequest request) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        log.info("Admin cambia rol de {} de {} a {}", user.getEmail(), user.getRol(), request.getRol());
+        user.setRol(request.getRol());
+        return new UserResponse(userRepository.save(user));
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // ADMIN — ELIMINAR USUARIO
+    // ─────────────────────────────────────────────────────────
+    public void deleteUser(String userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new RuntimeException("Usuario no encontrado");
+        }
+        log.info("Admin elimina usuario {}", userId);
+        userRepository.deleteById(userId);
     }
 
     // ─────────────────────────────────────────────────────────

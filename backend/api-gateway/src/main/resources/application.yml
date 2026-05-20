@@ -45,6 +45,13 @@ spring:
           predicates:
             - Path=/assets/**
 
+        - id: admin
+          uri: lb://auth-service
+          predicates:
+            - Path=/admin/**
+          filters:
+            - name: AdminRoleFilter
+
         - id: prices
           uri: lb://price-service
           predicates:
