@@ -4,6 +4,7 @@ import com.spendiq.transaction.dto.SummaryResponse;
 import com.spendiq.transaction.dto.TransactionRequest;
 import com.spendiq.transaction.dto.TransactionResponse;
 import com.spendiq.transaction.service.TransactionService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,7 @@ public class TransactionController {
     @PostMapping
     public ResponseEntity<TransactionResponse> create(
             @RequestHeader("X-User-Id") String userId,
-            @RequestBody TransactionRequest request) {
+            @Valid @RequestBody TransactionRequest request) {
         return ResponseEntity.ok(transactionService.create(userId, request));
     }
 

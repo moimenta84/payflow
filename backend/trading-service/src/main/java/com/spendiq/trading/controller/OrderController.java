@@ -3,6 +3,7 @@ package com.spendiq.trading.controller;
 import com.spendiq.trading.dto.OrderRequest;
 import com.spendiq.trading.dto.OrderResponse;
 import com.spendiq.trading.service.TradingService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<OrderResponse> create(
             @RequestHeader("X-User-Id") String userId,
-            @RequestBody OrderRequest request) {
+            @Valid @RequestBody OrderRequest request) {
         return ResponseEntity.ok(tradingService.createOrder(userId, request));
     }
 

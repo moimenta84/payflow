@@ -1,23 +1,20 @@
 package com.spendiq.auth.dto;
 
-// DTO que viaja desde el frontend al backend cuando el usuario inicia sesión
-// Solo necesita email y password — nada más
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 public class LoginRequest {
 
+    @NotBlank(message = "El email es obligatorio")
+    @Email(message = "El email no tiene un formato válido")
     private String email;
 
-    // Contraseña en texto plano — el servicio la compara con el hash BCrypt de la BD
+    @NotBlank(message = "La contraseña es obligatoria")
     private String password;
 
-    // ─── Getters ──────────────────────────────────────────────
-
-    public String getEmail() { return email; }
-
+    public String getEmail()    { return email; }
     public String getPassword() { return password; }
 
-    // ─── Setters ──────────────────────────────────────────────
-
-    public void setEmail(String email) { this.email = email; }
-
+    public void setEmail(String email)       { this.email = email; }
     public void setPassword(String password) { this.password = password; }
 }
