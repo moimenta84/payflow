@@ -10,6 +10,7 @@ import Register from './pages/Register'
 import Remember from './pages/Remember'
 import Transacciones from './pages/Transacciones'
 import Transation from './pages/Transation'
+import Crypto from './pages/Crypto'
 import Landing from './pages/Landing'
 import ProtectedRoute from './pages/ProtectedRoute'
 import FloatingAssistantButton from './components/FloatingAssistantButton'
@@ -52,6 +53,14 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <Transation />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/crypto"
+            element={
+              <ProtectedRoute>
+                <Crypto />
               </ProtectedRoute>
             }
           />
