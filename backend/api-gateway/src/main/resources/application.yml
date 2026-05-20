@@ -6,6 +6,13 @@ spring:
     name: api-gateway
   cloud:
     gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:5173"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
       routes:
         - id: auth-public
           uri: lb://auth-service
@@ -50,4 +57,4 @@ eureka:
 
 app:
   jwt:
-    secret: ${JWT_SECRET:spendiq-super-secret-key-2024-tfg}
+    secret: ${JWT_SECRET:payflow-super-secret-key-2024-tfg}

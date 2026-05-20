@@ -57,8 +57,8 @@ function Home() {
 
   // Usar datos del usuario autenticado
   const usuario = {
-    nombre: user?.nombre || "Usuario",
-    avatar: user?.avatar || "👤",
+    nombre: user?.fullName || "Usuario",
+    avatar: user?.iniciales || "👤",
     saldoInicial: user?.saldoInicial || 0,
   };
 

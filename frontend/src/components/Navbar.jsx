@@ -45,8 +45,8 @@ function Navbar() {
           <Toggle />
 
           <div className={style.usuario}>
-            <span className={style.avatar}>{user?.avatar || '👤'}</span>
-            <span className={style.nombre}>{user?.nombre || 'Usuario'}</span>
+            <span className={style.avatar}>{user?.iniciales || '👤'}</span>
+            <span className={style.nombre}>{user?.fullName || 'Usuario'}</span>
           </div>
 
           <button

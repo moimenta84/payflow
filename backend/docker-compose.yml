@@ -8,8 +8,8 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: spendiq
-      POSTGRES_PASSWORD: spendiq123
+      POSTGRES_USER: payflow
+      POSTGRES_PASSWORD: payflow123
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -47,7 +47,7 @@ services:
       - discovery-service
     environment:
       - EUREKA_URI=http://discovery-service:8761/eureka
-      - JWT_SECRET=spendiq-super-secret-key-2024-tfg
+      - JWT_SECRET=payflow-super-secret-key-2024-tfg
 
   auth-service:
     build: ./auth-service
@@ -61,10 +61,10 @@ services:
         condition: service_started
     environment:
       - DB_URL=jdbc:postgresql://postgres:5432/auth_db
-      - DB_USER=spendiq
-      - DB_PASS=spendiq123
+      - DB_USER=payflow
+      - DB_PASS=payflow123
       - EUREKA_URI=http://discovery-service:8761/eureka
-      - JWT_SECRET=spendiq-super-secret-key-2024-tfg
+      - JWT_SECRET=payflow-super-secret-key-2024-tfg
 
   transaction-service:
     build: ./transaction-service
@@ -78,8 +78,8 @@ services:
         condition: service_started
     environment:
       - DB_URL=jdbc:postgresql://postgres:5432/transactions_db
-      - DB_USER=spendiq
-      - DB_PASS=spendiq123
+      - DB_USER=payflow
+      - DB_PASS=payflow123
       - MQ_HOST=ibmmq
       - MQ_PORT=1414
       - MQ_CHANNEL=DEV.APP.SVRCONN
@@ -100,8 +100,8 @@ services:
         condition: service_started
     environment:
       - DB_URL=jdbc:postgresql://postgres:5432/trading_db
-      - DB_USER=spendiq
-      - DB_PASS=spendiq123
+      - DB_USER=payflow
+      - DB_PASS=payflow123
       - MQ_HOST=ibmmq
       - MQ_PORT=1414
       - MQ_CHANNEL=DEV.APP.SVRCONN

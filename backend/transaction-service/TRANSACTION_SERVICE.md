@@ -1,104 +1,118 @@
-# Transaction Service
+# transaction-service
 
-Puerto: `8082` | BD: `transactions_db` | Cola IBM MQ: `TRANSACTION.CREATED`
-
----
-
-## Flujo completo
-
-### POST /transactions — Crear transacción
-
-```
-Frontend
-  → manda JSON { tipo, categoria, descripcion, cantidad, fecha }
-  → con header Authorization: Bearer <JWT>
-
-API Gateway
-  → valida el JWT
-  → extrae el userId del subject del token
-  → añade header X-User-Id: <userId>
-  → redirige a transaction-service:8082
-
-TransactionController
-  → recoge X-User-Id del header (no toca el JWT)
-  → deserializa el body a TransactionRequest
-  → llama a transactionService.create(userId, request)
-
-TransactionService
-  → construye TransactionEntity con userId + datos del request
-  → transactionRepository.save(entity) → INSERT en PostgreSQL
-  → mapea la entidad guardada a TransactionResponse
-  → transactionPublisher.publish(response) → mensaje JSON en cola IBM MQ
-  → devuelve TransactionResponse
-
-TransactionController
-  → devuelve 200 OK + TransactionResponse
-```
-
-### GET /transactions — Historial
-
-```
-TransactionRepository.findByUserIdOrderByFechaDesc(userId)
-  → SELECT * FROM transactions WHERE user_id = ? ORDER BY fecha DESC
-
-Devuelve lista de TransactionResponse ordenada del más reciente al más antiguo
-```
-
-### GET /transactions/summary — Resumen del dashboard
-
-```
-Dos queries a PostgreSQL:
-  SELECT SUM(cantidad) WHERE userId = ? AND tipo = 'INGRESO'
-  SELECT SUM(cantidad) WHERE userId = ? AND tipo = 'GASTO'
-
-Devuelve SummaryResponse:
-  { totalIngresos, totalGastos, balance = ingresos - gastos }
-```
-
-### DELETE /transactions/{id}
-
-```
-Busca por id AND userId — un usuario no puede borrar transacciones ajenas
-Si no existe → 500 (Transacción no encontrada)
-Si existe    → DELETE + 204 No Content
-```
+**Puerto:** 8082 | **BD:** `transactions_db` | **Cola:** `TRANSACTION.CREATED`
 
 ---
 
 ## Estructura
 
 ```
-entity/      TransactionEntity     → tabla transactions (id, userId, tipo, categoria, descripcion, cantidad, fecha)
-dto/         TransactionRequest    → lo que manda el frontend
-             TransactionResponse   → lo que devuelve la API
-             SummaryResponse       → totalIngresos, totalGastos, balance
-repository/  TransactionRepository → queries JPA + JPQL para la suma
-service/     TransactionService    → lógica de negocio
-controller/  TransactionController → endpoints REST
-messaging/   TransactionPublisher  → publica en IBM MQ tras crear
+transaction-service/src/main/java/com/spendiq/transaction/
+├── controller/  TransactionController   → endpoints REST
+├── dto/         TransactionRequest      → lo que manda el frontend
+│                TransactionResponse     → lo que devuelve la API
+│                SummaryResponse         → totalIngresos, totalGastos, balance
+├── entity/      TransactionEntity       → tabla transactions
+├── messaging/   TransactionPublisher    → publica en Artemis (fire & forget)
+├── repository/  TransactionRepository  → JPA + JPQL para sumas
+└── service/     TransactionService     → lógica de negocio + CRUD
 ```
 
 ---
 
-## IBM MQ
+## Endpoints
 
-Al crear una transacción se publica un mensaje JSON en la cola `TRANSACTION.CREATED`.
+| Método | Ruta | Descripción |
+|---|---|---|
+| GET | `/transactions` | Listar transacciones del usuario (orden fecha DESC) |
+| POST | `/transactions` | Crear transacción |
+| PUT | `/transactions/{id}` | Editar transacción (patch — solo campos no nulos) |
+| DELETE | `/transactions/{id}` | Eliminar transacción |
+| GET | `/transactions/summary` | Resumen: totalIngresos, totalGastos, balance |
 
-El `trading-service` consume esta cola para mantener actualizado el balance disponible
-del usuario sin tener que consultar la BD del transaction-service directamente.
-Esto es el patrón evento — cada servicio es autónomo y se comunican por mensajes.
+Todas requieren JWT — el gateway inyecta `X-User-Id` en el header.
 
 ---
 
-## Categorías disponibles
+## Modelo — tabla `transactions`
 
-| Categoría     | Tipo habitual |
-|---------------|---------------|
-| SALARIO       | INGRESO       |
-| ALIMENTACION  | GASTO         |
-| VIVIENDA      | GASTO         |
-| TRANSPORTE    | GASTO         |
-| SALUD         | GASTO         |
-| OCIO          | GASTO         |
-| EDUCACION     | GASTO         |
-| OTROS         | ambos         |
+| Campo | Tipo | Valores |
+|---|---|---|
+| id | UUID | auto-generado |
+| userId | VARCHAR | viene de X-User-Id (no FK — microservicio aislado) |
+| tipo | ENUM | `INGRESO`, `GASTO` |
+| categoria | ENUM | `SALARIO`, `ALIMENTACION`, `VIVIENDA`, `TRANSPORTE`, `SALUD`, `OCIO`, `EDUCACION`, `OTROS` |
+| descripcion | VARCHAR | texto libre |
+| cantidad | DOUBLE | positivo siempre |
+| fecha | TIMESTAMP | default NOW() |
+
+---
+
+## DTOs
+
+### TransactionRequest (frontend → backend)
+```json
+{
+  "tipo": "GASTO",
+  "categoria": "ALIMENTACION",
+  "descripcion": "Supermercado",
+  "cantidad": 85.50,
+  "fecha": "2026-05-20T10:00:00"
+}
+```
+
+> **Mapeo frontend:** `concepto → descripcion`, `monto → cantidad`, `tipo.toUpperCase() → tipo`
+
+---
+
+## Mensajería — Artemis JMS
+
+Al crear una transacción, `TransactionPublisher` publica en `TRANSACTION.CREATED` de forma asíncrona. Si el broker no está disponible, el error se loguea y la transacción se guarda igualmente.
+
+---
+
+## Flujo completo
+
+```
+Frontend → POST /transactions
+  → API Gateway: valida JWT, inyecta X-User-Id
+  → TransactionController: recoge userId + body
+  → TransactionService.create(): guarda en PostgreSQL
+  → TransactionPublisher: publica en Artemis (fire & forget)
+  → devuelve TransactionResponse 200 OK
+```
+
+---
+
+## Pruebas con curl
+
+```bash
+# Crear
+curl -X POST http://localhost:8080/transactions \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{"tipo":"INGRESO","categoria":"SALARIO","descripcion":"Nómina mayo","cantidad":2000}'
+
+# Listar
+curl http://localhost:8080/transactions -H "Authorization: Bearer <TOKEN>"
+
+# Resumen
+curl http://localhost:8080/transactions/summary -H "Authorization: Bearer <TOKEN>"
+
+# Editar
+curl -X PUT http://localhost:8080/transactions/<ID> \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{"cantidad":2100}'
+
+# Eliminar
+curl -X DELETE http://localhost:8080/transactions/<ID> -H "Authorization: Bearer <TOKEN>"
+```
+
+---
+
+## Pendiente
+
+- `@Valid` + `@NotNull` + `@Positive` en TransactionRequest
+- `GET /transactions/report/pdf` — informe mensual con iText
+- `@ControllerAdvice` para manejo centralizado de errores
