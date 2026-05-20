@@ -57,6 +57,13 @@ spring:
           predicates:
             - Path=/prices/**
 
+        - id: alerts
+          uri: lb://price-service
+          predicates:
+            - Path=/alerts/**
+          filters:
+            - name: JwtAuthFilter
+
 eureka:
   client:
     service-url:

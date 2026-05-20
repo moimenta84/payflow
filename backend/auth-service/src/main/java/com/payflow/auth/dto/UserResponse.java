@@ -6,6 +6,8 @@ public class UserResponse {
 
     private String id;
     private String email;
+    private String nombre;
+    private String apellido;
     private String fullName;
     private String iniciales;
     private Double saldoInicial;
@@ -14,6 +16,8 @@ public class UserResponse {
     public UserResponse(UserEntity user) {
         this.id           = user.getId();
         this.email        = user.getEmail();
+        this.nombre       = user.getNombre();
+        this.apellido     = user.getApellido();
         this.fullName     = user.getNombre() + (user.getApellido() != null ? " " + user.getApellido() : "");
         this.iniciales    = String.valueOf(user.getNombre().charAt(0)).toUpperCase()
                           + (user.getApellido() != null ? String.valueOf(user.getApellido().charAt(0)).toUpperCase() : "");
@@ -23,6 +27,8 @@ public class UserResponse {
 
     public String getId()           { return id; }
     public String getEmail()        { return email; }
+    public String getNombre()       { return nombre; }
+    public String getApellido()     { return apellido; }
     public String getFullName()     { return fullName; }
     public String getIniciales()    { return iniciales; }
     public Double getSaldoInicial() { return saldoInicial; }
