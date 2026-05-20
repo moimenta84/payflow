@@ -1,5 +1,14 @@
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
+function decodeJwt(token) {
+  try {
+    const payload = token.split('.')[1];
+    return JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
+  } catch {
+    return null;
+  }
+}
+
 const adminAuthProvider = {
   login: async ({ username, password }) => {
     const res = await fetch(`${API_BASE}/auth/login`, {
@@ -15,42 +24,49 @@ const adminAuthProvider = {
     }
 
     localStorage.setItem('token', data.token);
-    localStorage.setItem('adminUser', JSON.stringify(data.user));
     return Promise.resolve();
   },
 
   logout: () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('adminUser');
     return Promise.resolve();
   },
 
   checkAuth: () => {
     const token = localStorage.getItem('token');
-    const user  = JSON.parse(localStorage.getItem('adminUser') || 'null');
-    if (token && user?.rol === 'ADMIN') return Promise.resolve();
-    return Promise.reject();
+    if (!token) return Promise.reject();
+    const payload = decodeJwt(token);
+    if (!payload) return Promise.reject();
+    // Verificar que no ha expirado
+    if (payload.exp && payload.exp * 1000 < Date.now()) {
+      localStorage.removeItem('token');
+      return Promise.reject();
+    }
+    if (payload.rol !== 'ADMIN') return Promise.reject({ message: 'No tienes permisos de administrador' });
+    return Promise.resolve();
   },
 
   checkError: (error) => {
     if (error?.status === 401 || error?.status === 403) {
-      localStorage.removeItem('token');
       return Promise.reject();
     }
     return Promise.resolve();
   },
 
   getPermissions: () => {
-    const user = JSON.parse(localStorage.getItem('adminUser') || 'null');
-    return Promise.resolve(user?.rol || 'USER');
+    const token = localStorage.getItem('token');
+    if (!token) return Promise.resolve('USER');
+    const payload = decodeJwt(token);
+    return Promise.resolve(payload?.rol || 'USER');
   },
 
   getIdentity: () => {
-    const user = JSON.parse(localStorage.getItem('adminUser') || 'null');
+    const token = localStorage.getItem('token');
+    if (!token) return Promise.resolve({ id: '', fullName: 'Admin' });
+    const payload = decodeJwt(token);
     return Promise.resolve({
-      id:       user?.id || '',
-      fullName: user?.fullName || 'Admin',
-      avatar:   user?.iniciales || 'A',
+      id:       payload?.sub || '',
+      fullName: payload?.nombre || 'Admin',
     });
   },
 };

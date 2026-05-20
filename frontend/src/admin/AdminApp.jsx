@@ -12,7 +12,6 @@ export default function AdminApp() {
       dataProvider={dataProvider}
       authProvider={authProvider}
       basename="/admin"
-      loginUrl="/admin/login"
       disableTelemetry
     >
       <Resource

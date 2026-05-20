@@ -45,7 +45,7 @@ function Crypto() {
         const next = { ...prev };
         data.forEach(p => {
           const serie = prev[p.asset] || [];
-          next[p.asset] = [...serie.slice(-19), { time: ahora, price: p.price }];
+          next[p.asset] = [...serie.slice(-19), { time: ahora, price: p.priceUsd }];
         });
         return next;
       });
@@ -133,7 +133,7 @@ function Crypto() {
                       className={style.cardPrecio}
                       style={{ color: ASSET_COLORS[p.asset] || '#888' }}
                     >
-                      ${p.price.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      ${p.priceUsd.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
                   </div>
                 ))}
