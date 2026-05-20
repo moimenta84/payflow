@@ -11,7 +11,6 @@ export default function AdminApp() {
       title="PayFlow Admin"
       dataProvider={dataProvider}
       authProvider={authProvider}
-      basename="/admin"
       disableTelemetry
     >
       <Resource

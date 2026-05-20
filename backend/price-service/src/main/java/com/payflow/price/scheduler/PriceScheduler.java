@@ -31,7 +31,7 @@ public class PriceScheduler {
 
             // Comprueba si alguna alerta pendiente se ha disparado
             List<PriceResponse> prices = priceService.getAll();
-            prices.forEach(p -> alertService.checkAlerts(p.getAsset(), p.getPrice()));
+            prices.forEach(p -> alertService.checkAlerts(p.getAsset(), p.getPriceUsd()));
 
         } catch (Exception e) {
             log.error("Error al obtener precios de CoinGecko: {}", e.getMessage());

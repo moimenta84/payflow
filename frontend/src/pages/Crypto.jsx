@@ -59,7 +59,7 @@ function Crypto() {
   const cargarAlertas = useCallback(async () => {
     try {
       const data = await api.get('/alerts');
-      setAlertas(data);
+      if (Array.isArray(data)) setAlertas(data);
     } catch { /* el servicio puede no estar disponible */ }
   }, []);
 

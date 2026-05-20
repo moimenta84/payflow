@@ -60,7 +60,7 @@ spring:
         - id: alerts
           uri: lb://price-service
           predicates:
-            - Path=/alerts/**
+            - Path=/alerts, /alerts/**
           filters:
             - name: JwtAuthFilter
 
