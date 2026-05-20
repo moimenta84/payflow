@@ -14,16 +14,11 @@ import { useAuth } from "../context/AuthContext";
 import style from "../styles/Home.module.css";
 import Toggle from "../components/Toggle";
 import {
-  collection,
-  addDoc,
-  getDocs,
-  query,
-  where,
-  deleteDoc,
-  doc,
-  updateDoc,
-} from "firebase/firestore";
-import { db } from "../config/firebase";
+  listTransacciones,
+  addTransaccion,
+  updateTransaccion,
+  deleteTransaccion,
+} from "../config/transactionsStore";
 import "../index.css";
 
 function Home() {
@@ -51,6 +46,7 @@ function Home() {
     fecha: "",
     monto: "",
     tipo: "gasto",
+    categoria: "OTROS",
   });
 
   const [errores, setErrores] = useState({});
@@ -68,52 +64,26 @@ function Home() {
 
   // ✅ FUNCIÓN PARA CARGAR TRANSACCIONES DESDE FIREBASE (Optimizada con useCallback)
   const cargarTransacciones = useCallback(async () => {
-    if (!user) {
-      console.log("⚠️ No hay usuario autenticado");
-      return;
-    }
-    if (!db) {
-      return;
-    }
-
+    if (!user) return;
     try {
       setCargando(true);
-      console.log("📥 Cargando transacciones para usuario:", user.uid);
-
-      const transaccionesRef = collection(db, "transacciones");
-      const q = query(transaccionesRef, where("userId", "==", user.uid));
-
-      const snapshot = await getDocs(q);
-      console.log("📊 Documentos encontrados:", snapshot.size);
-
-      const transaccionesData = snapshot.docs.map((doc) => {
-        const data = doc.data();
-        console.log("📄 Transacción:", doc.id, data);
-
-        return {
-          id: doc.id,
-          concepto: data.concepto,
-          fecha: new Date(data.fecha).toLocaleDateString("es-ES", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-          }),
-          fechaOriginal: data.fecha, // Guardar formato original YYYY-MM-DD para edición
-          fechaTimestamp: new Date(data.fecha).getTime(),
-          monto: data.monto,
-          tipo: data.tipo,
-        };
-      });
-
-      // Ordenar por fecha (más reciente primero)
-      transaccionesData.sort((a, b) => b.fechaTimestamp - a.fechaTimestamp);
-
-      setTransacciones(transaccionesData);
-      console.log("✅ Transacciones cargadas:", transaccionesData.length);
+      const data = await listTransacciones();
+      const mapped = data.map((t) => ({
+        id:             t.id,
+        concepto:       t.descripcion,
+        fecha:          new Date(t.fecha).toLocaleDateString("es-ES", {
+                          day: "numeric", month: "short", year: "numeric",
+                        }),
+        fechaOriginal:  t.fecha,
+        fechaTimestamp: new Date(t.fecha).getTime(),
+        monto:          t.tipo === "GASTO" ? -Math.abs(t.cantidad) : t.cantidad,
+        tipo:           t.tipo.toLowerCase(),
+        categoria:      t.categoria,
+      }));
+      mapped.sort((a, b) => b.fechaTimestamp - a.fechaTimestamp);
+      setTransacciones(mapped);
     } catch (error) {
-      console.error("❌ Error cargando transacciones:", error);
-      console.error("Código de error:", error.code);
-      console.error("Mensaje:", error.message);
+      console.error("Error cargando transacciones:", error);
     } finally {
       setCargando(false);
     }
@@ -236,80 +206,32 @@ function Home() {
 
     if (validarFormulario()) {
       setCargando(true);
-
       try {
         if (modoEdicion) {
-          // ACTUALIZAR transacción existente
-          console.log("💾 Actualizando transacción en Firebase...");
-
-          const transaccionData = {
-            concepto: transaccionEditando.concepto.trim(),
-            fecha: transaccionEditando.fecha,
-            monto:
-              transaccionEditando.tipo === "gasto"
-                ? -Math.abs(parseFloat(transaccionEditando.monto))
-                : Math.abs(parseFloat(transaccionEditando.monto)),
-            tipo: transaccionEditando.tipo,
-            updatedAt: new Date().toISOString(),
-          };
-
-          const docRef = doc(db, "transacciones", transaccionEditando.id);
-          await updateDoc(docRef, transaccionData);
-
-          console.log("✅ Transacción actualizada:", transaccionEditando.id);
-
-          // Salir del modo edición
+          await updateTransaccion(null, transaccionEditando.id, {
+            tipo:        transaccionEditando.tipo.toUpperCase(),
+            categoria:   transaccionEditando.categoria,
+            descripcion: transaccionEditando.concepto.trim(),
+            cantidad:    Math.abs(parseFloat(transaccionEditando.monto)),
+            fecha:       transaccionEditando.fecha,
+          });
           setModoEdicion(false);
           setTransaccionEditando(null);
         } else {
-          // CREAR nueva transacción
-          console.log("💾 Guardando transacción en Firebase...");
-
-          const transaccionData = {
-            concepto: nuevaTransaccion.concepto.trim(),
-            fecha: nuevaTransaccion.fecha,
-            monto:
-              nuevaTransaccion.tipo === "gasto"
-                ? -Math.abs(parseFloat(nuevaTransaccion.monto))
-                : Math.abs(parseFloat(nuevaTransaccion.monto)),
-            tipo: nuevaTransaccion.tipo,
-            userId: user.uid,
-            createdAt: new Date().toISOString(),
-          };
-
-          console.log("📝 Datos a guardar:", transaccionData);
-
-          const docRef = await addDoc(
-            collection(db, "transacciones"),
-            transaccionData,
-          );
-
-          console.log("✅ Transacción guardada con ID:", docRef.id);
-
-          // Resetear formulario
-          setNuevaTransaccion({
-            concepto: "",
-            fecha: "",
-            monto: "",
-            tipo: "gasto",
+          await addTransaccion(null, {
+            tipo:        nuevaTransaccion.tipo.toUpperCase(),
+            categoria:   nuevaTransaccion.categoria,
+            descripcion: nuevaTransaccion.concepto.trim(),
+            cantidad:    Math.abs(parseFloat(nuevaTransaccion.monto)),
+            fecha:       nuevaTransaccion.fecha,
           });
+          setNuevaTransaccion({ concepto: "", fecha: "", monto: "", tipo: "gasto", categoria: "OTROS" });
         }
-
-        // Cerrar formulario
         setMostrarFormulario(false);
         setErrores({});
-
-        // ✅ Recargar transacciones desde Firebase
         await cargarTransacciones();
-
-        console.log("🎉 Operación completada exitosamente");
       } catch (error) {
-        console.error("❌ Error guardando transacción:", error);
-        console.error("Código:", error.code);
-        console.error("Mensaje:", error.message);
-        setErrores({
-          general: `Error al guardar: ${error.message}`,
-        });
+        setErrores({ general: `Error al guardar: ${error.message}` });
       } finally {
         setCargando(false);
       }
@@ -329,13 +251,7 @@ function Home() {
 
     try {
       setCargando(true);
-      console.log("🗑️ Eliminando transacción:", transaccion.id);
-
-      await deleteDoc(doc(db, "transacciones", transaccion.id));
-
-      console.log("✅ Transacción eliminada exitosamente");
-
-      // Recargar transacciones
+      await deleteTransaccion(null, transaccion.id);
       await cargarTransacciones();
 
       // Si el modal estaba abierto con esta transacción, cerrarlo
@@ -364,11 +280,12 @@ function Home() {
     const montoAbsoluto = Math.abs(transaccion.monto);
 
     setTransaccionEditando({
-      id: transaccion.id,
-      concepto: transaccion.concepto,
-      fecha: transaccion.fechaOriginal, // Usar fecha original en formato YYYY-MM-DD
-      monto: montoAbsoluto.toString(),
-      tipo: transaccion.tipo,
+      id:        transaccion.id,
+      concepto:  transaccion.concepto,
+      fecha:     transaccion.fechaOriginal,
+      monto:     montoAbsoluto.toString(),
+      tipo:      transaccion.tipo,
+      categoria: transaccion.categoria || "OTROS",
     });
 
     setModoEdicion(true);
@@ -384,12 +301,7 @@ function Home() {
     setModoEdicion(false);
     setTransaccionEditando(null);
     setMostrarFormulario(false);
-    setNuevaTransaccion({
-      concepto: "",
-      fecha: "",
-      monto: "",
-      tipo: "gasto",
-    });
+    setNuevaTransaccion({ concepto: "", fecha: "", monto: "", tipo: "gasto", categoria: "OTROS" });
     setErrores({});
   };
 
@@ -860,6 +772,26 @@ function Home() {
                       {errores.concepto}
                     </p>
                   )}
+                </div>
+
+                <div className={style.formGroup}>
+                  <label htmlFor="categoria">Categoría</label>
+                  <select
+                    id="categoria"
+                    name="categoria"
+                    value={modoEdicion ? transaccionEditando?.categoria || "OTROS" : nuevaTransaccion.categoria}
+                    onChange={handleChange}
+                    disabled={cargando}
+                  >
+                    <option value="SALARIO">Salario</option>
+                    <option value="ALIMENTACION">Alimentación</option>
+                    <option value="VIVIENDA">Vivienda</option>
+                    <option value="TRANSPORTE">Transporte</option>
+                    <option value="SALUD">Salud</option>
+                    <option value="OCIO">Ocio</option>
+                    <option value="EDUCACION">Educación</option>
+                    <option value="OTROS">Otros</option>
+                  </select>
                 </div>
 
                 <div className={style.formGroup}>

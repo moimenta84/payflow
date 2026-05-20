@@ -66,6 +66,24 @@ public class TransactionService {
     // ─────────────────────────────────────────────────────────
     // ELIMINAR TRANSACCIÓN
     // ─────────────────────────────────────────────────────────
+    // EDITAR TRANSACCIÓN
+    // ─────────────────────────────────────────────────────────
+    public TransactionResponse update(String userId, String transactionId, TransactionRequest request) {
+
+        TransactionEntity transaction = transactionRepository
+                .findByIdAndUserId(transactionId, userId)
+                .orElseThrow(() -> new RuntimeException("Transacción no encontrada"));
+
+        if (request.getTipo()       != null) transaction.setTipo(request.getTipo());
+        if (request.getCategoria()  != null) transaction.setCategoria(request.getCategoria());
+        if (request.getDescripcion()!= null) transaction.setDescripcion(request.getDescripcion());
+        if (request.getCantidad()   != null) transaction.setCantidad(request.getCantidad());
+        if (request.getFecha()      != null) transaction.setFecha(request.getFecha());
+
+        return new TransactionResponse(transactionRepository.save(transaction));
+    }
+
+    // ─────────────────────────────────────────────────────────
     public void delete(String userId, String transactionId) {
 
         // Buscamos por id Y userId — un usuario no puede borrar transacciones ajenas

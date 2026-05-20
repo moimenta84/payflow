@@ -51,11 +51,19 @@ public class TransactionController {
     // ─────────────────────────────────────────────────────────
     // DELETE /transactions/{id}
     // ─────────────────────────────────────────────────────────
+    @PutMapping("/{id}")
+    public ResponseEntity<TransactionResponse> update(
+            @RequestHeader("X-User-Id") String userId,
+            @PathVariable String id,
+            @RequestBody TransactionRequest request) {
+        return ResponseEntity.ok(transactionService.update(userId, id, request));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
             @RequestHeader("X-User-Id") String userId,
             @PathVariable String id) {
         transactionService.delete(userId, id);
-        return ResponseEntity.noContent().build(); // 204 No Content
+        return ResponseEntity.noContent().build();
     }
 }
