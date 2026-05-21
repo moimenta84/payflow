@@ -1,398 +1,451 @@
-.transacciones {
-  display: flex;
+/* ── Transacciones ── */
+
+.page {
   min-height: 100vh;
-  width: 100%;
-  flex-direction: column;
-  align-items: center;
-  background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
-  padding: var(--spacing-xl);
+  background: var(--color-gray-50, #f8f9fa);
+  padding: var(--spacing-xl, 24px) var(--spacing-md, 16px);
 }
 
-.contenedorTransacciones {
+.container {
+  max-width: 860px;
+  margin: 0 auto;
   display: flex;
-  width: 100%;
-  max-width: var(--container-lg);
   flex-direction: column;
-  background-color: var(--bg-card);
-  border-radius: var(--radius-xl);
-  padding: var(--spacing-2xl);
-  box-shadow: var(--shadow-xl);
-  gap: var(--spacing-lg);
-  animation: fadeInUp 0.6s ease-out;
-  border: 1px solid var(--card-border);
+  gap: var(--spacing-lg, 20px);
 }
 
-/* ========== BOTONES SUPERIORES ========== */
-.topButtons {
+/* Header */
+.pageHeader {
   display: flex;
+  align-items: flex-start;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--spacing-md);
+  gap: var(--spacing-md, 16px);
 }
 
-/* ========== CABECERA ========== */
-.header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-bottom: var(--spacing-md);
-  margin-bottom: var(--spacing-md);
-  border-bottom: 2px solid var(--bg-tertiary);
-}
-
-.backButton {
-  background-color: var(--color-primary-200);
-  border: 2px solid var(--color-primary-250);
-  cursor: pointer;
-  padding: var(--spacing-sm);
-  border-radius: var(--radius-sm);
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  box-shadow: var(--shadow-sm);
-  font-size: 1.125rem;
-}
-
-.backButton:hover {
-  background-color: var(--color-primary-250);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.headerTitulo {
-  color: var(--text-body);
-  font-size: 1.5rem;
-  font-weight: 800;
+.pageTitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-gray-900, #111);
   margin: 0;
-  letter-spacing: -0.01em;
 }
 
-/* ========== RESUMEN TOTALES ========== */
-.resumenTotales {
+.pageSubtitle {
+  font-size: 0.875rem;
+  color: var(--color-gray-400, #9ca3af);
+  margin: 4px 0 0;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 12px);
+}
+
+.btnNueva {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-primary-300, #22913e);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btnNueva:hover {
+  background: var(--color-primary-400, #1a7a32);
+  transform: translateY(-1px);
+}
+
+/* Totales */
+.totalesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--spacing-md);
-  padding: var(--spacing-lg);
-  background-color: var(--bg-secondary);
-  border-radius: var(--radius-lg);
-  border: 2px solid var(--card-border);
-  animation: fadeInUp 0.3s ease-out;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-sm, 12px);
 }
 
-.totalItem {
+.totalCard {
+  background: var(--color-white, #fff);
+  border-radius: 12px;
+  padding: var(--spacing-md, 16px) var(--spacing-lg, 20px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: var(--spacing-md);
-  background-color: var(--bg-card);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-  transition: all 0.3s ease;
+  gap: 4px;
+  border-left: 4px solid transparent;
 }
 
-.totalItem:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-md);
-}
+.totalGasto    { border-color: #ef4444; }
+.totalIngreso  { border-color: #22913e; }
+.totalPositivo { border-color: #22913e; }
+.totalNegativo { border-color: #ef4444; }
 
 .totalLabel {
-  color: var(--text-tertiary);
-  font-size: 0.875rem;
-  font-weight: 700;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-gray-400, #9ca3af);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  margin: 0 0 var(--spacing-xs) 0;
 }
 
 .totalMonto {
-  font-size: 1.5rem;
-  font-weight: 800;
-  margin: 0;
-  letter-spacing: -0.01em;
-}
-
-/* ========== ACCIONES ========== */
-.accionesContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: var(--spacing-xl) 0;
-}
-
-.botonNueva {
-  background: linear-gradient(135deg, var(--color-primary-200), var(--color-primary-250));
-  color: white;
-  border: 2px solid var(--color-primary-250);
-  padding: var(--spacing-md) var(--spacing-2xl);
-  border-radius: var(--radius-md);
+  font-size: 1.4rem;
   font-weight: 700;
-  font-size: 1.125rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: var(--shadow-sm);
+  color: var(--color-gray-900, #111);
+}
+
+.totalGasto    .totalMonto { color: #ef4444; }
+.totalIngreso  .totalMonto { color: #22913e; }
+.totalPositivo .totalMonto { color: #22913e; }
+.totalNegativo .totalMonto { color: #ef4444; }
+
+/* Filtros */
+.filtros {
+  display: flex;
+  gap: var(--spacing-sm, 12px);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.buscador {
+  flex: 1;
+  min-width: 200px;
+  position: relative;
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
 }
 
-.botonNueva:hover {
-  background: linear-gradient(135deg, var(--color-primary-250), var(--color-primary-300));
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+.searchIcon {
+  position: absolute;
+  left: 14px;
+  color: var(--color-gray-400, #9ca3af);
+  font-size: 0.875rem;
+  pointer-events: none;
 }
 
-/* ========== FORMULARIO INLINE ========== */
-.formularioContainer {
-  animation: fadeInUp 0.3s ease-out;
+.searchInput {
+  width: 100%;
+  padding: 10px 40px;
+  border: 1px solid var(--color-gray-200, #e5e7eb);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  background: var(--color-white, #fff);
+  color: var(--color-gray-900, #111);
+  outline: none;
+  transition: border-color 0.2s;
 }
 
-.formulario {
+.searchInput:focus {
+  border-color: var(--color-primary-300, #22913e);
+}
+
+.clearSearch {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-gray-400, #9ca3af);
+  padding: 4px;
+  transition: color 0.2s;
+}
+
+.clearSearch:hover {
+  color: var(--color-gray-700, #374151);
+}
+
+.tipoFiltros {
+  display: flex;
+  gap: 8px;
+}
+
+.filtroPill {
+  padding: 8px 16px;
+  border: 1px solid var(--color-gray-200, #e5e7eb);
+  border-radius: 20px;
+  background: var(--color-white, #fff);
+  color: var(--color-gray-600, #4b5563);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filtroPill:hover {
+  border-color: var(--color-primary-300, #22913e);
+  color: var(--color-primary-300, #22913e);
+}
+
+.filtroPillActivo {
+  background: var(--color-primary-300, #22913e);
+  border-color: var(--color-primary-300, #22913e);
+  color: #fff;
+}
+
+/* Lista */
+.lista {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: 8px;
+}
+
+.estadoMensaje {
+  text-align: center;
+  padding: var(--spacing-2xl, 40px);
+  color: var(--color-gray-400, #9ca3af);
+  font-size: 0.95rem;
+}
+
+.transaccionItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 12px);
+  background: var(--color-white, #fff);
+  border-radius: 12px;
+  padding: var(--spacing-sm, 14px) var(--spacing-md, 16px);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  transition: box-shadow 0.2s;
+  border-left: 3px solid transparent;
+}
+
+.transaccionItem:hover {
+  box-shadow: 0 3px 10px rgba(0,0,0,0.09);
+}
+
+.itemGasto   { border-color: #ef4444; }
+.itemIngreso { border-color: #22913e; }
+
+.itemIcono {
+  font-size: 1.4rem;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-gray-50, #f9fafb);
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.itemInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.itemConcepto {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-gray-900, #111);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.itemMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.catBadge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: var(--color-gray-100, #f3f4f6);
+  color: var(--color-gray-600, #4b5563);
+}
+
+.itemFecha {
+  font-size: 0.8rem;
+  color: var(--color-gray-400, #9ca3af);
+}
+
+.itemMonto {
+  font-size: 1rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.montoGasto   { color: #ef4444; }
+.montoIngreso { color: #22913e; }
+
+/* Form */
+.formWrapper {
+  background: var(--color-white, #fff);
+  border-radius: 16px;
+  padding: var(--spacing-xl, 28px) var(--spacing-xl, 28px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md, 16px);
 }
 
 .formGroup {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
+  gap: 6px;
 }
 
-.formGroup label {
-  color: var(--text-body);
-  font-weight: 700;
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-sm, 12px);
+}
+
+.formLabel {
   font-size: 0.875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-weight: 500;
+  color: var(--color-gray-700, #374151);
 }
 
-.formGroup input {
-  padding: var(--spacing-md);
-  border: 2px solid var(--card-border);
-  border-radius: var(--radius-md);
-  font-size: 1rem;
-  background-color: var(--bg-secondary);
-  color: var(--text-body);
-  transition: all 0.3s ease;
-}
-
-.formGroup input:focus {
+.input,
+.select {
+  padding: 10px 14px;
+  border: 1px solid var(--color-gray-200, #e5e7eb);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  background: var(--color-white, #fff);
+  color: var(--color-gray-900, #111);
   outline: none;
-  border-color: var(--color-primary-250);
-  box-shadow: 0 0 0 3px var(--color-primary-100);
+  transition: border-color 0.2s;
+  width: 100%;
 }
 
-.formGroup input:disabled {
+.input:focus,
+.select:focus {
+  border-color: var(--color-primary-300, #22913e);
+}
+
+.input:disabled,
+.select:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
 .tipoSelector {
   display: flex;
-  gap: var(--spacing-sm);
+  border: 1px solid var(--color-gray-200, #e5e7eb);
+  border-radius: 10px;
+  overflow: hidden;
 }
 
-.tipoBoton {
+.tipoBtn {
   flex: 1;
-  padding: var(--spacing-md);
-  border: 2px solid var(--card-border);
-  border-radius: var(--radius-md);
-  background-color: var(--bg-secondary);
-  color: var(--text-body);
-  font-weight: 700;
+  padding: 10px;
+  border: none;
+  background: var(--color-white, #fff);
+  color: var(--color-gray-500, #6b7280);
+  font-size: 0.9rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s;
 }
 
-.tipoBoton:hover {
-  border-color: var(--color-primary-200);
-  background-color: var(--color-primary-50);
-}
-
-.tipoGasto:hover {
-  border-color: var(--color-terciary-200);
-  background-color: var(--color-terciary-50);
-}
-
-.tipoGasto.activo {
-  background-color: var(--color-terciary-250);
-  border-color: var(--color-terciary-300);
-  color: white;
-}
-
-.tipoIngreso.activo {
-  background-color: var(--color-primary-200);
-  border-color: var(--color-primary-250);
-  color: white;
-}
-
-.error {
-  color: var(--color-terciary-250);
-  font-size: 0.875rem;
-  margin: var(--spacing-xs) 0 0 0;
+.tipoBtnGastoActivo {
+  background: #fef2f2;
+  color: #ef4444;
   font-weight: 600;
+}
+
+.tipoBtnIngresoActivo {
+  background: #f0fdf4;
+  color: #22913e;
+  font-weight: 600;
+}
+
+.formBotones {
+  display: flex;
+  gap: var(--spacing-sm, 12px);
+  justify-content: flex-end;
+  margin-top: var(--spacing-xs, 8px);
+}
+
+.btnCancelar {
+  padding: 10px 20px;
+  border: 1px solid var(--color-gray-200, #e5e7eb);
+  border-radius: 10px;
+  background: var(--color-white, #fff);
+  color: var(--color-gray-600, #4b5563);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btnCancelar:hover {
+  background: var(--color-gray-50, #f9fafb);
+}
+
+.btnGuardar {
+  padding: 10px 24px;
+  background: var(--color-primary-300, #22913e);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btnGuardar:hover:not(:disabled) {
+  background: var(--color-primary-400, #1a7a32);
+}
+
+.btnGuardar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .errorGeneral {
-  padding: var(--spacing-md);
-  background-color: var(--color-terciary-50);
-  border: 2px solid var(--color-terciary-200);
-  border-radius: var(--radius-md);
-  color: var(--color-terciary-300);
-  font-weight: 600;
-  margin-bottom: var(--spacing-md);
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 0.9rem;
+  margin-bottom: var(--spacing-sm, 12px);
 }
 
-.formularioBotones {
-  display: flex;
-  gap: var(--spacing-md);
-  margin-top: var(--spacing-md);
+.error {
+  color: #dc2626;
+  font-size: 0.8rem;
+  margin: 2px 0 0;
 }
 
-.botonCancelar {
-  flex: 1;
-  padding: var(--spacing-md);
-  border: 2px solid var(--card-border);
-  border-radius: var(--radius-md);
-  background-color: var(--bg-secondary);
-  color: var(--text-body);
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.botonCancelar:hover {
-  background-color: var(--bg-tertiary);
-}
-
-.botonCancelar:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.botonGuardar {
-  flex: 1;
-  padding: var(--spacing-md);
-  border: 2px solid var(--color-primary-250);
-  border-radius: var(--radius-md);
-  background: linear-gradient(135deg, var(--color-primary-200), var(--color-primary-250));
-  color: white;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: var(--shadow-sm);
-}
-
-.botonGuardar:hover {
-  background: linear-gradient(135deg, var(--color-primary-250), var(--color-primary-300));
-  box-shadow: var(--shadow-md);
-}
-
-.botonGuardar:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* ========== ANIMACIONES ========== */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ========== RESPONSIVE ========== */
-@media (max-width: 640px) {
-  .transacciones {
-    padding: var(--spacing-md);
-  }
-
-  .contenedorTransacciones {
-    padding: var(--spacing-lg);
-    border-radius: var(--radius-lg);
-  }
-
-  .headerTitulo {
-    font-size: 1.25rem;
-  }
-
-  .botonNueva {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .resumenTotales {
+/* Responsive */
+@media (max-width: 600px) {
+  .totalesGrid {
     grid-template-columns: 1fr;
   }
 
-  .totalMonto {
-    font-size: 1.25rem;
+  .formRow {
+    grid-template-columns: 1fr;
   }
-}
 
-@media (min-width: 1024px) {
-  .contenedorTransacciones {
-    padding: var(--spacing-3xl);
+  .pageHeader {
+    flex-direction: column;
   }
-}
 
-/* ========== DARK MODE ========== */
-.dark .contenedorTransacciones {
-  background-color: var(--bg-card);
-  border-color: var(--card-border);
-}
+  .formBotones {
+    flex-direction: column-reverse;
+  }
 
-.dark .header {
-  border-color: var(--card-border);
-}
-
-.dark .backButton {
-  background-color: var(--color-primary-300);
-  border-color: var(--color-primary-200);
-}
-
-.dark .headerTitulo {
-  color: var(--text-light);
-}
-
-.dark .resumenTotales {
-  background-color: var(--bg-tertiary);
-  border-color: var(--card-border);
-}
-
-.dark .totalItem {
-  background-color: var(--bg-card);
-}
-
-.dark .formGroup input {
-  background-color: var(--bg-tertiary);
-  border-color: var(--card-border);
-  color: var(--text-light);
-}
-
-.dark .tipoBoton {
-  background-color: var(--bg-tertiary);
-  border-color: var(--card-border);
-  color: var(--text-light);
-}
-
-.dark .botonCancelar {
-  background-color: var(--bg-tertiary);
-  border-color: var(--card-border);
-  color: var(--text-light);
+  .btnCancelar,
+  .btnGuardar {
+    width: 100%;
+    text-align: center;
+  }
 }
