@@ -12,11 +12,14 @@ import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -28,25 +31,27 @@ public class AuthService {
 
     private static final Logger log = LoggerFactory.getLogger(AuthService.class);
 
-    private final UserRepository userRepository;
+    private static final String CHARS = "ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
 
-    // PasswordEncoder es un bean de Spring Security configurado en SecurityConfig
-    // Usaremos BCrypt — cifra la contraseña con un salt aleatorio
+    private final UserRepository  userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JavaMailSender  mailSender;
 
-    // Carga el valor de app.jwt.secret desde application.properties
     @Value("${app.jwt.secret}")
     private String jwtSecret;
 
-    // Tiempo de expiración del token en milisegundos (86400000 = 24 horas)
     @Value("${app.jwt.expiration}")
     private long jwtExpiration;
 
-    // Inyección de dependencias por constructor — forma recomendada en Spring
-    // Evita problemas de dependencias circulares y facilita los tests
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
+    @Value("${spring.mail.username:}")
+    private String mailFrom;
+
+    public AuthService(UserRepository userRepository,
+                       PasswordEncoder passwordEncoder,
+                       JavaMailSender mailSender) {
+        this.userRepository  = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.mailSender      = mailSender;
     }
 
     // ─────────────────────────────────────────────────────────
@@ -79,6 +84,9 @@ public class AuthService {
 
         // Guardamos en la BD — Hibernate genera: INSERT INTO users (...)
         userRepository.save(user);
+
+        // Email de bienvenida — no bloquea el registro si falla
+        sendWelcomeEmail(user);
 
         // Generamos el JWT y devolvemos token + datos del usuario al frontend
         return new AuthResponse(generateToken(user), new UserResponse(user));
@@ -168,14 +176,57 @@ public class AuthService {
 
     // ─────────────────────────────────────────────────────────
     // RECUPERAR CONTRASEÑA
+    // Genera contraseña temporal, la guarda y envía por email.
+    // Nunca revela si el email está registrado (responde igual siempre).
     // ─────────────────────────────────────────────────────────
     public void resetPassword(String email) {
+        userRepository.findByEmail(email).ifPresent(user -> {
+            String tempPassword = generateTempPassword(10);
+            user.setPassword(passwordEncoder.encode(tempPassword));
+            userRepository.save(user);
+            try {
+                SimpleMailMessage msg = new SimpleMailMessage();
+                msg.setFrom(mailFrom.isBlank() ? "noreply@payflow.app" : mailFrom);
+                msg.setTo(email);
+                msg.setSubject("PayFlow — Contraseña temporal");
+                msg.setText(
+                    "Hola " + user.getNombre() + ",\n\n" +
+                    "Tu contraseña temporal es: " + tempPassword + "\n\n" +
+                    "Inicia sesión y cámbiala desde tu perfil.\n\n" +
+                    "El equipo de PayFlow"
+                );
+                mailSender.send(msg);
+                log.info("Email de recuperación enviado a {}", email);
+            } catch (Exception ex) {
+                log.warn("No se pudo enviar el email de recuperación a {}: {}", email, ex.getMessage());
+            }
+        });
+    }
 
-        // Comprobamos que el email existe — mismo mensaje si no existe (seguridad)
-        userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Si el email existe recibirás un correo"));
+    private void sendWelcomeEmail(UserEntity user) {
+        if (mailFrom.isBlank()) return;
+        try {
+            SimpleMailMessage msg = new SimpleMailMessage();
+            msg.setFrom(mailFrom);
+            msg.setTo(user.getEmail());
+            msg.setSubject("¡Bienvenido a PayFlow!");
+            msg.setText(
+                "Hola " + user.getNombre() + ",\n\n" +
+                "Tu cuenta en PayFlow ha sido creada correctamente.\n" +
+                "Ya puedes gestionar tus transacciones y operar con criptomonedas.\n\n" +
+                "El equipo de PayFlow"
+            );
+            mailSender.send(msg);
+        } catch (Exception ex) {
+            log.warn("No se pudo enviar email de bienvenida a {}: {}", user.getEmail(), ex.getMessage());
+        }
+    }
 
-        // TODO: integrar Spring Mail para enviar el email de recuperación real
+    private String generateTempPassword(int length) {
+        SecureRandom rng = new SecureRandom();
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) sb.append(CHARS.charAt(rng.nextInt(CHARS.length())));
+        return sb.toString();
     }
 
     // ─────────────────────────────────────────────────────────

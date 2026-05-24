@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
 import { api } from '../config/api';
 import style from '../styles/Crypto.module.css';
@@ -19,6 +19,10 @@ const ASSET_LABELS = {
   ripple:   'XRP',
 };
 
+const ASSET_SYMBOLS = {
+  bitcoin: 'BTC', ethereum: 'ETH', solana: 'SOL', ripple: 'XRP',
+};
+
 function Crypto() {
   const [precios, setPrecios]         = useState([]);
   const [historial, setHistorial]     = useState({});
@@ -26,20 +30,22 @@ function Crypto() {
   const [tabActiva, setTabActiva]     = useState('precios');
   const [cargando, setCargando]       = useState(true);
 
-  // Formulario nueva alerta
-  const [formAlerta, setFormAlerta] = useState({
-    asset: 'bitcoin',
-    targetPrice: '',
-    direction: 'ABOVE',
-  });
+  // Trading state
+  const [portfolio, setPortfolio]     = useState([]);
+  const [ordenes, setOrdenes]         = useState([]);
+  const [cargandoTrade, setCargandoTrade] = useState(false);
+  const [formTrade, setFormTrade]     = useState({ asset: 'bitcoin', tipo: 'BUY', amount: '' });
+  const [errTrade, setErrTrade]       = useState('');
+  const [okTrade, setOkTrade]         = useState('');
+
+  // Alertas form
+  const [formAlerta, setFormAlerta] = useState({ asset: 'bitcoin', targetPrice: '', direction: 'ABOVE' });
   const [errAlerta, setErrAlerta] = useState('');
 
   const cargarPrecios = useCallback(async () => {
     try {
       const data = await api.get('/prices');
       setPrecios(data);
-
-      // Acumular historial para los gráficos (máx 20 puntos)
       const ahora = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
       setHistorial(prev => {
         const next = { ...prev };
@@ -50,7 +56,7 @@ function Crypto() {
         return next;
       });
     } catch {
-      // CoinGecko puede fallar si el servicio no está arrancado
+      // CoinGecko puede no estar disponible
     } finally {
       setCargando(false);
     }
@@ -60,7 +66,21 @@ function Crypto() {
     try {
       const data = await api.get('/alerts');
       if (Array.isArray(data)) setAlertas(data);
-    } catch { /* el servicio puede no estar disponible */ }
+    } catch { /* servicio no disponible */ }
+  }, []);
+
+  const cargarPortfolio = useCallback(async () => {
+    try {
+      const data = await api.get('/portfolio');
+      if (Array.isArray(data)) setPortfolio(data);
+    } catch { /* trading service puede no estar activo */ }
+  }, []);
+
+  const cargarOrdenes = useCallback(async () => {
+    try {
+      const data = await api.get('/orders');
+      if (Array.isArray(data)) setOrdenes(data);
+    } catch { /* trading service puede no estar activo */ }
   }, []);
 
   useEffect(() => {
@@ -69,6 +89,44 @@ function Crypto() {
     const id = setInterval(cargarPrecios, 30000);
     return () => clearInterval(id);
   }, [cargarPrecios, cargarAlertas]);
+
+  useEffect(() => {
+    if (tabActiva === 'trading') {
+      cargarPortfolio();
+      cargarOrdenes();
+    }
+  }, [tabActiva, cargarPortfolio, cargarOrdenes]);
+
+  // ── Precio actual del activo seleccionado ──
+  const precioActual = precios.find(p => p.asset === formTrade.asset)?.priceUsd ?? 0;
+  const totalEstimado = formTrade.amount && !isNaN(parseFloat(formTrade.amount))
+    ? (parseFloat(formTrade.amount) * precioActual).toFixed(2)
+    : '0.00';
+
+  const handleEjecutarOrden = async (e) => {
+    e.preventDefault();
+    setErrTrade('');
+    setOkTrade('');
+    const cantidad = parseFloat(formTrade.amount);
+    if (!cantidad || cantidad <= 0) { setErrTrade('Introduce una cantidad válida'); return; }
+
+    setCargandoTrade(true);
+    try {
+      await api.post('/orders', {
+        asset: formTrade.asset,
+        cantidad,
+        tipo: formTrade.tipo === 'BUY' ? 'COMPRA' : 'VENTA',
+      });
+      setOkTrade(`Orden ${formTrade.tipo === 'BUY' ? 'de compra' : 'de venta'} ejecutada correctamente`);
+      setFormTrade(p => ({ ...p, amount: '' }));
+      cargarPortfolio();
+      cargarOrdenes();
+    } catch (err) {
+      setErrTrade(err.message || 'Error al ejecutar la orden');
+    } finally {
+      setCargandoTrade(false);
+    }
+  };
 
   const handleCrearAlerta = async (e) => {
     e.preventDefault();
@@ -85,7 +143,7 @@ function Crypto() {
       setFormAlerta({ asset: 'bitcoin', targetPrice: '', direction: 'ABOVE' });
       setErrAlerta('');
       cargarAlertas();
-    } catch (err) {
+    } catch {
       setErrAlerta('Error al crear la alerta');
     }
   };
@@ -95,6 +153,11 @@ function Crypto() {
       await api.delete(`/alerts/${id}`);
       setAlertas(prev => prev.filter(a => a.id !== id));
     } catch { /* ignorar */ }
+  };
+
+  const getBalance = (asset) => {
+    const entry = portfolio.find(p => p.asset === asset);
+    return entry ? parseFloat(entry.cantidad) : 0;
   };
 
   return (
@@ -107,6 +170,12 @@ function Crypto() {
             onClick={() => setTabActiva('precios')}
           >
             Precios en vivo
+          </button>
+          <button
+            className={`${style.tab} ${tabActiva === 'trading' ? style.tabActiva : ''}`}
+            onClick={() => setTabActiva('trading')}
+          >
+            Trading
           </button>
           <button
             className={`${style.tab} ${tabActiva === 'alertas' ? style.tabActiva : ''}`}
@@ -124,22 +193,17 @@ function Crypto() {
             <p className={style.cargando}>Cargando precios...</p>
           ) : (
             <>
-              {/* Cards de precios actuales */}
               <div className={style.cardsGrid}>
                 {precios.map(p => (
                   <div key={p.asset} className={style.card}>
                     <span className={style.cardAsset}>{ASSET_LABELS[p.asset] || p.asset}</span>
-                    <span
-                      className={style.cardPrecio}
-                      style={{ color: ASSET_COLORS[p.asset] || '#888' }}
-                    >
+                    <span className={style.cardPrecio} style={{ color: ASSET_COLORS[p.asset] || '#888' }}>
                       ${p.priceUsd.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
                   </div>
                 ))}
               </div>
 
-              {/* Gráficos de evolución */}
               {precios.map(p => (
                 <div key={p.asset} className={style.graficoCard}>
                   <h3 className={style.graficoTitulo}>
@@ -174,10 +238,131 @@ function Crypto() {
         </div>
       )}
 
+      {/* ── TAB TRADING ── */}
+      {tabActiva === 'trading' && (
+        <div className={style.contenidoTrading}>
+
+          {/* Portfolio */}
+          <section className={style.portfolioSection}>
+            <h3 className={style.sectionTitulo}>Mi portfolio</h3>
+            {portfolio.length === 0 ? (
+              <p className={style.vacio}>Sin datos de portfolio. Realiza tu primera operación.</p>
+            ) : (
+              <div className={style.portfolioGrid}>
+                {portfolio.map(entry => (
+                  <div key={entry.asset} className={style.portfolioCard}>
+                    <span className={style.portfolioAsset}
+                      style={{ color: ASSET_COLORS[entry.asset] || '#6366f1' }}>
+                      {entry.asset === 'USDT' ? '💵 USDT' : `${ASSET_SYMBOLS[entry.asset?.toLowerCase()] || entry.asset}`}
+                    </span>
+                    <span className={style.portfolioAmount}>
+                      {parseFloat(entry.cantidad).toLocaleString('es-ES', {
+                        minimumFractionDigits: entry.asset === 'USDT' ? 2 : 6,
+                        maximumFractionDigits: entry.asset === 'USDT' ? 2 : 6,
+                      })}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+
+          {/* Formulario de trading */}
+          <section className={style.tradingSection}>
+            <h3 className={style.sectionTitulo}>Nueva orden</h3>
+            <form onSubmit={handleEjecutarOrden} className={style.formTrade}>
+              {/* Selector BUY / SELL */}
+              <div className={style.tipoOrden}>
+                <button
+                  type="button"
+                  className={`${style.tipoBtn} ${formTrade.tipo === 'BUY' ? style.tipoBuy : ''}`}
+                  onClick={() => setFormTrade(p => ({ ...p, tipo: 'BUY' }))}
+                >
+                  Comprar
+                </button>
+                <button
+                  type="button"
+                  className={`${style.tipoBtn} ${formTrade.tipo === 'SELL' ? style.tipoSell : ''}`}
+                  onClick={() => setFormTrade(p => ({ ...p, tipo: 'SELL' }))}
+                >
+                  Vender
+                </button>
+              </div>
+
+              <div className={style.tradeRow}>
+                <select
+                  value={formTrade.asset}
+                  onChange={e => setFormTrade(p => ({ ...p, asset: e.target.value }))}
+                  className={style.select}
+                >
+                  {Object.entries(ASSET_LABELS).map(([k, v]) => (
+                    <option key={k} value={k}>{v}</option>
+                  ))}
+                </select>
+
+                <input
+                  type="number"
+                  placeholder="Cantidad"
+                  min="0"
+                  step="any"
+                  value={formTrade.amount}
+                  onChange={e => setFormTrade(p => ({ ...p, amount: e.target.value }))}
+                  className={style.input}
+                />
+              </div>
+
+              {precioActual > 0 && (
+                <p className={style.totalEstimado}>
+                  Precio: <strong>${precioActual.toLocaleString('es-ES', { minimumFractionDigits: 2 })}</strong>
+                  &nbsp;·&nbsp;Total estimado: <strong>${parseFloat(totalEstimado).toLocaleString('es-ES', { minimumFractionDigits: 2 })}</strong>
+                  {formTrade.tipo === 'BUY' && (
+                    <>&nbsp;· Saldo USDT: <strong>${getBalance('USDT').toLocaleString('es-ES', { minimumFractionDigits: 2 })}</strong></>
+                  )}
+                </p>
+              )}
+
+              {errTrade && <p className={style.error}>{errTrade}</p>}
+              {okTrade  && <p className={style.success}>{okTrade}</p>}
+
+              <button type="submit" className={`${style.btnEjecutar} ${formTrade.tipo === 'SELL' ? style.btnVender : ''}`}
+                disabled={cargandoTrade}>
+                {cargandoTrade ? 'Procesando...' : formTrade.tipo === 'BUY' ? 'Ejecutar compra' : 'Ejecutar venta'}
+              </button>
+            </form>
+          </section>
+
+          {/* Historial de órdenes */}
+          <section className={style.ordenesSection}>
+            <h3 className={style.sectionTitulo}>Historial de órdenes</h3>
+            {ordenes.length === 0 ? (
+              <p className={style.vacio}>No hay órdenes ejecutadas aún.</p>
+            ) : (
+              <div className={style.tablaOrdenes}>
+                <div className={style.tablaHeader}>
+                  <span>Fecha</span><span>Tipo</span><span>Activo</span>
+                  <span>Cantidad</span><span>Precio</span><span>Total</span>
+                </div>
+                {ordenes.slice(0, 20).map(o => (
+                  <div key={o.id} className={style.tablaFila}>
+                    <span>{o.fecha ? new Date(o.fecha).toLocaleDateString('es-ES') : '—'}</span>
+                    <span className={o.tipo === 'COMPRA' ? style.badgeBuy : style.badgeSell}>
+                      {o.tipo === 'COMPRA' ? 'Compra' : 'Venta'}
+                    </span>
+                    <span>{ASSET_LABELS[o.asset?.toLowerCase()] || o.asset}</span>
+                    <span>{parseFloat(o.cantidad ?? 0).toLocaleString('es-ES', { maximumFractionDigits: 6 })}</span>
+                    <span>${parseFloat(o.precioUnitario ?? 0).toLocaleString('es-ES', { minimumFractionDigits: 2 })}</span>
+                    <span>${parseFloat(o.total ?? 0).toLocaleString('es-ES', { minimumFractionDigits: 2 })}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        </div>
+      )}
+
       {/* ── TAB ALERTAS ── */}
       {tabActiva === 'alertas' && (
         <div className={style.contenidoAlertas}>
-          {/* Formulario crear alerta */}
           <form onSubmit={handleCrearAlerta} className={style.formAlerta}>
             <h3 className={style.formTitulo}>Nueva alerta de precio</h3>
 
@@ -217,19 +402,14 @@ function Crypto() {
             {errAlerta && <p className={style.error}>{errAlerta}</p>}
           </form>
 
-          {/* Lista de alertas */}
           {alertas.length === 0 ? (
             <p className={style.vacio}>No tienes alertas configuradas.</p>
           ) : (
             <div className={style.listaAlertas}>
               {alertas.map(a => (
-                <div
-                  key={a.id}
-                  className={`${style.alertaItem} ${a.triggered ? style.alertaDisparada : ''}`}
-                >
+                <div key={a.id} className={`${style.alertaItem} ${a.triggered ? style.alertaDisparada : ''}`}>
                   <div className={style.alertaInfo}>
-                    <span className={style.alertaAsset}
-                      style={{ color: ASSET_COLORS[a.asset] || '#888' }}>
+                    <span className={style.alertaAsset} style={{ color: ASSET_COLORS[a.asset] || '#888' }}>
                       {ASSET_LABELS[a.asset] || a.asset}
                     </span>
                     <span className={style.alertaDir}>
@@ -238,16 +418,10 @@ function Crypto() {
                     <span className={style.alertaPrecio}>
                       ${a.targetPrice.toLocaleString('es-ES', { minimumFractionDigits: 2 })}
                     </span>
-                    {a.triggered && (
-                      <span className={style.badgeDisparada}>Disparada</span>
-                    )}
+                    {a.triggered && <span className={style.badgeDisparada}>Disparada</span>}
                   </div>
                   {!a.triggered && (
-                    <button
-                      className={style.btnEliminar}
-                      onClick={() => handleEliminarAlerta(a.id)}
-                      aria-label="Eliminar alerta"
-                    >
+                    <button className={style.btnEliminar} onClick={() => handleEliminarAlerta(a.id)} aria-label="Eliminar alerta">
                       ×
                     </button>
                   )}

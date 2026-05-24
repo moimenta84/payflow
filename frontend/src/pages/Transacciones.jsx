@@ -1,11 +1,28 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faSearch, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faSearch, faTimes, faFilePdf, faTrash } from "@fortawesome/free-solid-svg-icons";
 import style from "../styles/Transacciones.module.css";
 import Toggle from "../components/Toggle";
-import { listTransacciones, addTransaccion } from "../config/transactionsStore";
+import { listTransacciones, addTransaccion, deleteTransaccion } from "../config/transactionsStore";
 import { useAuth } from "../context/AuthContext";
 import "../index.css";
+
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+
+async function descargarPdf(year, month) {
+  const res = await fetch(
+    `${API_BASE}/transactions/report/pdf?year=${year}&month=${month}`,
+    { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+  );
+  if (!res.ok) throw new Error('No se pudo generar el PDF');
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `payflow-informe-${year}-${String(month).padStart(2, '0')}.pdf`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 const CATEGORIAS = ["SALARIO","ALIMENTACION","VIVIENDA","TRANSPORTE","SALUD","OCIO","EDUCACION","OTROS"];
 
@@ -27,6 +44,7 @@ function Transacciones() {
   const [cargando, setCargando]                   = useState(false);
   const [busqueda, setBusqueda]                   = useState("");
   const [filtroTipo, setFiltroTipo]               = useState("todos");
+  const [descargandoPdf, setDescargandoPdf]       = useState(false);
 
   const [nuevaTransaccion, setNuevaTransaccion] = useState({
     concepto: "", fecha: "", monto: "", tipo: "gasto", categoria: "OTROS",
@@ -111,6 +129,28 @@ function Transacciones() {
     }
   };
 
+  const handleDescargarPdf = async () => {
+    const now = new Date();
+    setDescargandoPdf(true);
+    try {
+      await descargarPdf(now.getFullYear(), now.getMonth() + 1);
+    } catch (error) {
+      alert('Error al generar el PDF: ' + error.message);
+    } finally {
+      setDescargandoPdf(false);
+    }
+  };
+
+  const handleEliminar = async (id) => {
+    if (!window.confirm('¿Eliminar esta transacción?')) return;
+    try {
+      await deleteTransaccion(null, id);
+      await cargarTransacciones();
+    } catch (error) {
+      alert('Error al eliminar: ' + error.message);
+    }
+  };
+
   const cerrarFormulario = () => {
     setMostrarFormulario(false);
     setNuevaTransaccion({ concepto: "", fecha: "", monto: "", tipo: "gasto", categoria: "OTROS" });
@@ -129,6 +169,11 @@ function Transacciones() {
           </div>
           <div className={style.headerRight}>
             <Toggle />
+            <button className={style.btnPdf} onClick={handleDescargarPdf} disabled={descargandoPdf}
+              title="Descargar informe PDF del mes actual">
+              <FontAwesomeIcon icon={faFilePdf} />
+              {descargandoPdf ? "Generando..." : "PDF"}
+            </button>
             <button className={style.btnNueva} onClick={() => setMostrarFormulario(true)}>
               <FontAwesomeIcon icon={faPlus} />
               Nueva
@@ -211,6 +256,10 @@ function Transacciones() {
                   <span className={`${style.itemMonto} ${t.tipo === "gasto" ? style.montoGasto : style.montoIngreso}`}>
                     {t.tipo === "gasto" ? "-" : "+"}€{Math.abs(t.monto).toFixed(2)}
                   </span>
+                  <button className={style.btnEliminar} onClick={() => handleEliminar(t.id)}
+                    title="Eliminar transacción" aria-label="Eliminar">
+                    <FontAwesomeIcon icon={faTrash} />
+                  </button>
                 </div>
               ))
             )}

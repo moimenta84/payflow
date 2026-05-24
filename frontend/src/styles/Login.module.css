@@ -10,7 +10,7 @@
 .brand {
   display: none;
   flex: 1;
-  background: linear-gradient(145deg, #0f4726 0%, #1a6b3a 60%, #22913e 100%);
+  background: linear-gradient(145deg, #0c3549 0%, #155e75 60%, #0891b2 100%);
   color: #fff;
   padding: var(--spacing-3xl, 48px) var(--spacing-2xl, 32px);
   position: relative;

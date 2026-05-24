@@ -102,10 +102,11 @@ Todos los microservicios se registran aquí. El gateway los descubre por nombre 
 - Nombre de usuario correcto desde `fullName` del backend
 
 ### Pendiente ❌ — necesario para el TFG
-- `@Valid` + anotaciones de validación en todos los DTOs
-- Panel de administración (`/admin/**`, rol ADMIN)
-- Generación de PDF (informe mensual de transacciones)
-- Envío de emails (bienvenida al registrarse, alertas de precio)
+- ~~`@Valid` + anotaciones de validación en todos los DTOs~~ ✅ Completado
+- ~~Panel de administración (`/admin/**`, rol ADMIN)~~ ✅ Integrado en React (ruta `/admin/*`)
+- ~~Generación de PDF (informe mensual de transacciones)~~ ✅ Endpoint + botón en frontend
+- ~~Envío de emails (bienvenida al registrarse, alertas de precio)~~ ✅ Spring Mail implementado
+- ~~UI de Trading (comprar/vender crypto)~~ ✅ Tab Trading en página Crypto
 - Pasarela de pagos (Stripe)
 - Migración de CSS Modules a SASS
 - Diseño responsive (tablet + mobile)

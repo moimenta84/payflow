@@ -8,6 +8,7 @@ import authProvider   from './adminAuthProvider';
 export default function AdminApp() {
   return (
     <Admin
+      basename="/admin"
       title="PayFlow Admin"
       dataProvider={dataProvider}
       authProvider={authProvider}

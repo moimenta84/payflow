@@ -122,10 +122,8 @@ function Register() {
       setBloqueadoHasta(null);
       setTimeout(() => navigate("/home", { replace: true }), 500);
     } catch (error) {
-      const msg = error.code === "auth/email-already-in-use"
-        ? "Este email ya está registrado"
-        : "Error al registrar. Intenta de nuevo.";
-      if (error.code === "auth/email-already-in-use") setErrores({ email: msg });
+      const msg = error.message || "Error al registrar. Intenta de nuevo.";
+      if (msg.toLowerCase().includes("email")) setErrores({ email: msg });
       else setErrores({ general: msg });
     } finally {
       setCargando(false);

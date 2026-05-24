@@ -34,15 +34,15 @@
 
   /* ========== ESTILOS PRIMITIVOS ========== */
 
-  /* Color primary Verde Omeya - Para botones y marcado fuerte */
-  --color-primary-50: #a2f9c6;
-  --color-primary-100: #39e27f;
-  --color-primary-150: #1fc162;
-  --color-primary-200: #15a752;
-  --color-primary-250: #007a33;
-  --color-primary-300: #00632a;
-  --color-primary-350: #01441d;
-  --color-primary-400: #012711;
+  /* Color primary Teal/Cian - Para botones y marcado fuerte */
+  --color-primary-50: #a5f3fc;
+  --color-primary-100: #22d3ee;
+  --color-primary-150: #06b6d4;
+  --color-primary-200: #0891b2;
+  --color-primary-250: #0e7490;
+  --color-primary-300: #155e75;
+  --color-primary-350: #164e63;
+  --color-primary-400: #0c3549;
 
   /* Color secondary Amarillo dorado - Para fondos, logos e iconos */
   --color-secondary-50: #f6e5b8;
@@ -221,6 +221,26 @@
   --shadow-md: 0 4px 12px var(--color-gray-400);
   --shadow-lg: 0 10px 24px var(--color-gray-400);
   --shadow-xl: 0 20px 40px var(--color-gray-400);
+}
+
+/* ========== CAJATEXTO — input con borde verde redondeado ========== */
+.CajaTexto .form-control {
+  border-radius: 10px !important;
+  border: 1.5px solid #0891b2 !important;
+  padding: 10px 14px !important;
+  background-color: #fff !important;
+  color: #111 !important;
+  transition: border-color 0.2s, box-shadow 0.2s !important;
+  outline: none !important;
+}
+
+.CajaTexto .form-control:focus {
+  border-color: #06b6d4 !important;
+  box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.16) !important;
+}
+
+.CajaTexto .form-control::placeholder {
+  color: #9ca3af !important;
 }
 
 /* ========== ESTILOS GLOBALES ========== */

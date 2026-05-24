@@ -45,7 +45,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--color-primary-300, #22913e);
+  background: var(--color-primary-300, #0891b2);
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -57,7 +57,7 @@
 }
 
 .btnNueva:hover {
-  background: var(--color-primary-400, #1a7a32);
+  background: var(--color-primary-400, #0e7490);
   transform: translateY(-1px);
 }
 
@@ -80,8 +80,8 @@
 }
 
 .totalGasto    { border-color: #ef4444; }
-.totalIngreso  { border-color: #22913e; }
-.totalPositivo { border-color: #22913e; }
+.totalIngreso  { border-color: #0891b2; }
+.totalPositivo { border-color: #0891b2; }
 .totalNegativo { border-color: #ef4444; }
 
 .totalLabel {
@@ -99,8 +99,8 @@
 }
 
 .totalGasto    .totalMonto { color: #ef4444; }
-.totalIngreso  .totalMonto { color: #22913e; }
-.totalPositivo .totalMonto { color: #22913e; }
+.totalIngreso  .totalMonto { color: #0891b2; }
+.totalPositivo .totalMonto { color: #0891b2; }
 .totalNegativo .totalMonto { color: #ef4444; }
 
 /* Filtros */
@@ -140,7 +140,7 @@
 }
 
 .searchInput:focus {
-  border-color: var(--color-primary-300, #22913e);
+  border-color: var(--color-primary-300, #0891b2);
 }
 
 .clearSearch {
@@ -176,13 +176,13 @@
 }
 
 .filtroPill:hover {
-  border-color: var(--color-primary-300, #22913e);
-  color: var(--color-primary-300, #22913e);
+  border-color: var(--color-primary-300, #0891b2);
+  color: var(--color-primary-300, #0891b2);
 }
 
 .filtroPillActivo {
-  background: var(--color-primary-300, #22913e);
-  border-color: var(--color-primary-300, #22913e);
+  background: var(--color-primary-300, #0891b2);
+  border-color: var(--color-primary-300, #0891b2);
   color: #fff;
 }
 
@@ -217,7 +217,7 @@
 }
 
 .itemGasto   { border-color: #ef4444; }
-.itemIngreso { border-color: #22913e; }
+.itemIngreso { border-color: #0891b2; }
 
 .itemIcono {
   font-size: 1.4rem;
@@ -276,7 +276,7 @@
 }
 
 .montoGasto   { color: #ef4444; }
-.montoIngreso { color: #22913e; }
+.montoIngreso { color: #0891b2; }
 
 /* Form */
 .formWrapper {
@@ -325,7 +325,7 @@
 
 .input:focus,
 .select:focus {
-  border-color: var(--color-primary-300, #22913e);
+  border-color: var(--color-primary-300, #0891b2);
 }
 
 .input:disabled,
@@ -361,7 +361,7 @@
 
 .tipoBtnIngresoActivo {
   background: #f0fdf4;
-  color: #22913e;
+  color: #0891b2;
   font-weight: 600;
 }
 
@@ -390,7 +390,7 @@
 
 .btnGuardar {
   padding: 10px 24px;
-  background: var(--color-primary-300, #22913e);
+  background: var(--color-primary-300, #0891b2);
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -401,7 +401,7 @@
 }
 
 .btnGuardar:hover:not(:disabled) {
-  background: var(--color-primary-400, #1a7a32);
+  background: var(--color-primary-400, #0e7490);
 }
 
 .btnGuardar:disabled {
