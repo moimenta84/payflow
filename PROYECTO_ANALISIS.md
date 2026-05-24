@@ -1,7 +1,7 @@
 # PayFlow — Análisis del Proyecto
 
-**Fecha:** 2026-05-20  
-**Repositorio:** https://github.com/moimenta84/payflow
+**Última actualización:** 2026-05-24  
+**Repositorio:** https://github.com/moimenta84/PayFlow
 
 ---
 
@@ -101,6 +101,14 @@ Todos los microservicios se registran aquí. El gateway los descubre por nombre 
 - Frontend migrado de Firebase a REST API
 - Nombre de usuario correcto desde `fullName` del backend
 
+### Completado en sesión 2026-05-24 ✅
+- Rediseño Landing page: dark teal fintech (`#050e12`) con paleta cian
+- Actualización global de tokens de color: verde → teal en `index.css`
+- Corrección bug dark mode CSS Modules (`:global(.dark)`)
+- Inputs `CajaTexto` con bordes redondeados y color teal
+- Gradientes de paneles Login/Register actualizados a teal
+- Código fuente copiado a directorio IntelliJ (`C:\2_Daw\TFG`)
+
 ### Pendiente ❌ — necesario para el TFG
 - ~~`@Valid` + anotaciones de validación en todos los DTOs~~ ✅ Completado
 - ~~Panel de administración (`/admin/**`, rol ADMIN)~~ ✅ Integrado en React (ruta `/admin/*`)
@@ -108,7 +116,6 @@ Todos los microservicios se registran aquí. El gateway los descubre por nombre 
 - ~~Envío de emails (bienvenida al registrarse, alertas de precio)~~ ✅ Spring Mail implementado
 - ~~UI de Trading (comprar/vender crypto)~~ ✅ Tab Trading en página Crypto
 - Pasarela de pagos (Stripe)
-- Migración de CSS Modules a SASS
 - Diseño responsive (tablet + mobile)
 - Despliegue con dominio real
 
@@ -157,6 +164,58 @@ cd frontend && npm run dev
 | http://localhost:5173 | Frontend |
 | http://localhost:8080 | API Gateway (entrada única) |
 | http://localhost:8761 | Panel Eureka |
+
+---
+
+## Sistema de diseño — UI
+
+### Paleta de color (actualizada 2026-05-24)
+
+La app usa una paleta **teal/cian** como color primario, reemplazando el verde original.
+
+| Token CSS | Valor | Uso |
+|---|---|---|
+| `--color-primary-50` | `#a5f3fc` | Texto claro sobre fondos oscuros |
+| `--color-primary-100` | `#22d3ee` | Acento brillante, live indicators |
+| `--color-primary-150` | `#06b6d4` | Acento medio |
+| `--color-primary-200` | `#0891b2` | Botones principales, bordes activos |
+| `--color-primary-250` | `#0e7490` | Hover de botones |
+| `--color-primary-300` | `#155e75` | Color primario base |
+| `--color-primary-350` | `#164e63` | Variante oscura |
+| `--color-primary-400` | `#0c3549` | Color más oscuro |
+
+### Landing page (dark fintech)
+
+| Propiedad | Valor |
+|---|---|
+| Fondo principal | `#050e12` (negro con tinte teal) |
+| Secciones alternas | `#040b0f` |
+| Acento brillante | `#22d3ee` |
+| Botones CTA | `#0891b2` (hover `#0e7490`) |
+| Glow orbs | `rgba(6,182,212,0.11-0.13)` blur 90-110px |
+| Panel marca Login/Register | `linear-gradient(145deg, #0c3549, #155e75, #0891b2)` |
+
+### Arquitectura CSS
+
+- **CSS Modules** para todos los componentes (`*.module.css`)
+- **Dark mode** mediante clase `.dark` en `<html>` (ThemeContext)
+- **Bug crítico resuelto:** en CSS Modules `.dark .clase` no funciona — se compila con hash. Correcto: `:global(.dark) .clase`
+- **Design tokens** en `index.css` bajo `:root` — todos los componentes usan `var(--color-primary-*)`
+- **Inputs CajaTexto** (Bootstrap `Form.Control`): estilizados via `.CajaTexto .form-control` en `index.css` con `border-radius: 10px` y `border: 1.5px solid #0891b2`
+
+### Páginas y rutas frontend
+
+| Ruta | Componente | Acceso |
+|---|---|---|
+| `/` | `Landing.jsx` | Público — marketing page dark teal |
+| `/login` | `Login.jsx` | Público |
+| `/registro` | `Register.jsx` | Público |
+| `/recuperar-password` | `Remember.jsx` | Público |
+| `/home` | `Home.jsx` | Protegido — dashboard |
+| `/transacciones` | `Transacciones.jsx` | Protegido |
+| `/transation` | `Transation.jsx` | Protegido — nueva transacción |
+| `/crypto` | `Crypto.jsx` | Protegido — trading + precios |
+| `/admin/*` | `AdminApp.jsx` | Solo ADMIN (React Admin) |
 
 ---
 
