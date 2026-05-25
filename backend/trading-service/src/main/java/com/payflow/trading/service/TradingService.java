@@ -18,6 +18,9 @@ import java.util.List;
 @Service
 public class TradingService {
 
+    private static final String USDT         = "USDT";
+    private static final double USDT_INICIAL = 10_000.0;
+
     private final OrderRepository     orderRepository;
     private final PortfolioRepository portfolioRepository;
     private final AssetRepository     assetRepository;
@@ -35,7 +38,6 @@ public class TradingService {
     // ─────────────────────────────────────────────────────────
     @Transactional
     public OrderResponse createOrder(String userId, OrderRequest request) {
-
         AssetEntity asset = assetRepository.findById(request.getAsset())
                 .orElseThrow(() -> new RuntimeException("Asset no encontrado: " + request.getAsset()));
 
@@ -43,32 +45,69 @@ public class TradingService {
             throw new RuntimeException("Precio de " + request.getAsset() + " aún no disponible");
         }
 
-        // En VENTA comprobamos que el usuario tenga suficiente en cartera
-        if (request.getTipo() == OrderEntity.Tipo.VENTA) {
-            PortfolioEntry entry = portfolioRepository
+        double precio   = asset.getPriceUsd();
+        double cantidad = request.getCantidad();
+        double total    = cantidad * precio;
+
+        if (request.getTipo() == OrderEntity.Tipo.COMPRA) {
+            // Get or initialize USDT wallet (10,000 on first operation)
+            PortfolioEntry usdt = portfolioRepository
+                    .findByUserIdAndAsset(userId, USDT)
+                    .orElseGet(() -> crearEntrada(userId, USDT, USDT_INICIAL));
+
+            if (usdt.getCantidad() < total) {
+                throw new RuntimeException("Saldo USDT insuficiente. Tienes "
+                        + String.format("%.2f", usdt.getCantidad()) + " USDT, necesitas "
+                        + String.format("%.2f", total) + " USDT");
+            }
+            usdt.setCantidad(usdt.getCantidad() - total);
+            portfolioRepository.save(usdt);
+
+            PortfolioEntry crypto = portfolioRepository
+                    .findByUserIdAndAsset(userId, request.getAsset())
+                    .orElseGet(() -> crearEntrada(userId, request.getAsset(), 0.0));
+            crypto.setCantidad(crypto.getCantidad() + cantidad);
+            portfolioRepository.save(crypto);
+
+        } else { // VENTA
+            PortfolioEntry crypto = portfolioRepository
                     .findByUserIdAndAsset(userId, request.getAsset())
                     .orElseThrow(() -> new RuntimeException(
                             "No tienes " + request.getAsset() + " en tu portfolio"));
 
-            if (entry.getCantidad() < request.getCantidad()) {
+            if (crypto.getCantidad() < cantidad) {
                 throw new RuntimeException("Cantidad insuficiente: tienes "
-                        + entry.getCantidad() + " " + request.getAsset());
+                        + crypto.getCantidad() + " " + request.getAsset());
             }
+            crypto.setCantidad(crypto.getCantidad() - cantidad);
+            portfolioRepository.save(crypto);
+
+            PortfolioEntry usdt = portfolioRepository
+                    .findByUserIdAndAsset(userId, USDT)
+                    .orElseGet(() -> crearEntrada(userId, USDT, 0.0));
+            usdt.setCantidad(usdt.getCantidad() + total);
+            portfolioRepository.save(usdt);
         }
 
         OrderEntity order = new OrderEntity();
         order.setUserId(userId);
         order.setAsset(request.getAsset());
         order.setTipo(request.getTipo());
-        order.setCantidad(request.getCantidad());
-        order.setPrecioUnitario(asset.getPriceUsd());
-        order.setTotal(request.getCantidad() * asset.getPriceUsd());
+        order.setCantidad(cantidad);
+        order.setPrecioUnitario(precio);
+        order.setTotal(total);
         order.setFecha(LocalDateTime.now());
         orderRepository.save(order);
 
-        actualizarPortfolio(userId, request.getAsset(), request.getCantidad(), request.getTipo());
-
         return new OrderResponse(order);
+    }
+
+    private PortfolioEntry crearEntrada(String userId, String asset, double cantidad) {
+        PortfolioEntry e = new PortfolioEntry();
+        e.setUserId(userId);
+        e.setAsset(asset);
+        e.setCantidad(cantidad);
+        return portfolioRepository.save(e);
     }
 
     // ─────────────────────────────────────────────────────────
@@ -89,33 +128,13 @@ public class TradingService {
                 .stream()
                 .filter(e -> e.getCantidad() > 0)
                 .map(e -> {
-                    Double precio = assetRepository.findById(e.getAsset())
-                            .map(AssetEntity::getPriceUsd)
-                            .orElse(0.0);
+                    Double precio = USDT.equals(e.getAsset())
+                            ? 1.0
+                            : assetRepository.findById(e.getAsset())
+                                    .map(AssetEntity::getPriceUsd)
+                                    .orElse(0.0);
                     return new PortfolioResponse(e, precio);
                 })
                 .toList();
-    }
-
-    // ─────────────────────────────────────────────────────────
-    // ACTUALIZAR PORTFOLIO (privado)
-    // ─────────────────────────────────────────────────────────
-    private void actualizarPortfolio(String userId, String asset, Double cantidad, OrderEntity.Tipo tipo) {
-        PortfolioEntry entry = portfolioRepository
-                .findByUserIdAndAsset(userId, asset)
-                .orElseGet(() -> {
-                    PortfolioEntry e = new PortfolioEntry();
-                    e.setUserId(userId);
-                    e.setAsset(asset);
-                    e.setCantidad(0.0);
-                    return e;
-                });
-
-        double nueva = tipo == OrderEntity.Tipo.COMPRA
-                ? entry.getCantidad() + cantidad
-                : entry.getCantidad() - cantidad;
-
-        entry.setCantidad(nueva);
-        portfolioRepository.save(entry);
     }
 }
