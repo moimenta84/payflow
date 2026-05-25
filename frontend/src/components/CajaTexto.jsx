@@ -1,10 +1,17 @@
 import React from "react";
-import { Form } from "react-bootstrap";
 
-function CajaTexto({ tipo, fondo, name, value, onChange }) {
+function CajaTexto({ tipo, fondo, name, value, onChange, ...rest }) {
   return (
     <div className="CajaTexto">
-      <Form.Control type={tipo} placeholder={fondo} name={name} value={value} onChange={onChange} />
+      <input
+        className="form-control"
+        type={tipo}
+        placeholder={fondo}
+        name={name}
+        value={value}
+        onChange={onChange}
+        {...rest}
+      />
     </div>
   );
 }

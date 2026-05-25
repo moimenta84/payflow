@@ -47,6 +47,22 @@ function Navbar() {
           >
             Crypto
           </NavLink>
+          <NavLink
+            to="/banco"
+            className={({ isActive }) =>
+              isActive ? `${style.link} ${style.linkActivo}` : style.link
+            }
+          >
+            Banca
+          </NavLink>
+          <NavLink
+            to="/autonomos"
+            className={({ isActive }) =>
+              isActive ? `${style.link} ${style.linkActivo}` : style.link
+            }
+          >
+            Autónomos
+          </NavLink>
           {user?.rol === 'ADMIN' && (
             <a
               href="/admin"

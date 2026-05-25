@@ -98,20 +98,20 @@
   /* ========== VARIABLES SEMÁNTICAS LIGHT (default) ========== */
 
   /* Textos */
-  --text-primary: var(--color-primary-250);
-  --text-secondary: var(--color-secondary-300);
-  --text-tertiary: var(--color-gray-250);
-  --text-disable: var(--color-gray-200);
-  --text-accent: var(--color-primary-350);
-  --text-body: var(--color-gray-300);
-  --text-light: var(--color-gray-50);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #94a3b8;
+  --text-disable: #cbd5e1;
+  --text-accent: var(--color-primary-200);
+  --text-body: #334155;
+  --text-light: #ffffff;
 
   /* Fondos */
   --bg-app: var(--color-gray-50);
   --bg-card: var(--color-gray-50);
   --bg-secondary: var(--color-gray-50);
   --bg-tertiary: var(--color-gray-100);
-  --bg-overlay: var(--color-gray-400);
+  --bg-overlay: rgba(0, 0, 0, 0.5);
 
   /* Fondos de gradientes para páginas */
   --bg-gradient-start: var(--color-gray-50);
@@ -128,10 +128,10 @@
   --bt-primary-border-hover: var(--color-primary-200);
 
   /* Cards y contenedores */
-  --card-bg: var(--color-gray-400);
+  --card-bg: #ffffff;
   --card-border: var(--color-gray-150);
-  --card-shadow: 0 4px 12px var(--color-gray-400);
-  --card-shadow-hover: 0 8px 24px var(--color-gray-400);
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --card-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.10);
 
   /* Badges */
   --bdg-todos-bg: var(--color-secondary-50);
@@ -154,29 +154,29 @@
   --input-placeholder: var(--color-gray-200);
 
   /* Sombras Light */
-  --shadow-sm: 0 1px 3px 0 var(--color-gray-400);
-  --shadow-md: 0 4px 12px var(--color-gray-400);
-  --shadow-lg: 0 10px 24px var(--color-gray-400);
-  --shadow-xl: 0 20px 40px var(--color-gray-400);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 24px rgba(0, 0, 0, 0.10);
+  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.12);
 }
 
 /* ========== DARK MODE ========== */
 .dark {
   /* Textos Dark */
-  --text-primary: var(--color-primary-100);
-  --text-secondary: var(--color-secondary-150);
-  --text-tertiary: var(--color-gray-150);
-  --text-disable: var(--color-gray-200);
-  --text-accent: var(--color-primary-50);
-  --text-body: var(--color-gray-100);
-  --text-light: var(--color-gray-50);
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #64748b;
+  --text-disable: #475569;
+  --text-accent: var(--color-primary-100);
+  --text-body: #cbd5e1;
+  --text-light: #ffffff;
 
   /* Fondos Dark */
   --bg-app: var(--color-gray-350);
   --bg-card: var(--color-gray-350);
   --bg-secondary: var(--color-gray-300);
   --bg-tertiary: var(--color-gray-250);
-  --bg-overlay: var(--color-gray-400);
+  --bg-overlay: rgba(0, 0, 0, 0.5);
 
   /* Gradientes Dark */
   --bg-gradient-start: var(--color-gray-400);
@@ -191,10 +191,10 @@
   --bt-primary-border-hover: var(--color-primary-50);
 
   /* Cards Dark */
-  --card-bg: var(--color-gray-300);
-  --card-border: var(--color-gray-250);
-  --card-shadow: 0 4px 12px var(--color-gray-400);
-  --card-shadow-hover: 0 8px 24px var(--color-gray-400);
+  --card-bg: #1e293b;
+  --card-border: #334155;
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  --card-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.35);
 
   /* Badges Dark */
   --bdg-todos-bg: var(--color-secondary-300);
@@ -217,10 +217,10 @@
   --input-placeholder: var(--color-gray-200);
 
   /* Sombras Dark */
-  --shadow-sm: 0 1px 3px 0 var(--color-gray-400);
-  --shadow-md: 0 4px 12px var(--color-gray-400);
-  --shadow-lg: 0 10px 24px var(--color-gray-400);
-  --shadow-xl: 0 20px 40px var(--color-gray-400);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.20);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.30);
+  --shadow-lg: 0 10px 24px rgba(0, 0, 0, 0.35);
+  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.40);
 }
 
 /* ========== CAJATEXTO — input con borde verde redondeado ========== */

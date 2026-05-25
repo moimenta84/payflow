@@ -1,8 +1,6 @@
-import Imagen from "../components/Imagen";
 import CajaTexto from "../components/CajaTexto";
 import Eleccion from "../components/Eleccion";
 import Boton from "../components/Boton";
-import Toggle from "../components/Toggle"; // ← FALTABA ESTE IMPORT
 import style from "../styles/Transation.module.css";
 import "../index.css";
 
@@ -10,13 +8,6 @@ function Transation() {
   return (
     <div className={style.transation}>
       <div className={style.contenedorTransation}>
-        {/* Botón de cambio de tema */}
-        <Toggle />
-        {/* Logo */}
-        <div className={style.logo}>
-          <Imagen imagen="logo.png" />
-        </div>
-
         {/* Título y subtítulo */}
         <div className={style.titulo}>
           <h1>Nueva Transacción</h1>

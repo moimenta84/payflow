@@ -1,7 +1,7 @@
 .crypto {
   max-width: 900px;
   margin: 0 auto;
-  padding: var(--spacing-lg, 1.5rem);
+  width: 100%;
 }
 
 .header {
@@ -37,8 +37,8 @@
 }
 
 .tabActiva {
-  background: var(--color-primary-250, #3b82f6);
-  border-color: var(--color-primary-250, #3b82f6);
+  background: var(--color-primary, #0891b2);
+  border-color: var(--color-primary, #0891b2);
   color: #fff;
 }
 
@@ -141,22 +141,256 @@
 
 .select:focus,
 .input:focus {
-  border-color: var(--color-primary-250, #3b82f6);
+  border-color: var(--color-primary, #0891b2);
 }
 
 .btnCrear {
   padding: 0.5rem 1.25rem;
-  background: var(--color-primary-250, #3b82f6);
+  background: var(--color-primary, #0891b2);
   color: #fff;
   border: none;
   border-radius: 8px;
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  transition: opacity 0.15s;
+  transition: background 0.15s, transform 0.1s;
 }
 
-.btnCrear:hover { opacity: 0.88; }
+.btnCrear:hover {
+  background: var(--color-primary-hover, #0e7490);
+  transform: translateY(-1px);
+}
+
+/* ── Trading section ── */
+.contenidoTrading {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.portfolioSection,
+.tradingSection,
+.ordenesSection {
+  background: var(--card-bg-ds, #fff);
+  border: var(--card-border-ds, 1px solid #e2e8f0);
+  border-radius: 14px;
+  padding: 1.25rem;
+  box-shadow: var(--card-shadow-ds, 0 2px 12px rgba(0,0,0,0.07));
+}
+
+.portfolioGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.portfolioCard {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.875rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.portfolioAsset {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.portfolioAmount {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary-ds, #0f172a);
+  font-variant-numeric: tabular-nums;
+}
+
+.sectionTitulo {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary-ds, #0f172a);
+  margin: 0 0 1rem;
+}
+
+.formTrade {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.tipoOrden {
+  display: flex;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.tipoBtn {
+  flex: 1;
+  padding: 0.6rem;
+  border: none;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.tipoBuy {
+  background: #e0f2fe;
+  color: #0891b2;
+  font-weight: 700;
+}
+
+.tipoSell {
+  background: #fef2f2;
+  color: #ef4444;
+  font-weight: 700;
+}
+
+.tradeRow {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.totalEstimado {
+  font-size: 0.85rem;
+  color: var(--text-secondary-ds, #475569);
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 0.6rem 0.875rem;
+  border: 1px solid #e2e8f0;
+  margin: 0;
+}
+
+.success {
+  color: #16a34a;
+  font-size: 0.875rem;
+  background: #f0fdf4;
+  padding: 0.6rem 0.875rem;
+  border-radius: 8px;
+  border: 1px solid #bbf7d0;
+}
+
+.btnEjecutar {
+  padding: 0.7rem 1.5rem;
+  background: var(--color-primary, #0891b2);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  align-self: flex-start;
+}
+
+.btnEjecutar:hover:not(:disabled) {
+  background: var(--color-primary-hover, #0e7490);
+  transform: translateY(-1px);
+}
+
+.btnEjecutar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btnVender {
+  background: #ef4444;
+}
+
+.btnVender:hover:not(:disabled) {
+  background: #dc2626;
+}
+
+/* ── Order table ── */
+.tablaOrdenes {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 0.75rem;
+}
+
+.tablaHeader {
+  display: grid;
+  grid-template-columns: 100px 70px 100px 100px 110px 110px;
+  padding: 0.6rem 1rem;
+  background: #f8fafc;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  gap: 0.5rem;
+}
+
+.tablaFila {
+  display: grid;
+  grid-template-columns: 100px 70px 100px 100px 110px 110px;
+  padding: 0.65rem 1rem;
+  border-top: 1px solid #e2e8f0;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.82rem;
+  color: var(--text-primary-ds, #0f172a);
+  transition: background 0.1s;
+}
+
+.tablaFila:hover {
+  background: #f8fafc;
+}
+
+.badgeBuy {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: #e0f2fe;
+  color: #0891b2;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.badgeSell {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: #fef2f2;
+  color: #ef4444;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* ── Precios tab ── */
+.contenidoPrecios {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 640px) {
+  .tablaHeader,
+  .tablaFila {
+    grid-template-columns: 80px 60px 80px 80px 90px 90px;
+    font-size: 0.72rem;
+    padding: 0.5rem;
+    gap: 0.25rem;
+  }
+
+  .tradeRow {
+    flex-direction: column;
+  }
+
+  .select,
+  .input {
+    min-width: 0;
+    width: 100%;
+  }
+}
 
 .error {
   color: var(--color-terciary-250, #ef4444);

@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faSearch, faTimes, faFilePdf, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPlus, faSearch, faTimes, faFilePdf, faTrash,
+  faBriefcase, faShoppingCart, faHome, faCar,
+  faHeartPulse, faGamepad, faGraduationCap, faLightbulb,
+} from "@fortawesome/free-solid-svg-icons";
 import style from "../styles/Transacciones.module.css";
-import Toggle from "../components/Toggle";
 import { listTransacciones, addTransaccion, deleteTransaccion } from "../config/transactionsStore";
 import { useAuth } from "../context/AuthContext";
 import "../index.css";
@@ -30,6 +33,12 @@ const CAT_LABELS = {
   SALARIO: "Salario", ALIMENTACION: "Alimentación", VIVIENDA: "Vivienda",
   TRANSPORTE: "Transporte", SALUD: "Salud", OCIO: "Ocio",
   EDUCACION: "Educación", OTROS: "Otros",
+};
+
+const CAT_FA = {
+  SALARIO: faBriefcase, ALIMENTACION: faShoppingCart, VIVIENDA: faHome,
+  TRANSPORTE: faCar, SALUD: faHeartPulse, OCIO: faGamepad,
+  EDUCACION: faGraduationCap, OTROS: faLightbulb,
 };
 
 const CAT_ICONS = {
@@ -168,7 +177,6 @@ function Transacciones() {
             <p className={style.pageSubtitle}>{transacciones.length} movimientos registrados</p>
           </div>
           <div className={style.headerRight}>
-            <Toggle />
             <button className={style.btnPdf} onClick={handleDescargarPdf} disabled={descargandoPdf}
               title="Descargar informe PDF del mes actual">
               <FontAwesomeIcon icon={faFilePdf} />
@@ -229,7 +237,7 @@ function Transacciones() {
           </div>
         )}
 
-        {/* Lista de transacciones */}
+        {/* Lista */}
         {!mostrarFormulario && (
           <div className={style.lista}>
             {cargando ? (
@@ -242,7 +250,8 @@ function Transacciones() {
               transaccionesFiltradas.map((t) => (
                 <div key={t.id} className={`${style.transaccionItem} ${t.tipo === "gasto" ? style.itemGasto : style.itemIngreso}`}>
                   <div className={style.itemIcono}>
-                    {CAT_ICONS[t.categoria] || "💡"}
+                    <FontAwesomeIcon icon={CAT_FA[t.categoria] || faLightbulb}
+                      style={{ color: t.tipo === 'gasto' ? '#ef4444' : '#0891b2', fontSize: '1rem' }} />
                   </div>
                   <div className={style.itemInfo}>
                     <span className={style.itemConcepto}>{t.concepto}</span>
@@ -266,7 +275,7 @@ function Transacciones() {
           </div>
         )}
 
-        {/* Formulario nueva transacción */}
+        {/* Formulario */}
         {mostrarFormulario && (
           <div className={style.formWrapper}>
             {errores.general && (

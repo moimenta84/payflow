@@ -64,6 +64,32 @@ spring:
           filters:
             - name: JwtAuthFilter
 
+        - id: bank-public
+          uri: lb://bank-service
+          predicates:
+            - Path=/bank/callback, /bank/institutions
+
+        - id: bank
+          uri: lb://bank-service
+          predicates:
+            - Path=/bank/**
+          filters:
+            - name: JwtAuthFilter
+
+        - id: invoices
+          uri: lb://invoicing-service
+          predicates:
+            - Path=/invoices/**
+          filters:
+            - name: JwtAuthFilter
+
+        - id: expenses
+          uri: lb://invoicing-service
+          predicates:
+            - Path=/expenses/**
+          filters:
+            - name: JwtAuthFilter
+
 eureka:
   client:
     service-url:
