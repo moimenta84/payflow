@@ -635,8 +635,15 @@
 }
 
 .bIco {
-  display: block;
-  font-size: 1.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.18), rgba(8, 145, 178, 0.12));
+  border: 1px solid rgba(34, 211, 238, 0.22);
+  color: #22d3ee;
   margin-bottom: 0.875rem;
 }
 
@@ -893,7 +900,15 @@
 }
 .pHL .pList li { color: rgba(255,255,255,0.90); }
 
-.pChk { color: #22d3ee; font-weight: 700; flex-shrink: 0; }
+.pChk {
+  color: #22d3ee;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+}
 .pHL .pChk { color: #a5f3fc; }
 
 .btnPHL {

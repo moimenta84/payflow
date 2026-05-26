@@ -5,14 +5,14 @@ import s from "../styles/Landing.module.css";
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
 const FEED = [
-  { id: "pay_Kx9a2", label: "Marketplace Pro · split",       amount: "+€ 342.00",   tag: "split",    color: "#3bdb79" },
-  { id: "pay_Nm2b7", label: "SaaS Monthly · recurrente",     amount: "+€ 49.00",    tag: "rec",      color: "#79c0ff" },
-  { id: "pay_Rp4c1", label: "Freelance Invoice · checkout",  amount: "+€ 1,200.00", tag: "checkout", color: "#f2c038" },
-  { id: "pay_Xt7d3", label: "E-commerce Store · split",      amount: "+€ 89.99",    tag: "split",    color: "#3bdb79" },
-  { id: "pay_Lw3e8", label: "Platform Fee · wallet",         amount: "+€ 175.50",   tag: "wallet",   color: "#d2a8ff" },
-  { id: "pay_Qv8f4", label: "App Subscription",              amount: "+€ 129.00",   tag: "rec",      color: "#79c0ff" },
-  { id: "pay_Bz6g9", label: "Delivery App · split",          amount: "+€ 67.30",    tag: "split",    color: "#3bdb79" },
-  { id: "pay_Yc1h5", label: "E-learning · checkout",         amount: "+€ 299.00",   tag: "checkout", color: "#f2c038" },
+  { id: "tx_8a3f", label: "Mercadona · Alimentacion",       amount: "− € 67.40",     tag: "gasto",   color: "#ef4444" },
+  { id: "tx_9b2c", label: "Nomina · Empresa SL",            amount: "+ € 2,450.00",  tag: "ingreso", color: "#22d3ee" },
+  { id: "tx_1d4e", label: "BTC compra · 0.012",             amount: "− € 540.20",    tag: "crypto",  color: "#f2c038" },
+  { id: "tx_7e5f", label: "Factura 2026-04 · cobrada",      amount: "+ € 1,815.00",  tag: "factura", color: "#3bdb79" },
+  { id: "tx_2g6h", label: "Transferencia BBVA",             amount: "− € 320.00",    tag: "banco",   color: "#79c0ff" },
+  { id: "tx_4i7j", label: "Repsol · Transporte",            amount: "− € 48.90",     tag: "gasto",   color: "#ef4444" },
+  { id: "tx_5k8l", label: "ETH venta · 0.5",                amount: "+ € 1,720.00",  tag: "crypto",  color: "#f2c038" },
+  { id: "tx_3m9n", label: "Iberdrola · Suministros",        amount: "− € 89.30",     tag: "gasto",   color: "#ef4444" },
 ];
 
 const SPARKLINE = [42, 58, 51, 67, 74, 69, 83, 88, 80, 94, 99];
@@ -24,21 +24,24 @@ const DOT_OPS = Array.from({ length: 35 }, (_, i) => {
 
 const PRICING = [
   {
-    name: "Starter",  price: "49",
-    desc: "Para startups que están despegando",
-    features: ["500 transacciones/mes", "1 pasarela de pago", "Webhooks básicos", "Email support"],
+    name: "Free",
+    price: "0",
+    desc: "Para empezar a controlar tu dinero",
+    features: ["Transacciones ilimitadas", "Categorización automática", "1 cuenta bancaria PSD2", "Informes PDF mensuales"],
     hl: false,
   },
   {
-    name: "Growth",   price: "129",
-    desc: "Para equipos en crecimiento serio",
-    features: ["Transacciones ilimitadas", "Stripe + MercadoPago", "Wallets y splits", "Audit log completo", "Soporte 24h"],
+    name: "Plus",
+    price: "4,99",
+    desc: "Para quien gestiona crypto e inversiones",
+    features: ["Todo Free incluido", "Portfolio crypto en tiempo real", "Alertas de precio BTC/ETH", "3 cuentas bancarias", "Histórico ilimitado"],
     hl: true,
   },
   {
-    name: "Enterprise", price: "199",
-    desc: "Para plataformas que escalan",
-    features: ["Todo Growth incluido", "Multi-currency", "SLA 99.99%", "Integración custom", "Account manager"],
+    name: "Autónomos",
+    price: "14,99",
+    desc: "Para freelancers y pymes en España",
+    features: ["Todo Plus incluido", "Facturas con IVA + IRPF", "Modelo 303 y 130 automáticos", "Bancos ilimitados (Open Banking)", "PDFs personalizables"],
     hl: false,
   },
 ];
@@ -74,6 +77,52 @@ function useCounter(target, { format = "plain", duration = 1800 } = {}) {
   else text = val.toLocaleString("es-ES");
 
   return { text, ref };
+}
+
+// ─── Inline SVG icons (replace emojis per design rules) ──────────────────────
+
+function IconCrypto({ className }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
+      strokeLinecap="round" strokeLinejoin="round" width="22" height="22" className={className}>
+      <path d="M11.767 19.089c4.924.868 6.14-6.025 1.216-6.894m-1.216 6.894L5.86 18.047m5.908 1.042-.347 1.97m1.563-8.864c4.924.869 6.14-6.025 1.215-6.893m-1.215 6.893-3.94-.694m5.155-6.2L8.29 4.26m5.908 1.042.348-1.97M7.48 20.364l3.126-17.727" />
+    </svg>
+  );
+}
+
+function IconReceipt({ className }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
+      strokeLinecap="round" strokeLinejoin="round" width="22" height="22" className={className}>
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <polyline points="14 2 14 8 20 8" />
+      <line x1="16" y1="13" x2="8" y2="13" />
+      <line x1="16" y1="17" x2="8" y2="17" />
+      <polyline points="10 9 9 9 8 9" />
+    </svg>
+  );
+}
+
+function IconBank({ className }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
+      strokeLinecap="round" strokeLinejoin="round" width="22" height="22" className={className}>
+      <rect x="3" y="10" width="18" height="11" rx="1" />
+      <path d="M3 10l9-7 9 7" />
+      <line x1="12" y1="10" x2="12" y2="21" />
+      <line x1="7" y1="14" x2="7" y2="21" />
+      <line x1="17" y1="14" x2="17" y2="21" />
+    </svg>
+  );
+}
+
+function IconCheck({ className }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+      strokeLinecap="round" strokeLinejoin="round" width="14" height="14" className={className}>
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  );
 }
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -148,7 +197,7 @@ export default function Landing() {
           <div className={s.navLinks}>
             <a href="#features">Producto</a>
             <a href="#pricing">Precios</a>
-            <a href="#">Docs</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); navigate("/login"); }}>Demo</a>
           </div>
           <div className={s.navBtns}>
             <button className={s.btnGhost}  onClick={() => navigate("/login")}>Entrar</button>
@@ -162,19 +211,19 @@ export default function Landing() {
         <div className={s.heroL}>
           <div className={s.badge}>
             <span className={s.badgePulse} />
-            API v2.0 — ahora con multi-currency
+            PSD2 — ahora con Open Banking de tu banco
           </div>
           <h1 className={s.h1}>
-            Pagos<br />complejos.<br />
-            <span className={s.grad}>API simple.</span>
+            Tu dinero.<br />
+            <span className={s.grad}>Todo en una app.</span>
           </h1>
           <p className={s.heroSub}>
-            Wallets virtuales, splits automáticos y webhooks asíncronos.<br />
-            Intégralo en una tarde. Sin hoja de cálculo.
+            Gastos personales, crypto y tu banco real conectado.<br />
+            Con facturación de autónomo. En español. Sin Excel.
           </p>
           <div className={s.heroBtns}>
-            <button className={s.btnHero}    onClick={() => navigate("/registro")}>Empezar gratis</button>
-            <button className={s.btnHeroOut}>Ver la API ↗</button>
+            <button className={s.btnHero}    onClick={() => navigate("/registro")}>Crear cuenta gratis</button>
+            <button className={s.btnHeroOut} onClick={() => navigate("/login")}>Ver demo ↗</button>
           </div>
           <div className={s.proof}>
             <div className={s.avatars}>
@@ -182,7 +231,7 @@ export default function Landing() {
                 <span key={a} className={s.av}>{a}</span>
               ))}
             </div>
-            <p className={s.proofTxt}><strong>+847 equipos</strong> ya lo usan esta semana</p>
+            <p className={s.proofTxt}><strong>+12.000 usuarios</strong> ya gestionan su dinero aquí</p>
           </div>
         </div>
 
@@ -214,35 +263,35 @@ export default function Landing() {
 
       {/* ═══════════════════════════════ STATS ═════════════════════════════ */}
       <div className={s.statsBar}>
-        <StatItem target={847}     suffix="+" label="empresas activas" />
-        <StatItem target={2400000} format="M" label="procesados hoy" />
+        <StatItem target={12000}   suffix="+" label="usuarios activos" />
+        <StatItem target={8400000} format="M" label="gestionado por usuarios" />
         <StatItem target={9997} format="pct"  label="uptime garantizado" />
-        <StatItem target={0}                  label="cobros duplicados" />
+        <StatItem target={0}                  label="comisiones ocultas" />
       </div>
 
       {/* ════════════════════════════════ BENTO ════════════════════════════ */}
       <section className={s.bentoSection} id="features">
         <div className={s.bentoWrap}>
-          <p className={s.eyebrow}>03 — Producto</p>
+          <p className={s.eyebrow}>Producto</p>
           <h2 className={`${s.h2} ${s.reveal}`}>
             Todo lo que necesitas.<br />
             <span className={s.gradG}>Nada que no uses.</span>
           </h2>
           <div className={s.bento}>
 
-            {/* MAIN */}
+            {/* MAIN — Transacciones */}
             <div className={`${s.bc} ${s.bMain} ${s.reveal}`}>
               <p className={s.bEye}>Tiempo real</p>
               <h3 className={s.bTitle}>Transacciones en vivo</h3>
-              <p className={s.bDesc}>Cada pago procesado aparece aquí al instante. Drill-down, filtros y exportación.</p>
+              <p className={s.bDesc}>Cada movimiento aparece al instante. Categorías automáticas, filtros y exportación a PDF.</p>
               <Feed height={220} />
             </div>
 
-            {/* STAT — empresas */}
+            {/* STAT — usuarios activos */}
             <div className={`${s.bc} ${s.bStat} ${s.reveal}`}>
-              <p className={s.bEye}>Confianza</p>
-              <p className={s.bigN}>847<sup>+</sup></p>
-              <p className={s.bigL}>empresas activas</p>
+              <p className={s.bEye}>Comunidad</p>
+              <p className={s.bigN}>12k<sup>+</sup></p>
+              <p className={s.bigL}>usuarios activos</p>
               <div className={s.dotGrid}>
                 {DOT_OPS.map((op, i) => (
                   <span key={i} className={s.dotCell} style={{ opacity: op }} />
@@ -262,38 +311,38 @@ export default function Landing() {
               </div>
             </div>
 
-            {/* WALLET */}
+            {/* CRYPTO portfolio */}
             <div className={`${s.bc} ${s.bWallet} ${s.reveal}`}>
-              <span className={s.bIco}>⚡</span>
-              <h3 className={s.bTitle}>Wallets virtuales</h3>
-              <p className={s.bDesc}>Balance por usuario, historial inmutable y transferencias instantáneas.</p>
+              <span className={s.bIco}><IconCrypto /></span>
+              <h3 className={s.bTitle}>Portfolio crypto</h3>
+              <p className={s.bDesc}>BTC, ETH y USDT en una sola vista. Precios en vivo, órdenes y alertas.</p>
               <div className={s.walletMini}>
-                <div className={s.wRow}><span>Balance</span><span className={s.wAmt}>€ 8,240.00</span></div>
-                <div className={s.wRow}><span>Pendiente</span><span className={s.wPend}>€ 340.00</span></div>
-                <div className={s.wBar}><div className={s.wBarFill} style={{ width: "70%" }} /></div>
+                <div className={s.wRow}><span>BTC · 0.124</span><span className={s.wAmt}>€ 9,840.00</span></div>
+                <div className={s.wRow}><span>ETH · 1.8</span><span className={s.wPend}>€ 6,210.00</span></div>
+                <div className={s.wBar}><div className={s.wBarFill} style={{ width: "62%" }} /></div>
               </div>
             </div>
 
-            {/* SPLIT */}
+            {/* AUTONOMOS facturas */}
             <div className={`${s.bc} ${s.bSplit} ${s.reveal}`}>
-              <span className={s.bIco}>✂️</span>
-              <h3 className={s.bTitle}>Splits automáticos</h3>
-              <p className={s.bDesc}>Divide cualquier cobro entre partes con un simple array. Sin lógica manual.</p>
+              <span className={s.bIco}><IconReceipt /></span>
+              <h3 className={s.bTitle}>Facturas autónomos</h3>
+              <p className={s.bDesc}>IVA y IRPF calculados automáticamente. Modelo 303 y 130 listos para Hacienda.</p>
               <div className={s.splitViz}>
-                <div className={s.sBar}><div className={s.sFill}>85%</div><div className={s.sRest}>15%</div></div>
-                <div className={s.sLabels}><span>Vendedor</span><span>Plataforma</span></div>
+                <div className={s.sBar}><div className={s.sFill}>IVA 21%</div><div className={s.sRest}>IRPF 15%</div></div>
+                <div className={s.sLabels}><span>Repercutido</span><span>Retención</span></div>
               </div>
             </div>
 
-            {/* WIDE — Webhooks */}
+            {/* WIDE — Open Banking PSD2 */}
             <div className={`${s.bc} ${s.bWide} ${s.reveal}`}>
               <div className={s.wideLeft}>
-                <span className={s.bIco}>🔗</span>
-                <h3 className={s.bTitle}>Webhooks asíncronos con RabbitMQ</h3>
-                <p className={s.bDesc}>Stripe confirma. PayFlow distribuye. Sin pérdida de eventos aunque caiga tu servidor.</p>
+                <span className={s.bIco}><IconBank /></span>
+                <h3 className={s.bTitle}>Tu banco real, conectado vía PSD2</h3>
+                <p className={s.bDesc}>Open Banking europeo. Importa transacciones de Santander, BBVA o CaixaBank. Sin compartir credenciales.</p>
               </div>
               <div className={s.flow}>
-                {["Tu App", "PayFlow", "RabbitMQ", "Stripe", "Webhook"].map((n, i, arr) => (
+                {["Tu banco", "PSD2", "GoCardless", "PayFlow", "Tu app"].map((n, i, arr) => (
                   <React.Fragment key={n}>
                     <div className={s.fNode}>{n}</div>
                     {i < arr.length - 1 && <span className={s.fArr}>→</span>}
@@ -309,7 +358,7 @@ export default function Landing() {
       {/* ═══════════════════════════════ PRICING ═══════════════════════════ */}
       <section className={s.pricingSection} id="pricing">
         <div className={s.pricingWrap}>
-          <p className={s.eyebrowLight}>04 — Precios</p>
+          <p className={s.eyebrowLight}>Precios</p>
           <h2 className={`${s.h2} ${s.h2Light} ${s.reveal}`}>
             Sin sorpresas.<br />Sin letra pequeña.
           </h2>
@@ -326,14 +375,14 @@ export default function Landing() {
                 <p className={s.pDesc}>{p.desc}</p>
                 <ul className={s.pList}>
                   {p.features.map((f) => (
-                    <li key={f}><span className={s.pChk}>✓</span>{f}</li>
+                    <li key={f}><span className={s.pChk}><IconCheck /></span>{f}</li>
                   ))}
                 </ul>
                 <button
                   className={p.hl ? s.btnPHL : s.btnPGhost}
                   onClick={() => navigate("/registro")}
                 >
-                  Empezar ahora
+                  {p.price === "0" ? "Empezar gratis" : "Empezar ahora"}
                 </button>
               </div>
             ))}
@@ -346,10 +395,10 @@ export default function Landing() {
         <div className={`${s.ctaInner} ${s.reveal}`}>
           <p className={s.ctaEye}>Empieza hoy</p>
           <h2 className={s.ctaH2}>
-            Tu integración de pagos<br />
-            <span className={s.grad}>lista en una tarde.</span>
+            Tu app financiera<br />
+            <span className={s.grad}>lista en 2 minutos.</span>
           </h2>
-          <p className={s.ctaP}>Sin tarjeta de crédito. Sin contrato. Sin dramas.</p>
+          <p className={s.ctaP}>Sin tarjeta. Sin contrato. Sin comisiones ocultas.</p>
           <div className={s.ctaBtns}>
             <button className={s.btnCta}     onClick={() => navigate("/registro")}>Crear cuenta gratis →</button>
             <button className={s.btnCtaOut}  onClick={() => navigate("/login")}>Ya tengo cuenta</button>
@@ -361,7 +410,7 @@ export default function Landing() {
       <footer className={s.footer}>
         <div className={s.footWrap}>
           <span className={s.logo}>Pay<em>Flow</em></span>
-          <p className={s.footCopy}>© 2026 PayFlow. Construido con Java, Spring Boot y RabbitMQ.</p>
+          <p className={s.footCopy}>© 2026 PayFlow. Construido con Java, Spring Boot y React.</p>
           <div className={s.footLinks}>
             <a href="#features">Producto</a>
             <a href="#pricing">Precios</a>

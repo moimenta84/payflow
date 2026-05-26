@@ -41,10 +41,6 @@ const CAT_FA = {
   EDUCACION: faGraduationCap, OTROS: faLightbulb,
 };
 
-const CAT_ICONS = {
-  SALARIO: "💼", ALIMENTACION: "🛒", VIVIENDA: "🏠", TRANSPORTE: "🚗",
-  SALUD: "❤️", OCIO: "🎮", EDUCACION: "📚", OTROS: "💡",
-};
 
 function Transacciones() {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
@@ -304,7 +300,7 @@ function Transacciones() {
                 <select id="categoria" name="categoria" value={nuevaTransaccion.categoria}
                   onChange={handleChange} disabled={cargando} className={style.select}>
                   {CATEGORIAS.map((c) => (
-                    <option key={c} value={c}>{CAT_ICONS[c]} {CAT_LABELS[c]}</option>
+                    <option key={c} value={c}>{CAT_LABELS[c]}</option>
                   ))}
                 </select>
               </div>
