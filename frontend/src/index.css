@@ -107,25 +107,25 @@
   --text-light: #ffffff;
 
   /* Fondos */
-  --bg-app: var(--color-gray-50);
+  --bg-app: #f8fafc;
   --bg-card: var(--color-gray-50);
   --bg-secondary: var(--color-gray-50);
-  --bg-tertiary: var(--color-gray-100);
+  --bg-tertiary: #f1f5f9;
   --bg-overlay: rgba(0, 0, 0, 0.5);
 
   /* Fondos de gradientes para páginas */
-  --bg-gradient-start: var(--color-gray-50);
-  --bg-gradient-end: var(--color-secondary-100);
+  --bg-gradient-start: #f8fafc;
+  --bg-gradient-end: var(--color-primary-50);
 
   /* ========== COMPONENTES - TOKENS ESPECÍFICOS LIGHT ========== */
 
-  /* Botones */
-  --bt-primary-bg: var(--color-secondary-200);
-  --bt-primary-color: var(--color-gray-50); 
-  --bt-primary-bg-hover: var(--color-secondary-200);
-  --bt-primary-text: var(--color-gray-400);
-  --bt-primary-border: var(--color-primary-250);
-  --bt-primary-border-hover: var(--color-primary-200);
+  /* Botones — Teal coherente con Landing */
+  --bt-primary-bg: var(--color-primary-200);
+  --bt-primary-color: #ffffff;
+  --bt-primary-bg-hover: var(--color-primary-250);
+  --bt-primary-text: #ffffff;
+  --bt-primary-border: var(--color-primary-200);
+  --bt-primary-border-hover: var(--color-primary-250);
 
   /* Cards y contenedores */
   --card-bg: #ffffff;
@@ -261,6 +261,14 @@ body {
     "Ubuntu", "Cantarell", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* Background del main content area unificado */
+.dark body {
+  background-color: #0f172a;
 }
 
 /* ========== UTILIDADES DE ESPACIADO ========== */

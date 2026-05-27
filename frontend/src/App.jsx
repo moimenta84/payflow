@@ -13,6 +13,7 @@ import Transation from './pages/Transation'
 import Banca from './pages/Banca'
 import Autonomos from './pages/Autonomos'
 import Wallet from './pages/Wallet'
+import Pay from './pages/Pay'
 import Landing from './pages/Landing'
 import ProtectedRoute from './pages/ProtectedRoute'
 import FloatingAssistantButton from './components/FloatingAssistantButton'
@@ -101,6 +102,15 @@ function App() {
                   <AppLayout>
                     <Autonomos />
                   </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/pay"
+              element={
+                <ProtectedRoute>
+                  <Pay />
                 </ProtectedRoute>
               }
             />

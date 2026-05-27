@@ -32,7 +32,7 @@ function Navbar() {
         <div className={style.contenedor}>
 
           <NavLink to="/home" className={style.logo}>
-            <img src="/logo.png" alt="PayFlow" className={style.logoImg} />
+            <img src="/payflow_logo_gold.svg" alt="PayFlow" className={style.logoImg} />
             <span className={style.logoTexto}>PayFlow</span>
           </NavLink>
 

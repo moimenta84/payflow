@@ -206,7 +206,7 @@
 /* ── Main content ── */
 .main {
   flex: 1;
-  background: #f1f5f9;
+  background: #f8fafc;
   overflow-y: auto;
   min-height: 100vh;
 }
