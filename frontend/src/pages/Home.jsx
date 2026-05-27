@@ -1,680 +1,311 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faPlus,
-  faTimes,
-  faChevronLeft,
-  faChevronRight,
-  faEdit,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { api } from "../config/api";
+import { listTransacciones } from "../config/transactionsStore";
+import FinancialChart from "../components/FinancialChart";
+import CategoryChart from "../components/CategoryChart";
 import style from "../styles/Home.module.css";
-import {
-  listTransacciones,
-  addTransaccion,
-  updateTransaccion,
-  deleteTransaccion,
-} from "../config/transactionsStore";
-import "../index.css";
 
-function Home() {
-  const { user } = useAuth();
+// ── Iconos SVG inline ──────────────────────────────────────────────────────
 
-  const [mostrarFormulario, setMostrarFormulario] = useState(false);
-  const [filtroActivo, setFiltroActivo] = useState("todos");
-  const [mostrarModal, setMostrarModal] = useState(false);
-  const [transaccionSeleccionada, setTransaccionSeleccionada] = useState(null);
-
-  const [mostrarModalResumen, setMostrarModalResumen] = useState(false);
-  const [tipoModalResumen, setTipoModalResumen] = useState(null);
-  const [paginaActual, setPaginaActual] = useState(1);
-  const ITEMS_POR_PAGINA = 5;
-
-  const [modoEdicion, setModoEdicion] = useState(false);
-  const [transaccionEditando, setTransaccionEditando] = useState(null);
-
-  const [nuevaTransaccion, setNuevaTransaccion] = useState({
-    concepto: "", fecha: "", monto: "", tipo: "gasto", categoria: "OTROS",
-  });
-
-  const [errores, setErrores] = useState({});
-  const [cargando, setCargando] = useState(false);
-  const [transacciones, setTransacciones] = useState([]);
-
-  const usuario = {
-    nombre: user?.fullName || "Usuario",
-    saldoInicial: user?.saldoInicial || 0,
-  };
-
-  const cargarTransacciones = useCallback(async () => {
-    if (!user) return;
-    try {
-      setCargando(true);
-      const data = await listTransacciones();
-      const mapped = data.map((t) => ({
-        id:             t.id,
-        concepto:       t.descripcion,
-        fecha:          new Date(t.fecha).toLocaleDateString("es-ES", {
-                          day: "numeric", month: "short", year: "numeric",
-                        }),
-        fechaOriginal:  t.fecha,
-        fechaTimestamp: new Date(t.fecha).getTime(),
-        monto:          t.tipo === "GASTO" ? -Math.abs(t.cantidad) : t.cantidad,
-        tipo:           t.tipo.toLowerCase(),
-        categoria:      t.categoria,
-      }));
-      mapped.sort((a, b) => b.fechaTimestamp - a.fechaTimestamp);
-      setTransacciones(mapped);
-    } catch (error) {
-      console.error("Error cargando transacciones:", error);
-    } finally {
-      setCargando(false);
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (user) cargarTransacciones();
-    else setTransacciones([]);
-  }, [user, cargarTransacciones]);
-
-  const gastos = useMemo(
-    () => transacciones.filter((t) => t.tipo === "gasto").reduce((sum, t) => sum + Math.abs(t.monto), 0),
-    [transacciones],
-  );
-
-  const ingresos = useMemo(
-    () => transacciones.filter((t) => t.tipo === "ingreso").reduce((sum, t) => sum + t.monto, 0),
-    [transacciones],
-  );
-
-  const saldoDisponible = useMemo(
-    () => usuario.saldoInicial + ingresos - gastos,
-    [usuario.saldoInicial, ingresos, gastos],
-  );
-
-  const { porcentajeGastos, porcentajeIngresos } = useMemo(() => {
-    const total = gastos + ingresos;
-    return {
-      porcentajeGastos: total > 0 ? (gastos / total) * 100 : 0,
-      porcentajeIngresos: total > 0 ? (ingresos / total) * 100 : 0,
-    };
-  }, [gastos, ingresos]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    if (modoEdicion) {
-      setTransaccionEditando((prev) => ({ ...prev, [name]: value }));
-    } else {
-      setNuevaTransaccion((prev) => ({ ...prev, [name]: value }));
-    }
-    if (errores[name]) {
-      setErrores((prev) => { const n = { ...prev }; delete n[name]; return n; });
-    }
-  };
-
-  const validarFormulario = () => {
-    const nuevosErrores = {};
-    const transaccion = modoEdicion ? transaccionEditando : nuevaTransaccion;
-    if (!transaccion.concepto.trim()) nuevosErrores.concepto = "El concepto es obligatorio";
-    else if (transaccion.concepto.trim().length < 3) nuevosErrores.concepto = "Mínimo 3 caracteres";
-    if (!transaccion.fecha) nuevosErrores.fecha = "La fecha es obligatoria";
-    if (!transaccion.monto) nuevosErrores.monto = "El monto es obligatorio";
-    else if (isNaN(parseFloat(transaccion.monto)) || parseFloat(transaccion.monto) <= 0)
-      nuevosErrores.monto = "El monto debe ser un número positivo";
-    setErrores(nuevosErrores);
-    return Object.keys(nuevosErrores).length === 0;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!user) { setErrores({ general: "Debes iniciar sesión" }); return; }
-    if (validarFormulario()) {
-      setCargando(true);
-      try {
-        if (modoEdicion) {
-          await updateTransaccion(null, transaccionEditando.id, {
-            tipo:        transaccionEditando.tipo.toUpperCase(),
-            categoria:   transaccionEditando.categoria,
-            descripcion: transaccionEditando.concepto.trim(),
-            cantidad:    Math.abs(parseFloat(transaccionEditando.monto)),
-            fecha:       transaccionEditando.fecha,
-          });
-          setModoEdicion(false);
-          setTransaccionEditando(null);
-        } else {
-          await addTransaccion(null, {
-            tipo:        nuevaTransaccion.tipo.toUpperCase(),
-            categoria:   nuevaTransaccion.categoria,
-            descripcion: nuevaTransaccion.concepto.trim(),
-            cantidad:    Math.abs(parseFloat(nuevaTransaccion.monto)),
-            fecha:       nuevaTransaccion.fecha,
-          });
-          setNuevaTransaccion({ concepto: "", fecha: "", monto: "", tipo: "gasto", categoria: "OTROS" });
-        }
-        setMostrarFormulario(false);
-        setErrores({});
-        await cargarTransacciones();
-      } catch (error) {
-        setErrores({ general: `Error al guardar: ${error.message}` });
-      } finally {
-        setCargando(false);
-      }
-    }
-  };
-
-  const handleEliminar = async (transaccion, event) => {
-    event?.stopPropagation();
-    if (!window.confirm(`¿Eliminar "${transaccion.concepto}"?`)) return;
-    try {
-      setCargando(true);
-      await deleteTransaccion(null, transaccion.id);
-      await cargarTransacciones();
-      if (mostrarModal && transaccionSeleccionada?.id === transaccion.id) cerrarModal();
-      if (mostrarModalResumen) cerrarModalResumen();
-    } catch {
-      alert("Error al eliminar la transacción.");
-    } finally {
-      setCargando(false);
-    }
-  };
-
-  const handleEditar = (transaccion, event) => {
-    event?.stopPropagation();
-    setTransaccionEditando({
-      id:        transaccion.id,
-      concepto:  transaccion.concepto,
-      fecha:     transaccion.fechaOriginal,
-      monto:     Math.abs(transaccion.monto).toString(),
-      tipo:      transaccion.tipo,
-      categoria: transaccion.categoria || "OTROS",
-    });
-    setModoEdicion(true);
-    setMostrarFormulario(true);
-    if (mostrarModal) cerrarModal();
-    if (mostrarModalResumen) cerrarModalResumen();
-  };
-
-  const cancelarEdicion = () => {
-    setModoEdicion(false);
-    setTransaccionEditando(null);
-    setMostrarFormulario(false);
-    setNuevaTransaccion({ concepto: "", fecha: "", monto: "", tipo: "gasto", categoria: "OTROS" });
-    setErrores({});
-  };
-
-  const abrirModal = (transaccion) => {
-    setTransaccionSeleccionada(transaccion);
-    setMostrarModal(true);
-  };
-
-  const cerrarModal = () => {
-    setMostrarModal(false);
-    setTransaccionSeleccionada(null);
-  };
-
-  const abrirModalResumen = (tipo) => {
-    setTipoModalResumen(tipo);
-    setPaginaActual(1);
-    setMostrarModalResumen(true);
-  };
-
-  const cerrarModalResumen = () => {
-    setMostrarModalResumen(false);
-    setTipoModalResumen(null);
-    setPaginaActual(1);
-  };
-
-  const obtenerTransaccionesFiltradas = () =>
-    transacciones.filter((t) => t.tipo === tipoModalResumen)
-      .sort((a, b) => b.fechaTimestamp - a.fechaTimestamp);
-
-  const obtenerTransaccionesPaginadas = () => {
-    const filtradas = obtenerTransaccionesFiltradas();
-    const inicio = (paginaActual - 1) * ITEMS_POR_PAGINA;
-    return filtradas.slice(inicio, inicio + ITEMS_POR_PAGINA);
-  };
-
-  const totalPaginas = Math.ceil(obtenerTransaccionesFiltradas().length / ITEMS_POR_PAGINA);
-
-  useEffect(() => {
-    const handleEsc = (e) => {
-      if (e.key === "Escape") {
-        if (mostrarModal) cerrarModal();
-        if (mostrarModalResumen) cerrarModalResumen();
-        if (mostrarFormulario && modoEdicion) cancelarEdicion();
-      }
-    };
-    window.addEventListener("keydown", handleEsc);
-    return () => window.removeEventListener("keydown", handleEsc);
-  }, [mostrarModal, mostrarModalResumen, mostrarFormulario, modoEdicion]);
-
-  const obtenerTransaccionesMostrar = () =>
-    transacciones
-      .filter((t) => filtroActivo === "todos" || t.tipo === filtroActivo)
-      .sort((a, b) => b.fechaTimestamp - a.fechaTimestamp)
-      .slice(0, 5);
-
+function IconWallet() {
   return (
-    <div className={style.home}>
-      <div className={style.contenedorHome}>
-
-        {/* BIENVENIDA */}
-        <div className={style.bienvenidaTotal}>
-          <div className={style.bienvenida}>
-            <h1>Hola, {usuario.nombre.split(" ")[0]}</h1>
-          </div>
-          <div className={style.saldoCard}>
-            <p className={style.saldoLabel}>Saldo Disponible</p>
-            <h2 className={style.saldoMonto}>{saldoDisponible.toFixed(2)} €</h2>
-          </div>
-        </div>
-
-        {/* CUERPO */}
-        <div className={style.cuerpo}>
-          {/* Gráfico de Aro */}
-          <div className={style.graficoContainer}>
-            <svg className={style.graficoAro} viewBox="0 0 200 200">
-              <circle cx="100" cy="100" r="80" fill="none" stroke="#e2e8f0" strokeWidth="20" />
-              <circle
-                cx="100" cy="100" r="80" fill="none"
-                stroke="#ef4444" strokeWidth="20"
-                strokeDasharray={`${porcentajeGastos * 5.03} ${100 * 5.03}`}
-                strokeDashoffset="0"
-                transform="rotate(-90 100 100)"
-              />
-              <circle
-                cx="100" cy="100" r="80" fill="none"
-                stroke="#0891b2" strokeWidth="20"
-                strokeDasharray={`${porcentajeIngresos * 5.03} ${100 * 5.03}`}
-                strokeDashoffset={`-${porcentajeGastos * 5.03}`}
-                transform="rotate(-90 100 100)"
-              />
-            </svg>
-            <div className={style.graficoCenter}>
-              <p className={style.graficoCenterLabel}>Balance</p>
-              <p className={style.graficoCenterMonto}>
-                {(ingresos - gastos).toFixed(2)} €
-              </p>
-            </div>
-          </div>
-
-          {/* Resumen */}
-          <div className={style.resumenContainer}>
-            <div
-              className={`${style.resumenItem} ${style.gastos}`}
-              onClick={() => abrirModalResumen("gasto")}
-            >
-              <div className={style.resumenIcono} style={{ backgroundColor: "#fef2f2" }}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2">
-                  <path d="M12 5v14M5 12l7 7 7-7" />
-                </svg>
-              </div>
-              <div className={style.resumenInfo}>
-                <p className={style.resumenLabelGastos}>Gastos</p>
-                <p className={style.resumenMonto} style={{ color: "#ef4444" }}>
-                  {gastos.toFixed(2)} €
-                </p>
-              </div>
-            </div>
-
-            <div
-              className={`${style.resumenItem} ${style.ingresos}`}
-              onClick={() => abrirModalResumen("ingreso")}
-            >
-              <div className={style.resumenIcono} style={{ backgroundColor: "#e0f2fe" }}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0891b2" strokeWidth="2">
-                  <path d="M12 19V5M5 12l7-7 7 7" />
-                </svg>
-              </div>
-              <div className={style.resumenInfo}>
-                <p className={style.resumenLabelIngresos}>Ingresos</p>
-                <p className={style.resumenMonto} style={{ color: "#0891b2" }}>
-                  {ingresos.toFixed(2)} €
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* HISTORIAL */}
-        <div className={style.historial}>
-          <div className={style.historialHeader}>
-            <h2 className={style.historialTitulo}>Últimas Transacciones</h2>
-          </div>
-
-          {!mostrarFormulario && (
-            <button
-              className={style.fabButton}
-              onClick={() => setMostrarFormulario(true)}
-              aria-label="Nueva transacción"
-            >
-              <FontAwesomeIcon icon={faPlus} />
-            </button>
-          )}
-
-          {!mostrarFormulario && (
-            <>
-              <div className={style.historialBadges}>
-                {[
-                  { key: "todos", label: "Todos", cls: style.badgeTodos },
-                  { key: "gasto", label: "Gastos", cls: style.badgeGastos },
-                  { key: "ingreso", label: "Ingresos", cls: style.badgeIngresos },
-                ].map(({ key, label, cls }) => (
-                  <button
-                    key={key}
-                    className={`${style.badge} ${cls} ${filtroActivo === key ? style.badgeActivo : ""}`}
-                    onClick={() => setFiltroActivo(key)}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-
-              <div className={style.transaccionesList}>
-                {cargando ? (
-                  <div style={{ textAlign: "center", padding: "2rem", color: "#94a3b8" }}>
-                    <p>Cargando transacciones...</p>
-                  </div>
-                ) : obtenerTransaccionesMostrar().length === 0 ? (
-                  <div style={{ textAlign: "center", padding: "2rem", color: "#94a3b8" }}>
-                    <p>No hay transacciones para mostrar.</p>
-                    <p style={{ marginTop: "0.5rem", fontSize: "0.875rem" }}>
-                      Agrega tu primera transacción usando el botón +
-                    </p>
-                  </div>
-                ) : (
-                  obtenerTransaccionesMostrar().map((transaccion) => (
-                    <div
-                      key={transaccion.id}
-                      className={`${style.transaccionItem} ${style[transaccion.tipo]}`}
-                      onClick={() => abrirModal(transaccion)}
-                    >
-                      <div className={style.transaccionIcono}>
-                        {transaccion.tipo === "gasto" ? (
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2">
-                            <path d="M12 5v14M5 12l7 7 7-7" />
-                          </svg>
-                        ) : (
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0891b2" strokeWidth="2">
-                            <path d="M12 19V5M5 12l7-7 7 7" />
-                          </svg>
-                        )}
-                      </div>
-                      <div className={style.transaccionInfo}>
-                        <p className={style.transaccionConcepto}>{transaccion.concepto}</p>
-                        <p className={style.transaccionFecha}>{transaccion.fecha}</p>
-                      </div>
-                      <p
-                        className={style.transaccionMonto}
-                        style={{ color: transaccion.tipo === "gasto" ? "#ef4444" : "#0891b2" }}
-                      >
-                        {transaccion.monto > 0 ? "+" : ""}
-                        {transaccion.monto.toFixed(2)} €
-                      </p>
-                      <div className={style.transaccionAcciones}>
-                        <button
-                          className={style.botonEditar}
-                          onClick={(e) => handleEditar(transaccion, e)}
-                          aria-label="Editar"
-                        >
-                          <FontAwesomeIcon icon={faEdit} />
-                        </button>
-                        <button
-                          className={style.botonEliminar}
-                          onClick={(e) => handleEliminar(transaccion, e)}
-                          aria-label="Eliminar"
-                        >
-                          <FontAwesomeIcon icon={faTrash} />
-                        </button>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            </>
-          )}
-
-          {/* FORMULARIO */}
-          {mostrarFormulario && (
-            <div className={style.formularioContainer}>
-              {errores.general && (
-                <div className={style.errorGeneral} role="alert">{errores.general}</div>
-              )}
-
-              <form onSubmit={handleSubmit} className={style.formulario}>
-                <div className={style.formGroup}>
-                  <label>Tipo de transacción</label>
-                  <div className={style.botonesGrupo}>
-                    {["gasto", "ingreso"].map((tipo) => (
-                      <button
-                        key={tipo}
-                        type="button"
-                        className={`${style.botonTipo} ${style[`boton${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`]} ${
-                          (modoEdicion ? transaccionEditando?.tipo : nuevaTransaccion.tipo) === tipo
-                            ? style.botonActivo
-                            : ""
-                        }`}
-                        onClick={() => {
-                          if (modoEdicion) setTransaccionEditando(p => ({ ...p, tipo }));
-                          else setNuevaTransaccion(p => ({ ...p, tipo }));
-                        }}
-                      >
-                        {tipo.charAt(0).toUpperCase() + tipo.slice(1)}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className={style.formGroup}>
-                  <label htmlFor="concepto">Concepto</label>
-                  <input
-                    type="text" id="concepto" name="concepto"
-                    value={modoEdicion ? transaccionEditando?.concepto || "" : nuevaTransaccion.concepto}
-                    onChange={handleChange}
-                    placeholder="Ej: Supermercado"
-                    disabled={cargando}
-                  />
-                  {errores.concepto && <p className={style.error}>{errores.concepto}</p>}
-                </div>
-
-                <div className={style.formGroup}>
-                  <label htmlFor="categoria">Categoría</label>
-                  <select
-                    id="categoria" name="categoria"
-                    value={modoEdicion ? transaccionEditando?.categoria || "OTROS" : nuevaTransaccion.categoria}
-                    onChange={handleChange} disabled={cargando}
-                  >
-                    <option value="SALARIO">Salario</option>
-                    <option value="ALIMENTACION">Alimentación</option>
-                    <option value="VIVIENDA">Vivienda</option>
-                    <option value="TRANSPORTE">Transporte</option>
-                    <option value="SALUD">Salud</option>
-                    <option value="OCIO">Ocio</option>
-                    <option value="EDUCACION">Educación</option>
-                    <option value="OTROS">Otros</option>
-                  </select>
-                </div>
-
-                <div className={style.formGroup}>
-                  <label htmlFor="fecha">Fecha</label>
-                  <input
-                    type="date" id="fecha" name="fecha"
-                    value={modoEdicion ? transaccionEditando?.fecha || "" : nuevaTransaccion.fecha}
-                    onChange={handleChange} disabled={cargando}
-                  />
-                  {errores.fecha && <p className={style.error}>{errores.fecha}</p>}
-                </div>
-
-                <div className={style.formGroup}>
-                  <label htmlFor="monto">Monto (€)</label>
-                  <input
-                    type="number" id="monto" name="monto"
-                    value={modoEdicion ? transaccionEditando?.monto || "" : nuevaTransaccion.monto}
-                    onChange={handleChange}
-                    placeholder="0.00" step="0.01" min="0"
-                    disabled={cargando}
-                  />
-                  {errores.monto && <p className={style.error}>{errores.monto}</p>}
-                </div>
-
-                <div className={style.formularioBotones}>
-                  <button type="button" className={style.botonCancelar} onClick={cancelarEdicion} disabled={cargando}>
-                    Cancelar
-                  </button>
-                  <button type="submit" className={style.botonGuardar} disabled={cargando} aria-busy={cargando}>
-                    {cargando
-                      ? modoEdicion ? "Actualizando..." : "Guardando..."
-                      : modoEdicion ? "Actualizar" : "Guardar"}
-                  </button>
-                </div>
-              </form>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* MODAL DETALLES */}
-      {mostrarModal && transaccionSeleccionada && (
-        <div className={style.modalOverlay} onClick={cerrarModal}>
-          <div className={style.modalContent} onClick={(e) => e.stopPropagation()}>
-            <div className={style.modalHeader}>
-              <h3 className={style.modalTitulo}>Detalles de Transacción</h3>
-              <button className={style.modalCloseButton} onClick={cerrarModal} aria-label="Cerrar">
-                <FontAwesomeIcon icon={faTimes} />
-              </button>
-            </div>
-            <div className={style.modalBody}>
-              <div className={style.modalDetalleItem}>
-                <span className={style.modalDetalleLabel}>Tipo:</span>
-                <span className={style.modalDetalleValor}
-                  style={{ color: transaccionSeleccionada.tipo === "gasto" ? "#ef4444" : "#0891b2", fontWeight: 700 }}>
-                  {transaccionSeleccionada.tipo === "gasto" ? "Gasto" : "Ingreso"}
-                </span>
-              </div>
-              <div className={style.modalDetalleItem}>
-                <span className={style.modalDetalleLabel}>Concepto:</span>
-                <span className={style.modalDetalleValor}>{transaccionSeleccionada.concepto}</span>
-              </div>
-              <div className={style.modalDetalleItem}>
-                <span className={style.modalDetalleLabel}>Fecha:</span>
-                <span className={style.modalDetalleValor}>{transaccionSeleccionada.fecha}</span>
-              </div>
-              <div className={style.modalDetalleItem}>
-                <span className={style.modalDetalleLabel}>Monto:</span>
-                <span className={style.modalDetalleValor}
-                  style={{
-                    color: transaccionSeleccionada.tipo === "gasto" ? "#ef4444" : "#0891b2",
-                    fontSize: "1.5rem", fontWeight: 800,
-                  }}>
-                  {transaccionSeleccionada.monto > 0 ? "+" : ""}
-                  {Math.abs(transaccionSeleccionada.monto).toFixed(2)} €
-                </span>
-              </div>
-              <div className={style.modalAcciones}>
-                <button className={style.modalBotonEditar}
-                  onClick={() => { cerrarModal(); handleEditar(transaccionSeleccionada); }}>
-                  <FontAwesomeIcon icon={faEdit} /> Editar
-                </button>
-                <button className={style.modalBotonEliminar}
-                  onClick={() => handleEliminar(transaccionSeleccionada)}>
-                  <FontAwesomeIcon icon={faTrash} /> Eliminar
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* MODAL RESUMEN */}
-      {mostrarModalResumen && tipoModalResumen && (
-        <div className={style.modalOverlay} onClick={cerrarModalResumen}>
-          <div className={`${style.modalContent} ${style.modalResumen}`} onClick={(e) => e.stopPropagation()}>
-            <div className={style.modalHeader}>
-              <h3 className={style.modalTitulo}>
-                {tipoModalResumen === "gasto" ? "Gastos" : "Ingresos"}
-              </h3>
-              <button className={style.modalCloseButton} onClick={cerrarModalResumen} aria-label="Cerrar">
-                <FontAwesomeIcon icon={faTimes} />
-              </button>
-            </div>
-            <div className={style.modalBody}>
-              {obtenerTransaccionesFiltradas().length === 0 ? (
-                <div className={style.modalEmpty}>
-                  <p>No hay {tipoModalResumen === "gasto" ? "gastos" : "ingresos"} registrados.</p>
-                </div>
-              ) : (
-                <>
-                  <div className={style.transaccionesResumenList}>
-                    {obtenerTransaccionesPaginadas().map((transaccion) => (
-                      <div
-                        key={transaccion.id}
-                        className={style.transaccionResumenItem}
-                        onClick={() => { cerrarModalResumen(); abrirModal(transaccion); }}
-                      >
-                        <div className={style.transaccionResumenIcono}
-                          style={{
-                            backgroundColor: tipoModalResumen === "gasto" ? "#fef2f2" : "#e0f2fe",
-                            border: `1px solid ${tipoModalResumen === "gasto" ? "#fecaca" : "#bae6fd"}`,
-                          }}>
-                          {tipoModalResumen === "gasto" ? (
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2">
-                              <path d="M12 5v14M5 12l7 7 7-7" />
-                            </svg>
-                          ) : (
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0891b2" strokeWidth="2">
-                              <path d="M12 19V5M5 12l7-7 7 7" />
-                            </svg>
-                          )}
-                        </div>
-                        <div className={style.transaccionResumenInfo}>
-                          <span className={style.transaccionResumenConcepto}>{transaccion.concepto}</span>
-                          <span className={style.transaccionResumenFecha}>{transaccion.fecha}</span>
-                          <span className={style.transaccionResumenMonto}
-                            style={{ color: tipoModalResumen === "gasto" ? "#ef4444" : "#0891b2" }}>
-                            {Math.abs(transaccion.monto).toFixed(2)} €
-                          </span>
-                          <div className={style.transaccionResumenAcciones}>
-                            <button className={style.botonEditarResumen}
-                              onClick={(e) => { e.stopPropagation(); cerrarModalResumen(); handleEditar(transaccion); }}
-                              aria-label="Editar">
-                              <FontAwesomeIcon icon={faEdit} />
-                            </button>
-                            <button className={style.botonEliminarResumen}
-                              onClick={(e) => handleEliminar(transaccion, e)}
-                              aria-label="Eliminar">
-                              <FontAwesomeIcon icon={faTrash} />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  {totalPaginas > 1 && (
-                    <div className={style.paginacion}>
-                      <button className={style.botonPaginacion}
-                        onClick={() => setPaginaActual(p => Math.max(1, p - 1))}
-                        disabled={paginaActual === 1} aria-label="Página anterior">
-                        <FontAwesomeIcon icon={faChevronLeft} />
-                      </button>
-                      <span className={style.paginacionInfo}>
-                        Página {paginaActual} de {totalPaginas}
-                      </span>
-                      <button className={style.botonPaginacion}
-                        onClick={() => setPaginaActual(p => Math.min(totalPaginas, p + 1))}
-                        disabled={paginaActual === totalPaginas} aria-label="Página siguiente">
-                        <FontAwesomeIcon icon={faChevronRight} />
-                      </button>
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="5" width="20" height="14" rx="2"/><path d="M16 12h2"/>
+    </svg>
+  );
+}
+function IconTrend() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+    </svg>
+  );
+}
+function IconDown() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/>
+    </svg>
+  );
+}
+function IconBalance() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+    </svg>
+  );
+}
+function IconPlus() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+    </svg>
+  );
+}
+function IconSend() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+    </svg>
+  );
+}
+function IconBank() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="9" width="18" height="11" rx="2"/><path d="M3 9l9-6 9 6"/>
+    </svg>
+  );
+}
+function IconDoc() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+    </svg>
   );
 }
 
-export default Home;
+// ── Helpers ────────────────────────────────────────────────────────────────
+
+function saludar() {
+  const h = new Date().getHours();
+  if (h < 12) return "Buenos días";
+  if (h < 20) return "Buenas tardes";
+  return "Buenas noches";
+}
+
+function mesActual() {
+  return new Date().toLocaleString("es-ES", { month: "long", year: "numeric" });
+}
+
+function formatEur(n) {
+  return n.toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+const CAT_LABEL = {
+  SALARIO: "Salario", ALIMENTACION: "Alimentación", VIVIENDA: "Vivienda",
+  TRANSPORTE: "Transporte", SALUD: "Salud", OCIO: "Ocio",
+  EDUCACION: "Educación", OTROS: "Otros", INGRESO: "Ingreso", GASTO: "Gasto",
+};
+
+// ── Componente principal ───────────────────────────────────────────────────
+
+export default function Home() {
+  const { user } = useAuth();
+
+  const [wallet,    setWallet]    = useState(null);
+  const [txns,      setTxns]      = useState([]);
+  const [bankOk,    setBankOk]    = useState(false);
+  const [loading,   setLoading]   = useState(true);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      // Cargar wallet, transacciones y estado bancario en paralelo
+      const [w, t, b] = await Promise.allSettled([
+        api.get("/wallet/me"),
+        listTransacciones(),
+        api.get("/bank/status"),
+      ]);
+      if (w.status === "fulfilled") setWallet(w.value);
+      if (t.status === "fulfilled") setTxns(Array.isArray(t.value) ? t.value : []);
+      if (b.status === "fulfilled" && b.value?.status === "LINKED") setBankOk(true);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  // Cálculos del mes actual
+  const { ingresosMes, gastosMes, balanceMes, ultimas5 } = useMemo(() => {
+    const now   = new Date();
+    const mes   = now.getMonth();
+    const anio  = now.getFullYear();
+
+    const esMes = (t) => {
+      const d = new Date(t.fecha);
+      return d.getMonth() === mes && d.getFullYear() === anio;
+    };
+
+    const delMes = txns.filter(esMes);
+    const ing  = delMes.filter(t => t.tipo === "INGRESO").reduce((s, t) => s + (t.cantidad ?? 0), 0);
+    const gas  = delMes.filter(t => t.tipo === "GASTO").reduce((s, t) => s + (t.cantidad ?? 0), 0);
+
+    const sorted = [...txns].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+    return {
+      ingresosMes:  ing,
+      gastosMes:    gas,
+      balanceMes:   ing - gas,
+      ultimas5:     sorted.slice(0, 5),
+    };
+  }, [txns]);
+
+  const nombre   = user?.fullName || user?.username || "Usuario";
+  const iniciales = nombre.split(" ").map(p => p[0]).join("").slice(0, 2).toUpperCase();
+
+  return (
+    <div className={style.page}>
+
+      {/* ── Encabezado personal ───────────────────────────────────────── */}
+      <div className={style.heroRow}>
+        <div className={style.heroTexto}>
+          <span className={style.saludo}>{saludar()},</span>
+          <h1 className={style.nombre}>{nombre}</h1>
+          <span className={style.fecha}>{mesActual()}</span>
+        </div>
+        <div className={style.heroAvatar}>{iniciales}</div>
+      </div>
+
+      {/* ── Tarjetas de resumen ───────────────────────────────────────── */}
+      <div className={style.statsGrid}>
+
+        <div className={`${style.statCard} ${style.statWallet}`}>
+          <div className={style.statIcon}><IconWallet /></div>
+          <div className={style.statInfo}>
+            <span className={style.statLabel}>Saldo Wallet</span>
+            <span className={style.statValue}>
+              {loading ? "—" : `€ ${formatEur(wallet?.balance ?? 0)}`}
+            </span>
+          </div>
+        </div>
+
+        <div className={`${style.statCard} ${style.statIngreso}`}>
+          <div className={style.statIcon}><IconTrend /></div>
+          <div className={style.statInfo}>
+            <span className={style.statLabel}>Ingresos este mes</span>
+            <span className={style.statValue}>
+              {loading ? "—" : `€ ${formatEur(ingresosMes)}`}
+            </span>
+          </div>
+        </div>
+
+        <div className={`${style.statCard} ${style.statGasto}`}>
+          <div className={style.statIcon}><IconDown /></div>
+          <div className={style.statInfo}>
+            <span className={style.statLabel}>Gastos este mes</span>
+            <span className={style.statValue}>
+              {loading ? "—" : `€ ${formatEur(gastosMes)}`}
+            </span>
+          </div>
+        </div>
+
+        <div className={`${style.statCard} ${style.statBalance}`}>
+          <div className={style.statIcon}><IconBalance /></div>
+          <div className={style.statInfo}>
+            <span className={style.statLabel}>Balance mensual</span>
+            <span className={`${style.statValue} ${balanceMes >= 0 ? style.positivo : style.negativo}`}>
+              {loading ? "—" : `${balanceMes >= 0 ? "+" : ""}€ ${formatEur(balanceMes)}`}
+            </span>
+          </div>
+        </div>
+
+      </div>
+
+      {/* ── Barra de progreso gastos/ingresos ────────────────────────── */}
+      {!loading && (ingresosMes > 0 || gastosMes > 0) && (
+        <div className={style.progressCard}>
+          <div className={style.progressHeader}>
+            <span className={style.progressLabel}>Distribución mensual</span>
+            <span className={style.progressPct}>
+              {ingresosMes > 0
+                ? `${Math.round((gastosMes / ingresosMes) * 100)}% gastado`
+                : "Sin ingresos este mes"}
+            </span>
+          </div>
+          <div className={style.progressBar}>
+            <div
+              className={style.progressFill}
+              style={{ width: `${Math.min(100, ingresosMes > 0 ? (gastosMes / ingresosMes) * 100 : 0)}%` }}
+            />
+          </div>
+          <div className={style.progressLegend}>
+            <span className={style.legendIng}>● Ingresos: €{formatEur(ingresosMes)}</span>
+            <span className={style.legendGas}>● Gastos: €{formatEur(gastosMes)}</span>
+          </div>
+        </div>
+      )}
+
+      {/* ── Accesos rápidos ───────────────────────────────────────────── */}
+      <div className={style.accionesSection}>
+        <h2 className={style.sectionTitle}>Accesos rápidos</h2>
+        <div className={style.accionesGrid}>
+          <Link to="/transacciones" className={style.accionCard}>
+            <div className={style.accionIcon} style={{ background: "rgba(8,145,178,0.1)", color: "#0891b2" }}>
+              <IconPlus />
+            </div>
+            <span className={style.accionLabel}>Nueva transacción</span>
+          </Link>
+          <Link to="/wallet" className={style.accionCard}>
+            <div className={style.accionIcon} style={{ background: "rgba(59,219,121,0.1)", color: "#059669" }}>
+              <IconSend />
+            </div>
+            <span className={style.accionLabel}>Enviar dinero</span>
+          </Link>
+          <Link to="/banco" className={style.accionCard}>
+            <div className={style.accionIcon} style={{ background: bankOk ? "rgba(59,219,121,0.1)" : "rgba(249,115,22,0.1)", color: bankOk ? "#059669" : "#ea580c" }}>
+              <IconBank />
+            </div>
+            <span className={style.accionLabel}>
+              {bankOk ? "Banco vinculado ✓" : "Conectar banco"}
+            </span>
+          </Link>
+          <Link to="/autonomos" className={style.accionCard}>
+            <div className={style.accionIcon} style={{ background: "rgba(168,85,247,0.1)", color: "#7c3aed" }}>
+              <IconDoc />
+            </div>
+            <span className={style.accionLabel}>Facturas</span>
+          </Link>
+        </div>
+      </div>
+
+      {/* ── Gráficas financieras ─────────────────────────────────────── */}
+      {!loading && txns.length > 0 && (
+        <div className={style.chartsGrid}>
+          <FinancialChart transacciones={txns} />
+          <CategoryChart  transacciones={txns} />
+        </div>
+      )}
+
+      {/* ── Últimas transacciones ─────────────────────────────────────── */}
+      <div className={style.txnSection}>
+        <div className={style.txnHeader}>
+          <h2 className={style.sectionTitle}>Últimas transacciones</h2>
+          <Link to="/transacciones" className={style.verTodas}>Ver todas →</Link>
+        </div>
+
+        {loading && <p className={style.cargando}>Cargando...</p>}
+
+        {!loading && ultimas5.length === 0 && (
+          <div className={style.empty}>
+            <p className={style.emptyText}>No hay transacciones aún.</p>
+            <Link to="/transacciones" className={style.emptyBtn}>Añadir primera transacción</Link>
+          </div>
+        )}
+
+        <div className={style.txnList}>
+          {ultimas5.map((t) => {
+            const esIngreso = t.tipo === "INGRESO";
+            return (
+              <div key={t.id} className={style.txnItem}>
+                <div className={`${style.txnDot} ${esIngreso ? style.dotIngreso : style.dotGasto}`} />
+                <div className={style.txnInfo}>
+                  <span className={style.txnDesc}>{t.descripcion}</span>
+                  <span className={style.txnMeta}>
+                    {CAT_LABEL[t.categoria] || t.categoria} · {t.fecha}
+                  </span>
+                </div>
+                <span className={`${style.txnAmount} ${esIngreso ? style.positivo : style.negativo}`}>
+                  {esIngreso ? "+" : "-"}€{formatEur(t.cantidad ?? 0)}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+    </div>
+  );
+}

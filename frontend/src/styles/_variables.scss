@@ -1,0 +1,64 @@
+// ─── PayFlow — Design Tokens (SCSS) ────────────────────────────────────
+// Variables compartidas por todos los módulos SCSS. Importar con:
+//   @use "../styles/variables" as v;
+//   color: v.$primary-300;
+
+// ── Colores primarios (teal/cian) ──
+$primary-50:  #a5f3fc;
+$primary-100: #22d3ee;
+$primary-150: #06b6d4;
+$primary-200: #0891b2;
+$primary-250: #0e7490;
+$primary-300: #155e75;
+$primary-350: #164e63;
+$primary-400: #0c3549;
+
+// ── Colores semánticos ──
+$success: #3bdb79;
+$warning: #f2c038;
+$danger:  #ef4444;
+$info:    #79c0ff;
+
+// ── Grises neutros ──
+$gray-50:  #ffffff;
+$gray-100: #e9ecef;
+$gray-150: #dee2e6;
+$gray-200: #adb5bd;
+$gray-250: #6c757d;
+$gray-300: #495057;
+$gray-350: #212529;
+$gray-400: #000000;
+
+// ── Texto ──
+$text-primary:   #0f172a;
+$text-secondary: #475569;
+$text-tertiary:  #94a3b8;
+$text-light:     #ffffff;
+
+// ── Espaciado ──
+$spacing-xs:  0.5rem;
+$spacing-sm:  0.75rem;
+$spacing-md:  1rem;
+$spacing-lg:  1.5rem;
+$spacing-xl:  2rem;
+$spacing-2xl: 2.5rem;
+$spacing-3xl: 3rem;
+
+// ── Radios ──
+$radius-sm: 0.5rem;
+$radius-md: 0.75rem;
+$radius-lg: 1rem;
+$radius-xl: 1.5rem;
+
+// ── Sombras ──
+$shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+$shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+$shadow-lg: 0 10px 24px rgba(0, 0, 0, 0.10);
+$shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.12);
+
+// ── Breakpoints ──
+$bp-sm:  640px;
+$bp-md:  768px;
+$bp-lg:  1024px;
+$bp-xl:  1280px;
+$bp-2xl: 1536px;

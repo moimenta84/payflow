@@ -64,6 +64,13 @@ spring:
           filters:
             - name: JwtAuthFilter
 
+        - id: wallet
+          uri: lb://wallet-service
+          predicates:
+            - Path=/wallet/**
+          filters:
+            - name: JwtAuthFilter
+
         - id: bank-public
           uri: lb://bank-service
           predicates:

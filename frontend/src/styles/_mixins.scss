@@ -1,0 +1,65 @@
+// ─── PayFlow — Mixins SCSS ─────────────────────────────────────────────
+// Importar con:
+//   @use "../styles/mixins" as m;
+//   @include m.respond(md) { ... }
+
+@use "variables" as v;
+
+// ── Responsive ──
+@mixin respond($breakpoint) {
+  @if $breakpoint == sm  { @media (max-width: v.$bp-sm)  { @content; } }
+  @if $breakpoint == md  { @media (max-width: v.$bp-md)  { @content; } }
+  @if $breakpoint == lg  { @media (max-width: v.$bp-lg)  { @content; } }
+  @if $breakpoint == xl  { @media (max-width: v.$bp-xl)  { @content; } }
+}
+
+// ── Card base ──
+@mixin card($padding: v.$spacing-lg) {
+  background: v.$gray-50;
+  border-radius: v.$radius-lg;
+  box-shadow: v.$shadow-md;
+  padding: $padding;
+}
+
+// ── Botón primario ──
+@mixin btn-primary {
+  background: v.$primary-200;
+  color: v.$text-light;
+  border: none;
+  border-radius: v.$radius-md;
+  padding: 10px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.1s, background 0.2s;
+
+  &:hover  { background: v.$primary-250; transform: translateY(-1px); }
+  &:active { transform: scale(0.98); }
+}
+
+// ── Botón secundario ──
+@mixin btn-secondary {
+  background: transparent;
+  color: v.$primary-200;
+  border: 1.5px solid v.$primary-200;
+  border-radius: v.$radius-md;
+  padding: 10px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover { background: v.$primary-200; color: v.$text-light; }
+}
+
+// ── Truncar texto ──
+@mixin truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// ── Flex center ──
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -5,13 +5,13 @@ import s from "../styles/Landing.module.css";
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
 const FEED = [
-  { id: "tx_8a3f", label: "Mercadona · Alimentacion",       amount: "− € 67.40",     tag: "gasto",   color: "#ef4444" },
-  { id: "tx_9b2c", label: "Nomina · Empresa SL",            amount: "+ € 2,450.00",  tag: "ingreso", color: "#22d3ee" },
-  { id: "tx_1d4e", label: "BTC compra · 0.012",             amount: "− € 540.20",    tag: "crypto",  color: "#f2c038" },
+  { id: "tx_8a3f", label: "Pago a @juan · Cena",            amount: "− € 22.50",     tag: "p2p",     color: "#22d3ee" },
+  { id: "tx_9b2c", label: "Nomina · Empresa SL",            amount: "+ € 2,450.00",  tag: "ingreso", color: "#3bdb79" },
+  { id: "tx_1d4e", label: "Recarga desde BBVA",             amount: "+ € 200.00",    tag: "topup",   color: "#79c0ff" },
   { id: "tx_7e5f", label: "Factura 2026-04 · cobrada",      amount: "+ € 1,815.00",  tag: "factura", color: "#3bdb79" },
-  { id: "tx_2g6h", label: "Transferencia BBVA",             amount: "− € 320.00",    tag: "banco",   color: "#79c0ff" },
-  { id: "tx_4i7j", label: "Repsol · Transporte",            amount: "− € 48.90",     tag: "gasto",   color: "#ef4444" },
-  { id: "tx_5k8l", label: "ETH venta · 0.5",                amount: "+ € 1,720.00",  tag: "crypto",  color: "#f2c038" },
+  { id: "tx_2g6h", label: "Mercadona · Alimentacion",       amount: "− € 67.40",     tag: "gasto",   color: "#ef4444" },
+  { id: "tx_4i7j", label: "Cobro link · Cliente XYZ",       amount: "+ € 484.00",    tag: "link",    color: "#0891b2" },
+  { id: "tx_5k8l", label: "@maria te pidió 15€",            amount: "− € 15.00",     tag: "p2p",     color: "#22d3ee" },
   { id: "tx_3m9n", label: "Iberdrola · Suministros",        amount: "− € 89.30",     tag: "gasto",   color: "#ef4444" },
 ];
 
@@ -33,8 +33,8 @@ const PRICING = [
   {
     name: "Plus",
     price: "4,99",
-    desc: "Para quien gestiona crypto e inversiones",
-    features: ["Todo Free incluido", "Portfolio crypto en tiempo real", "Alertas de precio BTC/ETH", "3 cuentas bancarias", "Histórico ilimitado"],
+    desc: "Para quien envía y recibe a diario",
+    features: ["Todo Free incluido", "Envíos P2P ilimitados", "Cobros por link de pago", "3 cuentas bancarias", "Histórico ilimitado"],
     hl: true,
   },
   {
@@ -81,11 +81,13 @@ function useCounter(target, { format = "plain", duration = 1800 } = {}) {
 
 // ─── Inline SVG icons (replace emojis per design rules) ──────────────────────
 
-function IconCrypto({ className }) {
+function IconWallet({ className }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
       strokeLinecap="round" strokeLinejoin="round" width="22" height="22" className={className}>
-      <path d="M11.767 19.089c4.924.868 6.14-6.025 1.216-6.894m-1.216 6.894L5.86 18.047m5.908 1.042-.347 1.97m1.563-8.864c4.924.869 6.14-6.025 1.215-6.893m-1.215 6.893-3.94-.694m5.155-6.2L8.29 4.26m5.908 1.042.348-1.97M7.48 20.364l3.126-17.727" />
+      <path d="M20 12V8H6a2 2 0 0 1 0-4h12v4" />
+      <path d="M4 6v12a2 2 0 0 0 2 2h14v-4" />
+      <path d="M18 12a2 2 0 0 0 0 4h4v-4z" />
     </svg>
   );
 }
@@ -218,7 +220,7 @@ export default function Landing() {
             <span className={s.grad}>Todo en una app.</span>
           </h1>
           <p className={s.heroSub}>
-            Gastos personales, crypto y tu banco real conectado.<br />
+            Wallet interno, envíos P2P y tu banco real conectado.<br />
             Con facturación de autónomo. En español. Sin Excel.
           </p>
           <div className={s.heroBtns}>
@@ -311,14 +313,14 @@ export default function Landing() {
               </div>
             </div>
 
-            {/* CRYPTO portfolio */}
+            {/* WALLET interno */}
             <div className={`${s.bc} ${s.bWallet} ${s.reveal}`}>
-              <span className={s.bIco}><IconCrypto /></span>
-              <h3 className={s.bTitle}>Portfolio crypto</h3>
-              <p className={s.bDesc}>BTC, ETH y USDT en una sola vista. Precios en vivo, órdenes y alertas.</p>
+              <span className={s.bIco}><IconWallet /></span>
+              <h3 className={s.bTitle}>Wallet y P2P</h3>
+              <p className={s.bDesc}>Saldo interno, envíos a otros usuarios y cobros por link. Sin comisiones ocultas.</p>
               <div className={s.walletMini}>
-                <div className={s.wRow}><span>BTC · 0.124</span><span className={s.wAmt}>€ 9,840.00</span></div>
-                <div className={s.wRow}><span>ETH · 1.8</span><span className={s.wPend}>€ 6,210.00</span></div>
+                <div className={s.wRow}><span>Saldo PayFlow</span><span className={s.wAmt}>€ 342.50</span></div>
+                <div className={s.wRow}><span>@juan te envió</span><span className={s.wPend}>+ € 20.00</span></div>
                 <div className={s.wBar}><div className={s.wBarFill} style={{ width: "62%" }} /></div>
               </div>
             </div>

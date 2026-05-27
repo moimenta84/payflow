@@ -1,1199 +1,388 @@
-/* ========================================
-   HOME MODULE CSS — Design System aligned
-   ======================================== */
+/* ===================================================================
+   HOME — Dashboard unificado
+   =================================================================== */
 
-.home {
-  display: flex;
+.page {
   width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: 1.5rem;
 }
 
-.contenedorHome {
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-  background-color: var(--card-bg-ds, #ffffff);
-  border-radius: var(--card-radius, 16px);
-  padding: var(--spacing-2xl);
-  box-shadow: var(--card-shadow-ds, 0 2px 12px rgba(0,0,0,0.07));
-  gap: var(--spacing-lg);
-  animation: fadeInUp 0.5s ease-out;
-  border: var(--card-border-ds, 1px solid #e2e8f0);
-}
-
-/* ========== CABECERA ========== */
-.header {
+/* ── Hero / saludo ─────────────────────────────────────────────── */
+.heroRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: var(--spacing-md);
-  margin-bottom: var(--spacing-md);
-  position: relative;
-  min-height: 3rem;
 }
 
-.avatarContainer {
-  display: flex;
-  align-items: center;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.avatar {
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #0891b2, #155e75);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.25rem;
-  cursor: pointer;
-  transition: transform 0.15s;
-  box-shadow: 0 2px 8px rgba(8, 145, 178, 0.3);
-  border: 3px solid white;
-  color: #fff;
-  font-weight: 700;
-}
-
-.avatar:hover {
-  transform: scale(1.08);
-}
-
-/* ========== BOTÓN DE CERRAR SESIÓN ========== */
-.logoutButton {
-  width: 2.5rem;
-  height: 2.5rem;
-  min-width: 2.5rem;
-  min-height: 2.5rem;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #ef4444, #dc2626);
-  color: white;
-  border: none;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  transition: transform 0.15s, box-shadow 0.15s;
-  position: absolute;
-  right: 0;
-  z-index: 10;
-}
-
-.logoutButton:hover {
-  transform: scale(1.08);
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5);
-}
-
-.logoutButton:active {
-  transform: scale(0.95);
-}
-
-/* ========== BIENVENIDA CARD ========== */
-.bienvenidaTotal {
+.heroTexto {
   display: flex;
   flex-direction: column;
-  background: linear-gradient(145deg, #0c3549 0%, #155e75 60%, #0891b2 100%);
-  border-radius: var(--card-radius, 16px);
-  padding: var(--spacing-xl);
-  box-shadow: 0 4px 16px rgba(12, 53, 73, 0.25);
-  position: relative;
-  overflow: hidden;
+  gap: 2px;
 }
 
-.bienvenidaTotal::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-  pointer-events: none;
-}
-
-/* ========== BIENVENIDA ========== */
-.bienvenida {
-  display: flex;
-  text-align: center;
-  flex-direction: column;
-  margin-bottom: var(--spacing-md);
-  position: relative;
-  z-index: 1;
-}
-
-.bienvenida h1 {
-  color: #fff;
-  font-size: clamp(1.5rem, 4vw, 2rem);
-  font-weight: 800;
-  margin: 0;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.15);
-  word-break: break-word;
-}
-
-/* ========== SALDO ========== */
-.saldoCard {
-  display: flex;
-  flex-direction: column;
-  padding: var(--spacing-lg);
-  border-radius: 12px;
-  background-color: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(4px);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.2);
-  text-align: center;
-  position: relative;
-  z-index: 1;
-}
-
-.saldoLabel {
-  color: rgba(255, 255, 255, 0.75);
-  font-size: 0.8rem;
-  font-weight: 700;
-  margin: 0 0 var(--spacing-xs) 0;
+.saludo {
+  font-size: 0.85rem;
+  color: var(--color-text-tertiary, #94a3b8);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
 }
 
-.saldoMonto {
-  color: #fff;
-  font-size: clamp(1.75rem, 5vw, 2.5rem);
+.nombre {
+  font-size: 1.75rem;
   font-weight: 800;
+  color: var(--color-text-primary, #0f172a);
   margin: 0;
   letter-spacing: -0.02em;
-  word-break: break-all;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
-/* ========== CUERPO ========== */
-.cuerpo {
-  display: flex;
-  flex-direction: row;
-  gap: var(--spacing-xl);
-  align-items: center;
-  padding: var(--spacing-md) 0;
+.fecha {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary, #475569);
+  text-transform: capitalize;
 }
 
-/* Gráfico de Aro */
-.graficoContainer {
-  position: relative;
-  width: 100%;
-  max-width: 280px;
-  margin: 0 auto;
-  padding: var(--spacing-lg);
-  background-color: var(--card-bg-ds, #fff);
-  border-radius: var(--card-radius, 16px);
-  box-shadow: var(--card-shadow-ds, 0 2px 12px rgba(0,0,0,0.07));
-  border: var(--card-border-ds, 1px solid #e2e8f0);
-}
-
-.graficoAro {
-  width: 100%;
-  height: auto;
-  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.08));
-}
-
-.graficoCenter {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  background-color: var(--card-bg-ds, #fff);
-  padding: var(--spacing-md);
+.heroAvatar {
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
-}
-
-.graficoCenterLabel {
-  color: var(--text-tertiary-ds, #94a3b8);
-  font-size: clamp(0.7rem, 2vw, 0.8rem);
-  margin: 0 0 2px 0;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.graficoCenterMonto {
-  color: var(--text-primary-ds, #0f172a);
-  font-size: clamp(1.1rem, 3vw, 1.5rem);
-  font-weight: 800;
-  margin: 0;
-}
-
-/* Resumen */
-.resumenContainer {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-  width: 100%;
-}
-
-.resumenItem {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  padding: var(--spacing-lg);
-  background-color: var(--card-bg-ds, #fff);
-  border-radius: 12px;
-  transition: transform 0.15s, box-shadow 0.15s;
-  box-shadow: var(--card-shadow-ds, 0 2px 12px rgba(0,0,0,0.07));
-  border: var(--card-border-ds, 1px solid #e2e8f0);
-  min-height: 80px;
-  cursor: pointer;
-}
-
-.resumenItem:hover {
-  transform: translateX(6px);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-}
-
-.resumenIcono {
-  width: 3rem;
-  height: 3rem;
-  min-width: 3rem;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.resumenInfo {
-  flex: 1;
-  min-width: 0;
-}
-
-.resumenLabelGastos {
-  color: #ef4444;
-  font-size: 0.75rem;
-  margin: 0 0 var(--spacing-xs) 0;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.resumenLabelIngresos {
-  color: #0891b2;
-  font-size: 0.75rem;
-  margin: 0 0 var(--spacing-xs) 0;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.resumenMonto {
-  font-size: clamp(1.25rem, 4vw, 1.75rem);
-  font-weight: 800;
-  margin: 0;
-  word-break: break-all;
-  color: var(--text-primary-ds, #0f172a);
-}
-
-/* ========== HISTORIAL ========== */
-.historial {
-  margin-top: var(--spacing-md);
-  padding-top: var(--spacing-lg);
-  position: relative;
-  border-top: 1px solid #e2e8f0;
-}
-
-.historialHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--spacing-lg);
-  gap: var(--spacing-md);
-  flex-wrap: wrap;
-}
-
-.historialTitulo {
-  color: var(--text-primary-ds, #0f172a);
-  font-size: clamp(1.1rem, 3vw, 1.35rem);
-  font-weight: 700;
-  margin: 0;
-  letter-spacing: -0.01em;
-}
-
-/* ========== MODAL DE DETALLES ========== */
-.modalOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0,0,0,0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  animation: fadeIn 0.2s ease-out;
-  padding: var(--spacing-lg);
-}
-
-.modalContent {
-  background-color: var(--card-bg-ds, #fff);
-  border-radius: var(--card-radius, 16px);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-  border: var(--card-border-ds, 1px solid #e2e8f0);
-  width: 100%;
-  max-width: 480px;
-  max-height: 90vh;
-  overflow-y: auto;
-  animation: slideUp 0.25s ease-out;
-}
-
-.modalHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--spacing-xl);
-  background: linear-gradient(145deg, #0c3549 0%, #155e75 60%, #0891b2 100%);
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  border-radius: var(--card-radius, 16px) var(--card-radius, 16px) 0 0;
-}
-
-.modalTitulo {
+  background: linear-gradient(135deg, #0891b2, #155e75);
   color: #fff;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 700;
-  margin: 0;
-  flex: 1;
-  padding-right: var(--spacing-md);
-}
-
-.modalCloseButton {
-  width: 2.25rem;
-  height: 2.25rem;
-  min-width: 2.25rem;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.15);
-  color: white;
-  border: 1px solid rgba(255,255,255,0.25);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  transition: background 0.15s, transform 0.1s;
-  flex-shrink: 0;
-}
-
-.modalCloseButton:hover {
-  background: rgba(255,255,255,0.25);
-  transform: scale(1.08) rotate(90deg);
-}
-
-.modalCloseButton:active {
-  transform: scale(0.95);
-}
-
-.modalBody {
-  padding: var(--spacing-xl);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-}
-
-.modalDetalleItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--spacing-sm) var(--spacing-md);
-  background-color: #f8fafc;
-  border-radius: 10px;
-  border: 1px solid #e2e8f0;
-  flex-wrap: wrap;
-  gap: var(--spacing-sm);
-  transition: transform 0.1s;
-}
-
-.modalDetalleItem:hover {
-  transform: translateX(3px);
-}
-
-.modalDetalleLabel {
-  color: var(--text-tertiary-ds, #94a3b8);
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.modalDetalleValor {
-  color: var(--text-primary-ds, #0f172a);
-  font-size: 1rem;
-  font-weight: 600;
-  text-align: right;
-  word-break: break-word;
-}
-
-/* ========== FAB BUTTON ========== */
-.fabButton {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 3rem;
-  height: 3rem;
-  min-width: 3rem;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #0891b2, #0e7490);
-  color: white;
-  border: none;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(8, 145, 178, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.25rem;
-  transition: transform 0.15s, box-shadow 0.15s;
-  z-index: 10;
-}
-
-.fabButton:hover {
-  transform: scale(1.1) rotate(90deg);
-  box-shadow: 0 6px 20px rgba(8, 145, 178, 0.55);
-}
-
-.fabButton:active {
-  transform: scale(0.95);
-}
-
-/* ========== BADGES ========== */
-.historialBadges {
-  display: flex;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-lg);
-  flex-wrap: wrap;
-}
-
-.badge {
-  padding: 6px 14px;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 999px;
-  background-color: #fff;
-  color: var(--text-secondary-ds, #475569);
-  font-size: 0.82rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s;
-  min-height: 34px;
-  display: flex;
-  align-items: center;
-}
-
-.badge:hover {
-  border-color: #0891b2;
-  color: #0891b2;
-}
-
-.badgeTodos.badgeActivo {
-  background: #0891b2;
-  border-color: #0891b2;
-  color: white;
-}
-
-.badgeGastos.badgeActivo {
-  background: #ef4444;
-  border-color: #ef4444;
-  color: white;
-}
-
-.badgeIngresos.badgeActivo {
-  background: #0891b2;
-  border-color: #0891b2;
-  color: white;
-}
-
-/* ========== TRANSACCIONES ========== */
-.transaccionesList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-
-.transaccionItem {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-md);
-  background-color: var(--card-bg-ds, #fff);
-  border-radius: 12px;
-  transition: transform 0.15s, box-shadow 0.15s;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-  border: 1px solid #e2e8f0;
-  min-height: 66px;
-  cursor: pointer;
-}
-
-.transaccionItem:hover {
-  transform: translateX(4px);
-  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-}
-
-.transaccionIcono {
-  width: 2.25rem;
-  height: 2.25rem;
-  min-width: 2.25rem;
-  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(8, 145, 178, 0.3);
 }
 
-.transaccionItem.gasto .transaccionIcono {
-  background-color: #fef2f2;
-  border: 1px solid #fecaca;
-}
-
-.transaccionItem.ingreso .transaccionIcono {
-  background-color: #e0f2fe;
-  border: 1px solid #bae6fd;
-}
-
-.transaccionInfo {
-  flex: 1;
-  min-width: 0;
-}
-
-.transaccionConcepto {
-  color: var(--text-primary-ds, #0f172a);
-  font-weight: 600;
-  margin: 0 0 2px 0;
-  font-size: 0.9rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.transaccionFecha {
-  color: var(--text-tertiary-ds, #94a3b8);
-  font-size: 0.78rem;
-  margin: 0;
-}
-
-.transaccionMonto {
-  font-size: 1rem;
-  font-weight: 800;
-  margin: 0;
-  white-space: nowrap;
-}
-
-/* ========== FORMULARIO ========== */
-.formularioContainer {
-  background-color: var(--card-bg-ds, #fff);
-  border-radius: var(--card-radius, 16px);
-  padding: var(--spacing-xl);
-  box-shadow: var(--card-shadow-ds, 0 2px 12px rgba(0,0,0,0.07));
-  border: var(--card-border-ds, 1px solid #e2e8f0);
-}
-
-.formulario {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-}
-
-.formGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.formGroup label {
-  color: var(--text-secondary-ds, #475569);
-  font-weight: 600;
-  font-size: 0.82rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.formGroup input,
-.formGroup select {
-  padding: 10px 14px;
-  border: var(--input-border-ds, 1.5px solid #cbd5e1);
-  border-radius: var(--input-radius, 10px);
-  background-color: var(--input-bg-ds, #fff);
-  color: var(--text-primary-ds, #0f172a);
-  font-size: 0.9rem;
-  transition: border-color 0.15s, box-shadow 0.15s;
-  min-height: 42px;
-  width: 100%;
-}
-
-.formGroup input:focus,
-.formGroup select:focus {
-  outline: none;
-  border-color: #0891b2;
-  box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.12);
-}
-
-.formGroup input:disabled,
-.formGroup select:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.botonesGrupo {
-  display: flex;
-  gap: var(--spacing-md);
-  flex-wrap: wrap;
-}
-
-.botonTipo {
-  flex: 1;
-  padding: 10px;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 10px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.15s;
-  min-height: 44px;
-  background: #f8fafc;
-  color: var(--text-secondary-ds, #475569);
-}
-
-.botonGasto.botonActivo {
-  background: #fef2f2;
-  color: #ef4444;
-  border-color: #fecaca;
-  font-weight: 700;
-}
-
-.botonIngreso.botonActivo {
-  background: #e0f2fe;
-  color: #0891b2;
-  border-color: #bae6fd;
-  font-weight: 700;
-}
-
-.botonTipo:hover {
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  transform: translateY(-1px);
-}
-
-.botonTipo:active {
-  transform: translateY(0);
-}
-
-.error {
-  color: var(--color-danger, #ef4444);
-  font-size: 0.8rem;
-  margin: 2px 0 0;
-}
-
-.errorGeneral {
-  padding: 12px 16px;
-  background-color: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: 10px;
-  color: #dc2626;
-  font-size: 0.875rem;
-  margin-bottom: var(--spacing-sm);
-}
-
-.formularioBotones {
-  display: flex;
-  gap: var(--spacing-sm);
-  margin-top: var(--spacing-sm);
-}
-
-.botonCancelar {
-  flex: 1;
-  min-width: 100px;
-  padding: 10px;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 10px;
-  background-color: #fff;
-  color: var(--text-secondary-ds, #475569);
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: background 0.15s;
-  min-height: 42px;
-}
-
-.botonCancelar:hover {
-  background-color: #f8fafc;
-}
-
-.botonCancelar:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.botonGuardar {
-  flex: 1;
-  min-width: 100px;
-  padding: 10px;
-  border: none;
-  border-radius: 10px;
-  background: var(--color-primary, #0891b2);
-  color: white;
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: background 0.15s, transform 0.1s;
-  box-shadow: 0 2px 8px rgba(8, 145, 178, 0.25);
-  min-height: 42px;
-}
-
-.botonGuardar:hover:not(:disabled) {
-  background: var(--color-primary-hover, #0e7490);
-  transform: translateY(-1px);
-}
-
-.botonGuardar:active:not(:disabled) {
-  transform: scale(0.98);
-}
-
-.botonGuardar:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* ========== MODAL ACTIONS ========== */
-.modalAcciones {
-  display: flex;
-  gap: var(--spacing-sm);
-  padding-top: var(--spacing-md);
-  border-top: 1px solid #e2e8f0;
-}
-
-.modalBotonEditar,
-.modalBotonEliminar {
-  flex: 1;
-  padding: 10px;
-  border: none;
-  border-radius: 10px;
-  font-weight: 600;
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: transform 0.1s, box-shadow 0.15s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  min-height: 40px;
-}
-
-.modalBotonEditar {
-  background: var(--color-primary, #0891b2);
-  color: white;
-  box-shadow: 0 2px 8px rgba(8, 145, 178, 0.25);
-}
-
-.modalBotonEditar:hover {
-  background: var(--color-primary-hover, #0e7490);
-  transform: translateY(-1px);
-}
-
-.modalBotonEliminar {
-  background: #ef4444;
-  color: white;
-  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);
-}
-
-.modalBotonEliminar:hover {
-  background: #dc2626;
-  transform: translateY(-1px);
-}
-
-/* ========== BOTONES DE ACCIÓN EN TRANSACCIONES ========== */
-.transaccionAcciones {
-  display: flex;
-  gap: 6px;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.15s;
-  margin-left: auto;
-}
-
-.transaccionItem:hover .transaccionAcciones {
-  opacity: 1;
-  visibility: visible;
-}
-
-.botonEditar,
-.botonEliminar {
-  width: 1.875rem;
-  height: 1.875rem;
-  min-width: 1.875rem;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-  transition: background 0.15s, transform 0.1s;
-  flex-shrink: 0;
-}
-
-.botonEditar {
-  background-color: #e0f2fe;
-  color: #0891b2;
-}
-
-.botonEditar:hover {
-  background-color: #bae6fd;
-  transform: scale(1.08);
-}
-
-.botonEliminar {
-  background-color: #fef2f2;
-  color: #ef4444;
-}
-
-.botonEliminar:hover {
-  background-color: #fecaca;
-  transform: scale(1.08);
-}
-
-.botonEditar:active,
-.botonEliminar:active {
-  transform: scale(0.95);
-}
-
-/* ========== RESUMEN MODAL ========== */
-.modalResumen {
-  max-width: 700px;
-}
-
-.transaccionesResumenList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-md);
-}
-
-.transaccionResumenItem {
+/* ── Stats grid ────────────────────────────────────────────────── */
+.statsGrid {
   display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-md);
-  background-color: #f8fafc;
-  border-radius: 10px;
-  border: 1px solid #e2e8f0;
-  cursor: pointer;
-  transition: transform 0.1s, box-shadow 0.15s;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
 }
 
-.transaccionResumenItem:hover {
-  transform: translateX(4px);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-}
-
-.transaccionResumenIcono {
-  width: 2.25rem;
-  height: 2.25rem;
-  min-width: 2.25rem;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.transaccionResumenInfo {
-  display: grid;
-  grid-template-columns: 1fr auto auto auto;
-  align-items: center;
-  gap: var(--spacing-sm);
-  min-width: 0;
-}
-
-.transaccionResumenConcepto {
-  color: var(--text-primary-ds, #0f172a);
-  font-weight: 600;
-  font-size: 0.875rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.transaccionResumenFecha {
-  color: var(--text-tertiary-ds, #94a3b8);
-  font-size: 0.78rem;
-  white-space: nowrap;
-}
-
-.transaccionResumenMonto {
-  font-size: 1rem;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.modalEmpty {
-  text-align: center;
-  padding: var(--spacing-2xl);
-  color: var(--text-tertiary-ds, #94a3b8);
-}
-
-.transaccionResumenAcciones {
-  display: flex;
-  gap: 6px;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.15s;
-}
-
-.transaccionResumenItem:hover .transaccionResumenAcciones {
-  opacity: 1;
-  visibility: visible;
-}
-
-.botonEditarResumen,
-.botonEliminarResumen {
-  width: 1.875rem;
-  height: 1.875rem;
-  min-width: 1.875rem;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-  transition: background 0.15s, transform 0.1s;
-  flex-shrink: 0;
-}
-
-.botonEditarResumen {
-  background-color: #e0f2fe;
-  color: #0891b2;
-}
-
-.botonEditarResumen:hover {
-  background-color: #bae6fd;
-  transform: scale(1.08);
-}
-
-.botonEliminarResumen {
-  background-color: #fef2f2;
-  color: #ef4444;
-}
-
-.botonEliminarResumen:hover {
-  background-color: #fecaca;
-  transform: scale(1.08);
-}
-
-/* ========== PAGINACIÓN ========== */
-.paginacion {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md) 0;
-  border-top: 1px solid #e2e8f0;
-}
-
-.botonPaginacion {
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 50%;
-  background: var(--color-primary, #0891b2);
-  color: white;
-  border: none;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(8, 145, 178, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.875rem;
-  transition: transform 0.1s, box-shadow 0.15s;
-}
-
-.botonPaginacion:hover:not(:disabled) {
-  transform: scale(1.08);
-  box-shadow: 0 4px 10px rgba(8, 145, 178, 0.4);
-  background: var(--color-primary-hover, #0e7490);
-}
-
-.botonPaginacion:active:not(:disabled) {
-  transform: scale(0.95);
-}
-
-.botonPaginacion:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  background: #e2e8f0;
-  box-shadow: none;
-}
-
-.paginacionInfo {
-  color: var(--text-secondary-ds, #475569);
-  font-weight: 600;
-  font-size: 0.875rem;
-  min-width: 110px;
-  text-align: center;
-}
-
-/* ========== ANIMACIONES ========== */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from { transform: translateY(40px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
-  .cuerpo {
-    flex-direction: column;
-    gap: var(--spacing-lg);
-  }
-
-  .graficoContainer {
-    max-width: 100%;
-  }
-
-  .historialHeader {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .transaccionItem {
-    gap: var(--spacing-xs);
-  }
-
-  .transaccionAcciones,
-  .transaccionResumenAcciones {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  .modalAcciones {
-    flex-direction: column;
-  }
-
-  .botonesGrupo {
-    flex-direction: column;
-  }
-
-  .formularioBotones {
-    flex-direction: column;
-  }
-
-  .transaccionResumenInfo {
-    grid-template-columns: 1fr auto;
-  }
+  .statsGrid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 480px) {
-  .contenedorHome {
-    padding: var(--spacing-lg);
-  }
-
-  .modalOverlay {
-    padding: 0;
-    align-items: flex-end;
-  }
-
-  .modalContent {
-    max-height: 95vh;
-    border-radius: 16px 16px 0 0;
-  }
+  .statsGrid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
 }
 
-/* ========== DARK MODE ========== */
-:global(.dark) .contenedorHome {
-  background-color: var(--card-bg-ds, #1e293b);
-  border-color: #334155;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+.statCard {
+  background: var(--card-bg-ds, #ffffff);
+  border-radius: 16px;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--card-border, #e2e8f0);
 }
 
-:global(.dark) .graficoContainer,
-:global(.dark) .resumenItem,
-:global(.dark) .transaccionItem,
-:global(.dark) .formularioContainer,
-:global(.dark) .transaccionResumenItem,
-:global(.dark) .modalDetalleItem {
-  background-color: var(--card-bg-ds, #1e293b);
-  border-color: #334155;
+.statIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-:global(.dark) .graficoCenter {
-  background-color: var(--card-bg-ds, #1e293b);
+.statWallet  .statIcon { background: rgba(8,145,178,0.12); color: #0891b2; }
+.statIngreso .statIcon { background: rgba(5,150,105,0.12);  color: #059669; }
+.statGasto   .statIcon { background: rgba(239,68,68,0.12);  color: #ef4444; }
+.statBalance .statIcon { background: rgba(245,158,11,0.12); color: #d97706; }
+
+.statInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
 
-:global(.dark) .historial {
-  border-color: #334155;
+.statLabel {
+  font-size: 0.75rem;
+  color: var(--color-text-tertiary, #94a3b8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-:global(.dark) .modalContent {
-  background-color: var(--card-bg-ds, #1e293b);
+.statValue {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text-primary, #0f172a);
+  white-space: nowrap;
 }
 
-:global(.dark) .formularioBotones {
-  border-color: #334155;
+.positivo { color: #059669; }
+.negativo { color: #ef4444; }
+
+/* ── Progress bar ──────────────────────────────────────────────── */
+.progressCard {
+  background: var(--card-bg-ds, #ffffff);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--card-border, #e2e8f0);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-:global(.dark) .badge {
+.progressHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.progressLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #0f172a);
+}
+
+.progressPct {
+  font-size: 0.8rem;
+  color: var(--color-text-tertiary, #94a3b8);
+}
+
+.progressBar {
+  height: 8px;
+  background: #e9ecef;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #0891b2, #ef4444);
+  border-radius: 999px;
+  transition: width 0.6s ease;
+}
+
+.progressLegend {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.8rem;
+}
+
+.legendIng { color: #0891b2; font-weight: 600; }
+.legendGas { color: #ef4444; font-weight: 600; }
+
+/* ── Accesos rápidos ───────────────────────────────────────────── */
+.accionesSection { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.sectionTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-primary, #0f172a);
+  margin: 0;
+}
+
+.accionesGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .accionesGrid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.accionCard {
+  background: var(--card-bg-ds, #ffffff);
+  border-radius: 14px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--card-border, #e2e8f0);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.2s;
+}
+
+.accionCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.09);
+}
+
+.accionIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.accionLabel {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-secondary, #475569);
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* ── Gráficas ──────────────────────────────────────────────────── */
+.chartsGrid {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .chartsGrid { grid-template-columns: 1fr; }
+}
+
+/* ── Últimas transacciones ─────────────────────────────────────── */
+.txnSection { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.txnHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.verTodas {
+  font-size: 0.85rem;
+  color: #0891b2;
+  text-decoration: none;
+  font-weight: 600;
+}
+.verTodas:hover { text-decoration: underline; }
+
+.txnList {
+  background: var(--card-bg-ds, #ffffff);
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--card-border, #e2e8f0);
+  overflow: hidden;
+}
+
+.txnItem {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.875rem 1.25rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+.txnItem:last-child { border-bottom: none; }
+
+.txnDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.dotIngreso { background: #059669; }
+.dotGasto   { background: #ef4444; }
+
+.txnInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.txnDesc {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #0f172a);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.txnMeta {
+  font-size: 0.78rem;
+  color: var(--color-text-tertiary, #94a3b8);
+}
+
+.txnAmount {
+  font-size: 0.9rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ── Estados vacíos / carga ────────────────────────────────────── */
+.cargando {
+  color: var(--color-text-tertiary, #94a3b8);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 2rem 0;
+  margin: 0;
+}
+
+.empty {
+  background: var(--card-bg-ds, #ffffff);
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--card-border, #e2e8f0);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.emptyText {
+  color: var(--color-text-tertiary, #94a3b8);
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.emptyBtn {
+  display: inline-block;
+  padding: 8px 20px;
+  background: #0891b2;
+  color: #fff;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.emptyBtn:hover { background: #0e7490; }
+
+/* ── Dark mode ─────────────────────────────────────────────────── */
+:global(.dark) .statCard,
+:global(.dark) .progressCard,
+:global(.dark) .accionCard,
+:global(.dark) .txnList,
+:global(.dark) .empty {
   background: #1e293b;
   border-color: #334155;
-  color: #94a3b8;
 }
 
-:global(.dark) .badge:hover {
-  border-color: #0891b2;
-  color: #0891b2;
-}
-
-:global(.dark) .formGroup input,
-:global(.dark) .formGroup select {
-  background-color: var(--input-bg-ds, #1e293b);
-  border-color: #334155;
+:global(.dark) .nombre,
+:global(.dark) .sectionTitle,
+:global(.dark) .statValue,
+:global(.dark) .txnDesc {
   color: #f1f5f9;
 }
 
-:global(.dark) .botonCancelar {
-  background: #1e293b;
-  border-color: #334155;
-  color: #94a3b8;
-}
+:global(.dark) .progressBar { background: #334155; }
+:global(.dark) .txnItem { border-bottom-color: #334155; }
 
-:global(.dark) .botonTipo {
-  background: #1e293b;
-  border-color: #334155;
-  color: #94a3b8;
-}
-
-:global(.dark) .modalDetalleItem {
-  background-color: #0f172a;
-  border-color: #334155;
-}
-
-:global(.dark) .paginacion {
-  border-color: #334155;
-}
-
-/* ========== ACCESIBILIDAD ========== */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* ========== IMPRESIÓN ========== */
-@media print {
-  .logoutButton,
-  .fabButton,
-  .modalOverlay {
-    display: none !important;
-  }
+/* ── Responsive mobile ─────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .heroRow { gap: 0.5rem; }
+  .nombre  { font-size: 1.4rem; }
+  .heroAvatar { width: 42px; height: 42px; font-size: 0.9rem; }
+  .statCard   { padding: 0.875rem; gap: 0.625rem; }
+  .statValue  { font-size: 0.95rem; }
+  .statIcon   { width: 36px; height: 36px; border-radius: 10px; }
 }

@@ -125,21 +125,71 @@
   border-color: var(--bdg-gastos-border);
 }
 
+/* ===== HAMBURGER ===== */
+.hamburger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--card-border, #e2e8f0);
+  background: transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.hamburger:hover { background-color: var(--bg-tertiary); }
+
+/* ===== MOBILE MENU ===== */
+.mobileMenu {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  background-color: var(--bg-app, #ffffff);
+  border-bottom: 1px solid var(--card-border, #e2e8f0);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 0;
+}
+
+.mobileLink {
+  padding: 0.875rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-body);
+  text-decoration: none;
+  border-bottom: 1px solid var(--card-border, #f1f5f9);
+  transition: background-color 0.15s;
+}
+.mobileLink:last-child { border-bottom: none; }
+.mobileLink:hover { background-color: var(--bg-tertiary); }
+
+.mobileLinkActivo {
+  color: var(--color-primary-200, #0891b2);
+  font-weight: 700;
+  background-color: rgba(8, 145, 178, 0.06);
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  top: 64px;
+  z-index: 98;
+  background: rgba(0, 0, 0, 0.2);
+}
+
 /* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .navLinks { display: none; }
+  .hamburger { display: flex; }
+}
+
 @media (max-width: 640px) {
-  .contenedor {
-    padding: 0 var(--spacing-md);
-  }
-
-  .navLinks {
-    display: none;
-  }
-
-  .nombre {
-    display: none;
-  }
-
-  .usuario {
-    padding: 0.35rem 0.5rem;
-  }
+  .contenedor { padding: 0 var(--spacing-md); }
+  .nombre { display: none; }
+  .usuario { padding: 0.35rem 0.5rem; }
 }

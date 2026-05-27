@@ -4,7 +4,7 @@ services:
 
   postgres:
     image: postgres:16
-    container_name: spendiq-postgres
+    container_name: payflow-postgres
     ports:
       - "5432:5432"
     environment:
@@ -14,23 +14,9 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U spendiq"]
+      test: ["CMD-SHELL", "pg_isready -U payflow"]
       interval: 10s
       retries: 5
-
-  ibmmq:
-    image: icr.io/ibm-messaging/mq:latest
-    container_name: spendiq-ibmmq
-    ports:
-      - "1414:1414"
-      - "9443:9443"
-    environment:
-      - LICENSE=accept
-      - MQ_QMGR_NAME=QM1
-      - MQ_APP_PASSWORD=passw0rd
-      - MQ_ADMIN_PASSWORD=passw0rd
-    volumes:
-      - mq_data:/mnt/mqm
 
   discovery-service:
     build: ./discovery-service
@@ -80,17 +66,11 @@ services:
       - DB_URL=jdbc:postgresql://postgres:5432/transactions_db
       - DB_USER=payflow
       - DB_PASS=payflow123
-      - MQ_HOST=ibmmq
-      - MQ_PORT=1414
-      - MQ_CHANNEL=DEV.APP.SVRCONN
-      - MQ_QUEUE_MANAGER=QM1
-      - MQ_USER=app
-      - MQ_PASSWORD=passw0rd
       - EUREKA_URI=http://discovery-service:8761/eureka
 
-  trading-service:
-    build: ./trading-service
-    container_name: trading-service
+  wallet-service:
+    build: ./wallet-service
+    container_name: wallet-service
     ports:
       - "8083:8083"
     depends_on:
@@ -99,33 +79,42 @@ services:
       discovery-service:
         condition: service_started
     environment:
-      - DB_URL=jdbc:postgresql://postgres:5432/trading_db
+      - DB_URL=jdbc:postgresql://postgres:5432/wallet_db
       - DB_USER=payflow
       - DB_PASS=payflow123
-      - MQ_HOST=ibmmq
-      - MQ_PORT=1414
-      - MQ_CHANNEL=DEV.APP.SVRCONN
-      - MQ_QUEUE_MANAGER=QM1
-      - MQ_USER=app
-      - MQ_PASSWORD=passw0rd
       - EUREKA_URI=http://discovery-service:8761/eureka
 
-  price-service:
-    build: ./price-service
-    container_name: price-service
+  bank-service:
+    build: ./bank-service
+    container_name: bank-service
     ports:
-      - "8084:8084"
+      - "8085:8085"
     depends_on:
-      - discovery-service
+      postgres:
+        condition: service_healthy
+      discovery-service:
+        condition: service_started
     environment:
-      - MQ_HOST=ibmmq
-      - MQ_PORT=1414
-      - MQ_CHANNEL=DEV.APP.SVRCONN
-      - MQ_QUEUE_MANAGER=QM1
-      - MQ_USER=app
-      - MQ_PASSWORD=passw0rd
+      - DB_URL=jdbc:postgresql://postgres:5432/bank_db
+      - DB_USER=payflow
+      - DB_PASS=payflow123
+      - EUREKA_URI=http://discovery-service:8761/eureka
+
+  invoicing-service:
+    build: ./invoicing-service
+    container_name: invoicing-service
+    ports:
+      - "8086:8086"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      discovery-service:
+        condition: service_started
+    environment:
+      - DB_URL=jdbc:postgresql://postgres:5432/invoicing_db
+      - DB_USER=payflow
+      - DB_PASS=payflow123
       - EUREKA_URI=http://discovery-service:8761/eureka
 
 volumes:
   postgres_data:
-  mq_data:

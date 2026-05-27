@@ -92,12 +92,12 @@ function Login() {
             Tus finanzas,<br />bajo control.
           </h2>
           <p className={style.brandSub}>
-            Gestiona tus transacciones, sigue el mercado crypto y recibe alertas de precio en tiempo real.
+            Cobra, paga y factura desde una sola app con tu banco conectado de verdad.
           </p>
           <div className={style.brandFeatures}>
-            <span>✓ Transacciones en tiempo real</span>
-            <span>✓ Alertas de precio crypto</span>
-            <span>✓ Informes mensuales en PDF</span>
+            <span>✓ Wallet y pagos P2P</span>
+            <span>✓ Open Banking PSD2</span>
+            <span>✓ Facturación autónomos + IVA</span>
           </div>
         </div>
       </div>

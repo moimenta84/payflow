@@ -10,9 +10,9 @@ import Register from './pages/Register'
 import Remember from './pages/Remember'
 import Transacciones from './pages/Transacciones'
 import Transation from './pages/Transation'
-import Crypto from './pages/Crypto'
 import Banca from './pages/Banca'
 import Autonomos from './pages/Autonomos'
+import Wallet from './pages/Wallet'
 import Landing from './pages/Landing'
 import ProtectedRoute from './pages/ProtectedRoute'
 import FloatingAssistantButton from './components/FloatingAssistantButton'
@@ -55,6 +55,16 @@ function App() {
               }
             />
             <Route
+              path="/wallet"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <Wallet />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/transacciones"
               element={
                 <ProtectedRoute>
@@ -70,16 +80,6 @@ function App() {
                 <ProtectedRoute>
                   <AppLayout>
                     <Transation />
-                  </AppLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/crypto"
-              element={
-                <ProtectedRoute>
-                  <AppLayout>
-                    <Crypto />
                   </AppLayout>
                 </ProtectedRoute>
               }
