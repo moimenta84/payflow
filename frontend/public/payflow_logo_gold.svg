@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <defs>
+    <linearGradient id="goldenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde68a"/>
+      <stop offset="50%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="goldShine" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Fondo circular dorado -->
+  <circle cx="60" cy="60" r="58" fill="url(#goldenGrad)" stroke="#92400e" stroke-width="1.5"/>
+
+  <!-- Brillo sutil -->
+  <ellipse cx="42" cy="38" rx="22" ry="14" fill="url(#goldShine)" opacity="0.4"/>
+
+  <!-- Letra P estilizada -->
+  <path d="M 42 28
+           L 42 92
+           M 42 28
+           L 68 28
+           Q 84 28 84 46
+           Q 84 64 68 64
+           L 42 64"
+        stroke="#ffffff"
+        stroke-width="11"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        fill="none"/>
+</svg>

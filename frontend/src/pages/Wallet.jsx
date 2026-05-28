@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { api } from "../config/api";
-import style from "../styles/Wallet.module.scss";
+import style from "../styles/Wallet.module.css";
 
 function IconSend() {
   return (
@@ -36,6 +36,12 @@ export default function Wallet() {
   const [sending, setSending]         = useState(false);
   const [sendError, setSendError]     = useState("");
   const [sendSuccess, setSendSuccess] = useState("");
+
+  // Solicitar dinero
+  const [showRequest, setShowRequest]   = useState(false);
+  const [requestAmount, setRequestAmount] = useState("");
+  const [requestDesc, setRequestDesc]     = useState("");
+  const [copiado, setCopiado]             = useState(false);
 
   const [form, setForm] = useState({ toUserId: "", amount: "", description: "" });
 
@@ -114,7 +120,7 @@ export default function Wallet() {
             <IconSend />
             <span className={style.accionLabel}>Enviar</span>
           </button>
-          <button className={style.accionBtn} disabled title="Próximamente">
+          <button className={style.accionBtn} onClick={() => { setShowRequest(true); setRequestAmount(""); setRequestDesc(""); setCopiado(false); }}>
             <IconRequest />
             <span className={style.accionLabel}>Pedir</span>
           </button>
@@ -209,6 +215,68 @@ export default function Wallet() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal solicitar dinero */}
+      {showRequest && (
+        <div className={style.modalOverlay} onClick={() => setShowRequest(false)}>
+          <div className={style.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={style.modalHeader}>
+              <h3 className={style.modalTitle}>Solicitar dinero</h3>
+              <button className={style.modalClose} onClick={() => setShowRequest(false)}><IconClose /></button>
+            </div>
+
+            <div className={style.modalForm}>
+              <div className={style.formGroup}>
+                <label className={style.label}>Importe (EUR)</label>
+                <input
+                  className={style.input}
+                  type="number"
+                  step="0.01"
+                  min="0.01"
+                  value={requestAmount}
+                  onChange={(e) => setRequestAmount(e.target.value)}
+                  placeholder="0.00"
+                />
+              </div>
+              <div className={style.formGroup}>
+                <label className={style.label}>Concepto <span className={style.optional}>(opcional)</span></label>
+                <input
+                  className={style.input}
+                  value={requestDesc}
+                  onChange={(e) => setRequestDesc(e.target.value)}
+                  placeholder="Ej: Cena del viernes"
+                  maxLength={200}
+                />
+              </div>
+
+              {requestAmount && parseFloat(requestAmount) > 0 && (
+                <div style={{ background: '#f0f9ff', border: '1px solid #0891b2', borderRadius: '10px', padding: '12px', marginTop: '8px' }}>
+                  <p style={{ fontSize: '0.8rem', color: '#0c3549', margin: '0 0 6px', fontWeight: 600 }}>Enlace de cobro generado:</p>
+                  <code style={{ display: 'block', wordBreak: 'break-all', fontSize: '0.78rem', color: '#155e75', background: '#fff', padding: '8px', borderRadius: '6px' }}>
+                    {`${window.location.origin}/pay?to=${wallet?.userId || ''}&amount=${requestAmount}${requestDesc ? `&desc=${encodeURIComponent(requestDesc)}` : ''}`}
+                  </code>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const url = `${window.location.origin}/pay?to=${wallet?.userId || ''}&amount=${requestAmount}${requestDesc ? `&desc=${encodeURIComponent(requestDesc)}` : ''}`;
+                      navigator.clipboard.writeText(url);
+                      setCopiado(true);
+                      setTimeout(() => setCopiado(false), 2500);
+                    }}
+                    style={{ marginTop: '8px', padding: '6px 14px', background: copiado ? '#059669' : '#0891b2', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer' }}
+                  >
+                    {copiado ? '✓ Copiado' : '📋 Copiar enlace'}
+                  </button>
+                </div>
+              )}
+
+              <div className={style.modalActions}>
+                <button type="button" className={style.btnCancelar} onClick={() => setShowRequest(false)}>Cerrar</button>
+              </div>
+            </div>
           </div>
         </div>
       )}

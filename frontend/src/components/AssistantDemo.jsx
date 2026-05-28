@@ -1,7 +1,72 @@
 import React, { useState, useRef, useEffect } from "react";
 import style from "../styles/Assistant.module.css";
 import Toggle from "../components/Toggle";
+import {
+  getSaldo, getResumenPeriodo, getCategoriaTopGasto, getMovimientosRecientes,
+  extractCategoria, extractPeriodo, CAT_LABELS,
+} from "../config/assistantDataService";
 import "../index.css";
+
+const fmt = (n) => `${n >= 0 ? '' : '-'}€${Math.abs(n).toFixed(2)}`;
+
+async function answerFromData(text) {
+  const t = text.toLowerCase();
+  const periodo = extractPeriodo(t);
+  const cat     = extractCategoria(t);
+
+  try {
+    // Saldo de la cartera
+    if (/\b(saldo|cartera|wallet|cu[aá]nto.*tengo)\b/.test(t)) {
+      const { balance, currency } = await getSaldo();
+      return `Tu saldo actual en la cartera es de **${fmt(balance)} ${currency}**.`;
+    }
+
+    // Top de categorías
+    if (/(en qu[eé].*gast|m[aá]s.*gast|categor[ií]a.*gast|top.*gast)/.test(t)) {
+      const top = await getCategoriaTopGasto(periodo);
+      if (top.length === 0) return `No tienes gastos registrados en ${periodo.label}.`;
+      const lineas = top.slice(0, 5).map((c, i) => `${i + 1}. ${c.label}: ${fmt(c.total)}`).join('\n');
+      return `Tus mayores categorías de gasto en ${periodo.label}:\n\n${lineas}`;
+    }
+
+    // Movimientos recientes
+    if (/(movimientos?|transacciones?\s+recientes|últimas|ultimas|hist[oó]ric)/.test(t)) {
+      const movs = await getMovimientosRecientes(5);
+      if (movs.length === 0) return 'Aún no tienes transacciones registradas.';
+      const lineas = movs.map(m => {
+        const signo = m.tipo === 'GASTO' ? '-' : '+';
+        return `• ${m.fecha} — ${m.descripcion} (${(CAT_LABELS[m.categoria] || m.categoria).toLowerCase()}): ${signo}€${m.cantidad.toFixed(2)}`;
+      }).join('\n');
+      return `Tus últimas 5 transacciones:\n\n${lineas}`;
+    }
+
+    // Gastos por periodo/categoría
+    if (/\bgast/.test(t)) {
+      const r = await getResumenPeriodo(periodo, cat);
+      const catTxt = cat ? ` en ${CAT_LABELS[cat]}` : '';
+      if (r.gastos === 0) return `No tienes gastos registrados${catTxt} ${periodo.label}.`;
+      return `Has gastado **${fmt(r.gastos)}**${catTxt} ${periodo.label} (${r.count} ${r.count === 1 ? 'transacción' : 'transacciones'}).`;
+    }
+
+    // Ingresos por periodo
+    if (/\bingres/.test(t)) {
+      const r = await getResumenPeriodo(periodo, cat);
+      if (r.ingresos === 0) return `No tienes ingresos registrados ${periodo.label}.`;
+      return `Has ingresado **${fmt(r.ingresos)}** ${periodo.label}.`;
+    }
+
+    // Balance / resumen
+    if (/\b(balance|resumen|c[oó]mo.*voy|c[oó]mo.*estoy)\b/.test(t)) {
+      const r = await getResumenPeriodo(periodo);
+      const sign = r.balance >= 0 ? 'positivo' : 'negativo';
+      return `Resumen de ${periodo.label}:\n\n• Ingresos: ${fmt(r.ingresos)}\n• Gastos: ${fmt(r.gastos)}\n• Balance: **${fmt(r.balance)}** (${sign})`;
+    }
+
+    return null; // sin match — cae a la lógica de consejos
+  } catch (err) {
+    return `No he podido consultar tus datos: ${err.message}. ¿Has iniciado sesión?`;
+  }
+}
 
 // VERSIÓN DEMO SIN API - Para desarrollo y pruebas
 function AssistantDemo() {
@@ -67,25 +132,19 @@ function AssistantDemo() {
     return "Entiendo tu pregunta sobre finanzas. Puedo ayudarte con:\n\n• Crear y gestionar presupuestos\n• Estrategias de ahorro\n• Reducción de gastos\n• Inversiones básicas\n• Gestión de deudas\n• Fondos de emergencia\n\n¿Sobre cuál de estos temas te gustaría saber más?";
   };
 
-  // Simular respuesta del asistente con delay
-  const sendMessage = (userMessage) => {
+  // Intenta responder con datos reales; si no, cae a respuestas pre-programadas
+  const sendMessage = async (userMessage) => {
     setIsLoading(true);
-
-    // Simular delay de API (1-2 segundos)
-    setTimeout(() => {
-      const assistantResponse = getAutomatedResponse(userMessage);
-      
+    try {
+      const dataResponse = await answerFromData(userMessage);
+      const assistantResponse = dataResponse ?? getAutomatedResponse(userMessage);
       setMessages((prev) => [
         ...prev,
-        {
-          role: "assistant",
-          content: assistantResponse,
-          timestamp: new Date(),
-        },
+        { role: "assistant", content: assistantResponse, timestamp: new Date() },
       ]);
-      
+    } finally {
       setIsLoading(false);
-    }, 1000 + Math.random() * 1000);
+    }
   };
 
   // Manejar envío del formulario
@@ -111,10 +170,12 @@ function AssistantDemo() {
 
   // Sugerencias rápidas
   const quickSuggestions = [
-    "¿Cómo puedo ahorrar dinero?",
-    "Ayúdame a crear un presupuesto",
-    "Consejos para reducir gastos",
-    "¿Qué es una inversión segura?",
+    "¿Cuál es mi saldo?",
+    "¿Cuánto he gastado este mes?",
+    "¿En qué gasto más?",
+    "Resumen del mes",
+    "Mis últimos movimientos",
+    "¿Cómo puedo ahorrar?",
   ];
 
   const handleSuggestionClick = (suggestion) => {
@@ -324,7 +385,7 @@ function AssistantDemo() {
             </button>
           </div>
           <p className={style.disclaimer}>
-            💡 Respuestas pre-programadas.
+            💡 Conectado a tus datos reales — saldo, transacciones y categorías.
           </p>
         </form>
       </div>

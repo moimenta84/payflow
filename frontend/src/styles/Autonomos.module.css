@@ -1,10 +1,10 @@
 .autonomos {
-  max-width: 940px;
+  max-width: 1000px;
   margin: 0 auto;
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.5rem;
 }
 
 /* ── Header ── */
@@ -26,25 +26,30 @@
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background: linear-gradient(135deg, var(--color-primary-400, #0c3549), var(--color-primary-350, #164e63));
+  background: linear-gradient(135deg, #0e7490, #0891b2);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-primary-100, #22d3ee);
+  color: #fff;
   flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(8, 145, 178, 0.3);
 }
 
 .titulo {
-  font-size: 1.4rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--text-primary, #111);
+  font-size: var(--text-4xl);
+  font-weight: var(--weight-extrabold);
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking-snug);
+  color: var(--text-primary);
   margin: 0;
 }
 
 .subtitulo {
-  font-size: 0.85rem;
-  color: var(--text-secondary, #666);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
   margin: 0.2rem 0 0;
 }
 
@@ -70,19 +75,19 @@
 }
 
 .tab:hover {
-  background: var(--color-gray-50, #f9fafb);
+  background: #f8fafc;
   color: var(--text-primary, #111);
 }
 
 .tabActiva {
-  background: var(--color-primary-200, #0891b2);
-  border-color: var(--color-primary-200, #0891b2);
+  background: #0891b2;
+  border-color: #0891b2;
   color: #fff;
   font-weight: 600;
 }
 
 .tabActiva:hover {
-  background: var(--color-primary-250, #0e7490);
+  background: #0e7490;
   color: #fff;
 }
 
@@ -113,7 +118,7 @@
 /* ── Buttons ── */
 .btnPrimario {
   padding: 0.55rem 1.25rem;
-  background: var(--color-primary-200, #0891b2);
+  background: #0891b2;
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -125,7 +130,7 @@
 }
 
 .btnPrimario:hover:not(:disabled) {
-  background: var(--color-primary-250, #0e7490);
+  background: #0e7490;
   transform: translateY(-1px);
 }
 
@@ -136,7 +141,7 @@
   padding: 0.55rem 1.1rem;
   background: transparent;
   color: var(--text-secondary, #555);
-  border: 1.5px solid var(--color-gray-200, #e5e7eb);
+  border: 1.5px solid #e2e8f0;
   border-radius: 10px;
   font-size: 0.875rem;
   font-weight: 500;
@@ -145,14 +150,14 @@
 }
 
 .btnSecundario:hover {
-  background: var(--color-gray-50, #f9fafb);
+  background: #f8fafc;
   transform: translateY(-1px);
 }
 
 /* ── Form ── */
 .form {
   background: var(--card-bg, #fff);
-  border: 1px solid var(--color-gray-100, #f3f4f6);
+  border: 1px solid var(--card-border, #e2e8f0);
   border-radius: 14px;
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
@@ -189,7 +194,7 @@
 
 .input {
   padding: 0.55rem 0.875rem;
-  border: 1.5px solid var(--color-gray-200, #e5e7eb);
+  border: 1.5px solid #e2e8f0;
   border-radius: 8px;
   font-size: 0.9rem;
   background: var(--input-bg, #fafafa);
@@ -202,7 +207,7 @@
 }
 
 .input:focus {
-  border-color: var(--color-primary-200, #0891b2);
+  border-color: #0891b2;
 }
 
 .checkLabel {
@@ -218,7 +223,7 @@
 .checkLabel input[type="checkbox"] {
   width: 16px;
   height: 16px;
-  accent-color: var(--color-primary-200, #0891b2);
+  accent-color: #0891b2;
   cursor: pointer;
 }
 
@@ -228,8 +233,8 @@
   flex-wrap: wrap;
   gap: 1rem;
   padding: 0.75rem 1rem;
-  background: var(--color-gray-50, #f9fafb);
-  border: 1px solid var(--color-gray-100, #f3f4f6);
+  background: #f8fafc;
+  border: 1px solid var(--card-border, #e2e8f0);
   border-radius: 8px;
   font-size: 0.875rem;
   color: var(--text-secondary, #555);
@@ -255,7 +260,7 @@
 
 /* ── Tabla ── */
 .tabla {
-  border: 1px solid var(--color-gray-100, #f3f4f6);
+  border: 1px solid var(--card-border, #e2e8f0);
   border-radius: 12px;
   overflow: hidden;
 }
@@ -264,7 +269,7 @@
   display: grid;
   grid-template-columns: 110px 1fr 1fr 100px 100px 80px;
   padding: 0.6rem 1rem;
-  background: var(--color-gray-50, #f9fafb);
+  background: #f8fafc;
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--text-tertiary, #888);
@@ -284,7 +289,7 @@
   transition: background 0.12s;
 }
 
-.tablaFila:hover { background: var(--color-gray-50, #f9fafb); }
+.tablaFila:hover { background: #f8fafc; }
 
 .mono {
   font-variant-numeric: tabular-nums;
@@ -329,8 +334,8 @@
   border-radius: 6px;
   font-size: 0.75rem;
   font-weight: 600;
-  background: var(--color-primary-400, #0c3549);
-  color: var(--color-primary-100, #22d3ee);
+  background: rgba(8, 145, 178, 0.12);
+  color: #0891b2;
 }
 
 /* ── Acciones ── */
@@ -355,7 +360,7 @@
 }
 
 .btnIcono:hover:not(:disabled) {
-  background: var(--color-gray-200, #e5e7eb);
+  background: #e2e8f0;
   transform: translateY(-1px);
 }
 
@@ -392,7 +397,7 @@
   border-radius: 8px;
   background: linear-gradient(90deg,
     var(--color-gray-100, #f3f4f6) 25%,
-    var(--color-gray-50, #f9fafb) 50%,
+    #f8fafc 50%,
     var(--color-gray-100, #f3f4f6) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.4s infinite;
@@ -403,7 +408,7 @@
   border-radius: 14px;
   background: linear-gradient(90deg,
     var(--color-gray-100, #f3f4f6) 25%,
-    var(--color-gray-50, #f9fafb) 50%,
+    #f8fafc 50%,
     var(--color-gray-100, #f3f4f6) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.4s infinite;
@@ -438,7 +443,7 @@
 
 .resumenCard {
   background: var(--card-bg, #fff);
-  border: 1px solid var(--color-gray-100, #f3f4f6);
+  border: 1px solid var(--card-border, #e2e8f0);
   border-radius: 14px;
   padding: 1.25rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
@@ -448,7 +453,7 @@
 }
 
 .resumenCardDestacado {
-  border-color: var(--color-primary-300, #155e75);
+  border-color: #0891b2;
   border-width: 1.5px;
 }
 

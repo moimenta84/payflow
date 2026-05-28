@@ -5,9 +5,9 @@
 
 /* ── Root ──────────────────────────────────────────────────── */
 .root {
-  background: #050e12;
+  background: #07111d;
   color: #e2f0f4;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--font-display);
   overflow-x: hidden;
   position: relative;
 }
@@ -30,10 +30,10 @@
   width: 900px;
   height: 900px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(6, 182, 212, 0.13) 0%, transparent 65%);
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.18) 0%, transparent 65%);
   pointer-events: none;
   z-index: 0;
-  filter: blur(90px);
+  filter: blur(80px);
   will-change: transform;
 }
 
@@ -44,10 +44,10 @@
   width: 800px;
   height: 800px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(8, 145, 178, 0.1) 0%, transparent 65%);
+  background: radial-gradient(circle, rgba(8, 145, 178, 0.15) 0%, transparent 65%);
   pointer-events: none;
   z-index: 0;
-  filter: blur(110px);
+  filter: blur(100px);
   will-change: transform;
 }
 
@@ -95,10 +95,11 @@
 }
 
 .logo {
-  font-size: 1.35rem;
-  font-weight: 900;
+  font-size: var(--text-xl);
+  font-weight: var(--weight-extrabold);
+  font-family: var(--font-display);
   color: #fff;
-  letter-spacing: -0.03em;
+  letter-spacing: var(--tracking-snug);
   font-style: normal;
   user-select: none;
 }
@@ -173,11 +174,12 @@
   background: rgba(6, 182, 212, 0.12);
   border: 1px solid rgba(6, 182, 212, 0.32);
   color: #22d3ee;
-  font-size: 0.78rem;
-  font-weight: 600;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
   padding: 0.4rem 0.9rem;
   border-radius: 2rem;
   margin-bottom: 2.25rem;
+  letter-spacing: var(--tracking-wide);
   animation: fadeUp 0.6s ease both;
 }
 
@@ -195,10 +197,11 @@
 }
 
 .h1 {
-  font-size: clamp(3.25rem, 7vw, 5.75rem);
-  font-weight: 900;
-  line-height: 1.0;
-  letter-spacing: -0.038em;
+  font-size: clamp(3rem, 6.5vw, 5.5rem);
+  font-weight: var(--weight-extrabold);
+  font-family: var(--font-display);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
   color: #f0f9ff;
   margin: 0 0 1.75rem;
   animation: fadeUp 0.6s ease 0.1s both;
@@ -219,9 +222,10 @@
 }
 
 .heroSub {
-  font-size: clamp(1rem, 2vw, 1.15rem);
-  line-height: 1.78;
-  color: rgba(255, 255, 255, 0.65);
+  font-size: clamp(var(--text-base), 2vw, var(--text-lg));
+  line-height: var(--leading-relaxed);
+  font-weight: var(--weight-normal);
+  color: rgba(255, 255, 255, 0.68);
   margin-bottom: 2.75rem;
   animation: fadeUp 0.6s ease 0.2s both;
 }
@@ -380,13 +384,14 @@
 }
 
 .balAmt {
-  font-size: 1.9rem;
-  font-weight: 900;
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-extrabold);
+  font-family: var(--font-display);
   color: #f0f9ff;
-  letter-spacing: -0.03em;
+  letter-spacing: var(--tracking-tight);
   margin: 0;
 }
-.balAmt span { font-size: 1.1rem; color: rgba(255, 255, 255, 0.45); }
+.balAmt span { font-size: var(--text-lg); color: rgba(255, 255, 255, 0.45); }
 
 .balBadge {
   background: rgba(34, 211, 238, 0.12);
@@ -446,8 +451,8 @@
 
 .feedId {
   display: block;
-  font-size: 0.7rem;
-  font-family: "SF Mono", "Fira Code", monospace;
+  font-size: var(--text-2xs);
+  font-family: var(--font-mono);
   color: rgba(255, 255, 255, 0.38);
   margin-bottom: 0.1rem;
 }
@@ -515,20 +520,21 @@
 
 .statNum {
   display: block;
-  font-size: clamp(1.75rem, 3vw, 2.5rem);
-  font-weight: 900;
-  letter-spacing: -0.04em;
+  font-size: clamp(var(--text-3xl), 3vw, var(--text-4xl));
+  font-weight: var(--weight-extrabold);
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking-tight);
   color: #f0f9ff;
   margin-bottom: 0.25rem;
 }
 
 .statLbl {
   display: block;
-  font-size: 0.78rem;
-  color: rgba(255, 255, 255, 0.50);
+  font-size: var(--text-xs);
+  color: rgba(255, 255, 255, 0.55);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 600;
+  letter-spacing: var(--tracking-widest);
+  font-weight: var(--weight-semibold);
 }
 
 /* ============================================================
@@ -536,7 +542,7 @@
    ============================================================ */
 .bentoSection {
   padding: 7rem 0;
-  background: #050e12;
+  background: #07111d;
 }
 
 .bentoWrap {
@@ -546,28 +552,31 @@
 }
 
 .eyebrow {
-  font-size: 0.72rem;
-  font-weight: 700;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  font-family: var(--font-display);
   text-transform: uppercase;
-  letter-spacing: 0.14em;
+  letter-spacing: var(--tracking-widest);
   color: #22d3ee;
   margin: 0 0 1.25rem;
 }
 
 .eyebrowLight {
-  font-size: 0.72rem;
-  font-weight: 700;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  font-family: var(--font-display);
   text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: rgba(34, 211, 238, 0.7);
+  letter-spacing: var(--tracking-widest);
+  color: rgba(34, 211, 238, 0.75);
   margin: 0 0 1.25rem;
 }
 
 .h2 {
-  font-size: clamp(2rem, 4.5vw, 3.375rem);
-  font-weight: 900;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
+  font-size: clamp(var(--text-3xl), 4.5vw, var(--text-5xl));
+  font-weight: var(--weight-extrabold);
+  font-family: var(--font-display);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-snug);
   color: #f0f9ff;
   margin: 0 0 3.5rem;
 }
@@ -612,25 +621,28 @@
 }
 
 .bEye {
-  font-size: 0.68rem;
-  font-weight: 700;
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-bold);
+  font-family: var(--font-display);
   text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: rgba(255, 255, 255, 0.42);
+  letter-spacing: var(--tracking-widest);
+  color: rgba(255, 255, 255, 0.45);
   margin: 0 0 0.5rem;
 }
 
 .bTitle {
-  font-size: 1.0625rem;
-  font-weight: 800;
+  font-size: var(--text-lg);
+  font-weight: var(--weight-extrabold);
+  font-family: var(--font-display);
   color: #f0f9ff;
+  letter-spacing: var(--tracking-snug);
   margin: 0 0 0.5rem;
 }
 
 .bDesc {
-  font-size: 0.875rem;
-  line-height: 1.65;
-  color: rgba(255, 255, 255, 0.58);
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  color: rgba(255, 255, 255, 0.60);
   margin: 0 0 1rem;
 }
 
@@ -648,22 +660,23 @@
 }
 
 .bigN {
-  font-size: clamp(2.25rem, 4vw, 3.5rem);
-  font-weight: 900;
-  letter-spacing: -0.045em;
+  font-size: clamp(var(--text-4xl), 4vw, var(--text-5xl));
+  font-weight: var(--weight-extrabold);
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking-tight);
   color: #f0f9ff;
   margin: 0.25rem 0 0.125rem;
-  line-height: 1;
+  line-height: var(--leading-none);
 }
 .bigN sup { font-size: 0.5em; vertical-align: super; color: #22d3ee; }
 
 .bigL {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.45);
+  font-size: var(--text-xs);
+  color: rgba(255, 255, 255, 0.50);
   margin: 0 0 1rem;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 600;
+  letter-spacing: var(--tracking-widest);
+  font-weight: var(--weight-semibold);
 }
 
 .dotGrid {
@@ -795,9 +808,9 @@
    PRICING
    ============================================================ */
 .pricingSection {
-  background: #040b0f;
+  background: #060f19;
   padding: 7rem 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .pricingWrap {
@@ -820,6 +833,9 @@
   padding: 2rem;
   position: relative;
   transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  min-height: 560px;
 }
 .pCard:hover {
   border-color: rgba(34, 211, 238, 0.22);
@@ -829,12 +845,12 @@
 
 .pHL {
   background: linear-gradient(145deg, #0c3044 0%, #155e75 60%, #0891b2 100%);
-  border-color: transparent;
-  transform: scale(1.02);
+  border: 2px solid #0891b2;
+  box-shadow: 0 8px 32px rgba(8, 145, 178, 0.25);
 }
 .pHL:hover {
-  transform: scale(1.02) translateY(-4px);
-  box-shadow: 0 24px 60px rgba(8, 145, 178, 0.28);
+  transform: translateY(-4px);
+  box-shadow: 0 24px 60px rgba(8, 145, 178, 0.4);
 }
 
 .pBadge {
@@ -854,10 +870,11 @@
 }
 
 .pName {
-  font-size: 0.72rem;
-  font-weight: 700;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  font-family: var(--font-display);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--tracking-widest);
   color: rgba(255, 255, 255, 0.48);
   margin: 0 0 0.875rem;
 }
@@ -865,22 +882,36 @@
 
 .pPrice {
   display: flex;
-  align-items: baseline;
-  gap: 0.2rem;
+  align-items: flex-end;
+  gap: 0.25rem;
   margin-bottom: 0.625rem;
   line-height: 1;
 }
 
-.pCurr { font-size: 1.375rem; font-weight: 700; color: #f0f9ff; }
-.pHL .pCurr { color: #fff; }
+.pCurr {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-extrabold);
+  font-family: var(--font-display);
+  color: #f0f9ff;
+  opacity: 0.9;
+  align-self: flex-start;
+  margin-top: 0.75rem;
+}
+.pHL .pCurr { color: #fff; opacity: 1; }
 
-.pAmt { font-size: 3.75rem; font-weight: 900; letter-spacing: -0.045em; color: #f0f9ff; }
+.pAmt {
+  font-size: var(--text-6xl);
+  font-weight: var(--weight-extrabold);
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking-tight);
+  color: #f0f9ff;
+}
 .pHL .pAmt { color: #fff; }
 
-.pPer { font-size: 0.875rem; color: rgba(255, 255, 255, 0.42); }
+.pPer { font-size: var(--text-sm); color: rgba(255, 255, 255, 0.42); margin-bottom: 0.5rem; }
 .pHL .pPer { color: rgba(255,255,255,0.65); }
 
-.pDesc { font-size: 0.875rem; color: rgba(255, 255, 255, 0.48); line-height: 1.5; margin: 0 0 1.75rem; }
+.pDesc { font-size: var(--text-sm); color: rgba(255, 255, 255, 0.48); line-height: var(--leading-normal); margin: 0 0 1.75rem; }
 .pHL .pDesc { color: rgba(255,255,255,0.80); }
 
 .pList {
@@ -913,6 +944,7 @@
 
 .btnPHL {
   width: 100%;
+  margin-top: auto;
   background: #fff;
   color: #0c3044;
   border: none;
@@ -927,6 +959,7 @@
 
 .btnPGhost {
   width: 100%;
+  margin-top: auto;
   background: transparent;
   color: rgba(255, 255, 255, 0.62);
   border: 1px solid rgba(34, 211, 238, 0.18);
@@ -945,7 +978,7 @@
 .ctaSection {
   padding: 9rem 2rem;
   text-align: center;
-  background: radial-gradient(ellipse at 50% 50%, rgba(8, 145, 178, 0.18) 0%, transparent 68%), #050e12;
+  background: radial-gradient(ellipse at 50% 50%, rgba(8, 145, 178, 0.22) 0%, transparent 68%), #07111d;
 }
 
 .ctaInner { max-width: 680px; margin: 0 auto; }
@@ -960,17 +993,19 @@
 }
 
 .ctaH2 {
-  font-size: clamp(2.25rem, 5vw, 4rem);
-  font-weight: 900;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
+  font-size: clamp(var(--text-3xl), 5vw, var(--text-6xl));
+  font-weight: var(--weight-extrabold);
+  font-family: var(--font-display);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-snug);
   color: #f0f9ff;
   margin: 0 0 1.25rem;
 }
 
 .ctaP {
-  font-size: 1.0625rem;
-  color: rgba(255, 255, 255, 0.55);
+  font-size: var(--text-lg);
+  line-height: var(--leading-relaxed);
+  color: rgba(255, 255, 255, 0.58);
   margin: 0 0 3rem;
 }
 
@@ -1015,8 +1050,8 @@
    FOOTER
    ============================================================ */
 .footer {
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  background: #040b0f;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  background: #060f19;
 }
 
 .footWrap {

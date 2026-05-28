@@ -3,7 +3,6 @@ import { useNavigate, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../context/AuthContext";
-import PayFlowLogo from "../components/PayFlowLogo";
 import CajaTexto from "../components/CajaTexto";
 import style from "../styles/Login.module.css";
 import "../index.css";
@@ -85,7 +84,7 @@ function Login() {
       <div className={style.brand}>
         <div className={style.brandInner}>
           <div className={style.brandLogo}>
-            <PayFlowLogo size={56} />
+            <img src="/payflow_logo_gold.svg" alt="PayFlow" style={{ width: '56px', height: '56px' }} />
             <span className={style.brandName}>PayFlow</span>
           </div>
           <h2 className={style.brandTagline}>

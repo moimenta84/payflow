@@ -42,16 +42,19 @@
 }
 
 .brandName {
-  font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: -0.5px;
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-extrabold);
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking-snug);
   color: #fff;
 }
 
 .brandTagline {
-  font-size: 2.4rem;
-  font-weight: 700;
-  line-height: 1.2;
+  font-size: var(--text-4xl);
+  font-weight: var(--weight-extrabold);
+  font-family: var(--font-display);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-snug);
   margin: 0;
   color: #fff;
 }
@@ -101,15 +104,18 @@
 }
 
 .titulo {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: var(--color-gray-900, #111);
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-extrabold);
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking-snug);
+  color: var(--text-primary);
   margin: 0 0 6px;
 }
 
 .subtitulo {
-  color: var(--color-gray-500, #6b7280);
-  font-size: 0.95rem;
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
   margin: 0;
 }
 
@@ -126,9 +132,9 @@
 }
 
 .label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--color-gray-700, #374151);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-body);
 }
 
 .passwordContainer {
@@ -173,13 +179,13 @@
 }
 
 .checkLabel input[type="checkbox"] {
-  accent-color: var(--color-primary-300, #22913e);
+  accent-color: var(--bt-primary-bg);
   width: 16px;
   height: 16px;
 }
 
 .olvidaste {
-  color: var(--color-primary-300, #22913e);
+  color: var(--bt-primary-bg);
   text-decoration: none;
   font-weight: 500;
 }
@@ -191,7 +197,7 @@
 .btnSubmit {
   width: 100%;
   padding: 13px;
-  background: var(--color-primary-300, #22913e);
+  background: var(--bt-primary-bg);
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -203,7 +209,7 @@
 }
 
 .btnSubmit:hover:not(:disabled) {
-  background: var(--color-primary-400, #1a7a32);
+  background: var(--bt-primary-bg-hover);
   transform: translateY(-1px);
 }
 
@@ -224,7 +230,7 @@
 }
 
 .registroLink {
-  color: var(--color-primary-300, #22913e);
+  color: var(--bt-primary-bg);
   font-weight: 600;
   text-decoration: none;
 }

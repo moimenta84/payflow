@@ -46,10 +46,11 @@
 }
 
 .logoText {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: var(--text-xl);
+  font-weight: var(--weight-extrabold);
+  font-family: var(--font-display);
   color: #fff;
-  letter-spacing: -0.3px;
+  letter-spacing: var(--tracking-snug);
 }
 
 /* ── Navigation ── */
@@ -70,8 +71,9 @@
   border-radius: 10px;
   color: rgba(255, 255, 255, 0.75);
   text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  font-family: var(--font-body);
   transition: background 0.15s, color 0.15s;
 }
 

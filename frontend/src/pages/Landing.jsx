@@ -195,7 +195,10 @@ export default function Landing() {
       {/* ═══════════════════════════════ NAV ═══════════════════════════════ */}
       <nav className={`${s.nav} ${scrolled ? s.navSolid : ""}`}>
         <div className={s.navWrap}>
-          <span className={s.logo}>Pay<em>Flow</em></span>
+          <span className={s.logo}>
+            <img src="/payflow_logo_gold.svg" alt="" width="32" height="32" style={{ verticalAlign: 'middle', marginRight: '0.5rem' }} />
+            Pay<em>Flow</em>
+          </span>
           <div className={s.navLinks}>
             <a href="#features">Producto</a>
             <a href="#pricing">Precios</a>
@@ -411,7 +414,10 @@ export default function Landing() {
       {/* ═══════════════════════════════ FOOTER ════════════════════════════ */}
       <footer className={s.footer}>
         <div className={s.footWrap}>
-          <span className={s.logo}>Pay<em>Flow</em></span>
+          <span className={s.logo}>
+            <img src="/payflow_logo_gold.svg" alt="" width="32" height="32" style={{ verticalAlign: 'middle', marginRight: '0.5rem' }} />
+            Pay<em>Flow</em>
+          </span>
           <p className={s.footCopy}>© 2026 PayFlow. Construido con Java, Spring Boot y React.</p>
           <div className={s.footLinks}>
             <a href="#features">Producto</a>
