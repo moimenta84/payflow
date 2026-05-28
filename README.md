@@ -49,47 +49,7 @@ Cada microservicio es independiente, tiene su propia base de datos y se registra
 
 ---
 
-## Arquitectura
 
-```mermaid
-flowchart TB
-    UI["Frontend React + Vite<br/>(SPA)"]
-
-    subgraph Cloud["Backend · Spring Cloud"]
-        GW["API Gateway<br/>:8080"]
-        EUREKA["Discovery Service<br/>Eureka · :8761"]
-
-        AUTH["auth-service · :8081"]
-        TX["transaction-service · :8082"]
-        WALLET["wallet-service · :8083"]
-        BANK["bank-service · :8085"]
-        INV["invoicing-service · :8086"]
-    end
-
-    DB[("PostgreSQL 16<br/>1 BD por servicio")]
-    NORDIGEN["Nordigen / GoCardless<br/>(Open Banking API)"]
-
-    UI -->|HTTP + JWT| GW
-    GW -->|"lb://"| AUTH
-    GW -->|"lb://"| TX
-    GW -->|"lb://"| WALLET
-    GW -->|"lb://"| BANK
-    GW -->|"lb://"| INV
-
-    AUTH -.->|registro| EUREKA
-    TX -.-> EUREKA
-    WALLET -.-> EUREKA
-    BANK -.-> EUREKA
-    INV -.-> EUREKA
-    GW -.-> EUREKA
-
-    AUTH --> DB
-    TX --> DB
-    WALLET --> DB
-    BANK --> DB
-    INV --> DB
-    BANK -->|OAuth| NORDIGEN
-```
 
 - **API Gateway** — punto de entrada único (Spring Cloud Gateway). Valida el JWT, aplica filtros de rol (`JwtAuthFilter`, `AdminRoleFilter`) y gestiona CORS.
 - **Discovery Service** — registro de servicios con Netflix Eureka; el gateway resuelve los servicios por nombre (`lb://`).
