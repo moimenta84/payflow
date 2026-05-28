@@ -7,6 +7,9 @@ frontend/.firebase
 backend/*/target
 backend/*/.mvn
 
+# Tests (no versionar)
+backend/*/src/test/
+
 # Caché de build / herramientas
 frontend/.vite
 

@@ -29,8 +29,6 @@ Gestiona tu dinero, monedero, transacciones, conexión bancaria (Open Banking) y
 - [Servicios y puertos](#servicios-y-puertos)
 - [Documentación de la API (Swagger)](#documentación-de-la-api-swagger)
 - [Endpoints principales](#endpoints-principales)
-- [Variables de entorno](#variables-de-entorno)
-- [Tests](#tests)
 - [Autor](#autor)
 
 ---
@@ -261,31 +259,6 @@ Todas las rutas se consumen a través del API Gateway (`http://localhost:8080`).
 | `*` | `/expenses/**` | JWT | Gastos |
 
 > Los endpoints protegidos requieren la cabecera `Authorization: Bearer <token>`.
-
----
-
-## Variables de entorno
-
-| Variable | Por defecto | Descripción |
-|---|---|---|
-| `DB_URL` | `jdbc:postgresql://localhost:5432/<db>` | URL de la base de datos |
-| `DB_USER` | `postgres` | Usuario de la base de datos |
-| `DB_PASS` | `payflow123` | Contraseña de la base de datos |
-| `EUREKA_URI` | `http://localhost:8761/eureka` | URL del servidor Eureka |
-| `EUREKA_ENABLED` | `false` | Activa/desactiva el registro en Eureka |
-| `JWT_SECRET` | `payflow-super-secret-key-2024-tfg` | Clave de firma de los JWT |
-| `MAIL_USER` / `MAIL_PASS` | — | Credenciales SMTP (recuperación de contraseña) |
-
----
-/
-## Tests
-
-Tests unitarios de la capa de servicio con JUnit 5 y Mockito:
-
-```bash
-cd backend/auth-service   # o transaction-service / wallet-service
-mvn test
-```
 
 ---
 
