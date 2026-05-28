@@ -11,6 +11,7 @@ backend/*/.mvn
 frontend/.vite
 
 # Documentos y binarios (no versionar)
+*.md
 *.docx
 docs/*.pdf
 
