@@ -7,6 +7,14 @@ frontend/.firebase
 backend/*/target
 backend/*/.mvn
 
+# Caché de build / herramientas
+frontend/.vite
+
+# Documentos y binarios (no versionar)
+*.docx
+docs/*.pdf
+
+
 # Sistema
 .DS_Store
 Thumbs.db
