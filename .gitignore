@@ -12,6 +12,7 @@ frontend/.vite
 
 # Documentos y binarios (no versionar)
 *.md
+!/README.md
 *.docx
 docs/*.pdf
 
