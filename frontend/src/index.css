@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap');
 
 .btn {
   background-color: var(--bt-primary-bg) !important;
@@ -28,8 +29,8 @@
   /* ========== TIPOGRAFÍA — SISTEMA GLOBAL ========== */
 
   /* Familias */
-  --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
 
   /* Escala tipográfica modular (base 16px) */
@@ -171,11 +172,11 @@
   --bt-primary-border: var(--color-primary-200);
   --bt-primary-border-hover: var(--color-primary-250);
 
-  /* Cards y contenedores */
+  /* Cards y contenedores — minimal, no border por defecto */
   --card-bg: #ffffff;
-  --card-border: var(--color-gray-150);
-  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  --card-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.10);
+  --card-border: transparent;
+  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --card-shadow-hover: 0 8px 16px rgba(13, 110, 158, 0.12);
 
   /* Badges */
   --bdg-todos-bg: var(--color-secondary-50);
@@ -359,4 +360,14 @@ code, pre, kbd, samp, .mono {
     opacity: 1;
     transform: translateX(0);
   }
+}
+
+@keyframes springPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Hover spring para botones y links */
+button:hover, a[role="button"]:hover {
+  animation: springPulse 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) 1;
 }

@@ -4,11 +4,12 @@
 
 .page {
   width: 100%;
-  max-width: 1000px;
+  max-width: 1100px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2.5rem;
+  padding: 2rem;
 }
 
 /* ── Hero / saludo ─────────────────────────────────────────────── */
@@ -25,11 +26,11 @@
 }
 
 .saludo {
-  font-size: var(--text-xs);
-  font-weight: var(--weight-semibold);
-  color: var(--text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-wider);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-normal);
+  color: var(--text-secondary);
+  text-transform: none;
+  letter-spacing: var(--tracking-normal);
 }
 
 .nombre {
@@ -79,13 +80,19 @@
 
 .statCard {
   background: var(--card-bg);
-  border-radius: 16px;
-  padding: 1.25rem;
+  border-radius: 12px;
+  padding: 1.5rem;
   display: flex;
   align-items: center;
-  gap: 0.875rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  border: 1px solid var(--card-border, #e2e8f0);
+  gap: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.statCard:hover {
+  box-shadow: 0 8px 16px rgba(13, 110, 158, 0.12);
+  transform: translateY(-2px);
 }
 
 .statIcon {
@@ -131,13 +138,18 @@
 /* ── Progress bar ──────────────────────────────────────────────── */
 .progressCard {
   background: var(--card-bg);
-  border-radius: 16px;
-  padding: 1.25rem 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  border: 1px solid var(--card-border, #e2e8f0);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  border: none;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1rem;
+  transition: all 0.2s ease;
+}
+
+.progressCard:hover {
+  box-shadow: 0 8px 16px rgba(13, 110, 158, 0.12);
 }
 
 .progressHeader {

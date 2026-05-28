@@ -50,6 +50,19 @@ public class UserEntity {
     // ADMIN → gestión de la plataforma (futuras rutas /admin/**)
     public enum Rol { USER, ADMIN }
 
+    // Plan de suscripción del usuario. Por defecto FREE; AUTONOMOS se
+    // activa tras un pago confirmado en Stripe (4,99€/mes).
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Plan plan = Plan.FREE;
+
+    // IDs que devuelve Stripe — permiten relacionar al usuario con su cliente
+    // y su suscripción en Stripe (nulos mientras el plan sea FREE)
+    private String stripeCustomerId;
+    private String stripeSubscriptionId;
+
+    public enum Plan { FREE, AUTONOMOS }
+
     // ─── Getters ──────────────────────────────────────────────
 
     public String getId() { return id; }
@@ -67,6 +80,12 @@ public class UserEntity {
 
     public Rol getRol() { return rol; }
 
+    public Plan getPlan() { return plan; }
+
+    public String getStripeCustomerId() { return stripeCustomerId; }
+
+    public String getStripeSubscriptionId() { return stripeSubscriptionId; }
+
     // ─── Setters ──────────────────────────────────────────────
     // id no tiene setter — lo genera Hibernate, nunca se asigna manualmente
 
@@ -81,4 +100,10 @@ public class UserEntity {
     public void setSaldoInicial(Double saldoInicial) { this.saldoInicial = saldoInicial; }
 
     public void setRol(Rol rol) { this.rol = rol; }
+
+    public void setPlan(Plan plan) { this.plan = plan; }
+
+    public void setStripeCustomerId(String stripeCustomerId) { this.stripeCustomerId = stripeCustomerId; }
+
+    public void setStripeSubscriptionId(String stripeSubscriptionId) { this.stripeSubscriptionId = stripeSubscriptionId; }
 }

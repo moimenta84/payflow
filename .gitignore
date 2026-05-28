@@ -14,7 +14,7 @@ frontend/.vite
 *.md
 !/README.md
 *.docx
-docs/*.pdf
+docs/
 
 
 # Sistema

@@ -273,7 +273,7 @@ export default function Home() {
       <div className={style.txnSection}>
         <div className={style.txnHeader}>
           <h2 className={style.sectionTitle}>Últimas transacciones</h2>
-          <Link to="/transacciones" className={style.verTodas}>Ver todas →</Link>
+          <Link to="/transacciones" className={style.verTodas}>Ver todas</Link>
         </div>
 
         {loading && <p className={style.cargando}>Cargando...</p>}

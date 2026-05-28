@@ -24,11 +24,13 @@ const adminAuthProvider = {
     }
 
     localStorage.setItem('token', data.token);
+    localStorage.setItem('adminFullName', data.user?.fullName || data.user?.nombre || 'Admin');
     return Promise.resolve();
   },
 
   logout: () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('adminFullName');
     return Promise.resolve();
   },
 
@@ -66,7 +68,7 @@ const adminAuthProvider = {
     const payload = decodeJwt(token);
     return Promise.resolve({
       id:       payload?.sub || '',
-      fullName: payload?.nombre || 'Admin',
+      fullName: localStorage.getItem('adminFullName') || payload?.nombre || 'Admin',
     });
   },
 };

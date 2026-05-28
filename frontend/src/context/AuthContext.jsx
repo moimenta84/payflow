@@ -49,6 +49,12 @@ export const AuthProvider = ({ children }) => {
     return { success: true };
   };
 
+  const refreshUser = async () => {
+    const u = await api.get('/auth/me');
+    setUser(u);
+    return u;
+  };
+
   const value = {
     user,
     login,
@@ -56,6 +62,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     resetPassword,
     updateUser,
+    refreshUser,
     isAuthenticated: !!user,
     loading,
   };

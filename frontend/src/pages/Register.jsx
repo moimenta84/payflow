@@ -1,14 +1,22 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../context/AuthContext";
+import { api } from "../config/api";
 import CajaTexto from "../components/CajaTexto";
 import style from "../styles/Register.module.css";
 import "../index.css";
 
+const PLAN_INFO = {
+  autonomos: { label: "Autónomos", price: "4,99€/mes" },
+};
+
 function Register() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const plan = (searchParams.get("plan") || "free").toLowerCase();
+  const planInfo = PLAN_INFO[plan];
   const { register } = useAuth();
 
   const [usuario, setUsuario] = useState({
@@ -119,6 +127,13 @@ function Register() {
       });
       setIntentos(0);
       setBloqueadoHasta(null);
+
+      // Plan de pago → Stripe Checkout. Free → directo al dashboard.
+      if (plan === "autonomos") {
+        const { url } = await api.post("/payments/create-checkout-session", { plan });
+        window.location.href = url;
+        return;
+      }
       setTimeout(() => navigate("/home", { replace: true }), 500);
     } catch (error) {
       const msg = error.message || "Error al registrar. Intenta de nuevo.";
@@ -163,6 +178,14 @@ function Register() {
             <h1 className={style.titulo}>Crear cuenta</h1>
             <p className={style.subtitulo}>Completa tus datos para registrarte</p>
           </div>
+
+          {planInfo && (
+            <div className={style.planBanner} role="status">
+              <span className={style.planBannerName}>Plan {planInfo.label}</span>
+              <span className={style.planBannerPrice}>{planInfo.price}</span>
+              <span className={style.planBannerNote}>Pago seguro con Stripe tras el registro</span>
+            </div>
+          )}
 
           {errores.general && (
             <div className={style.errorGeneral} role="alert">{errores.general}</div>

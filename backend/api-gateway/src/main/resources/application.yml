@@ -26,6 +26,13 @@ spring:
           filters:
             - name: JwtAuthFilter
 
+        - id: payments
+          uri: lb://auth-service
+          predicates:
+            - Path=/payments/**
+          filters:
+            - name: JwtAuthFilter
+
         - id: transactions
           uri: lb://transaction-service
           predicates:
@@ -33,36 +40,12 @@ spring:
           filters:
             - name: JwtAuthFilter
 
-        - id: orders
-          uri: lb://trading-service
-          predicates:
-            - Path=/orders/**, /portfolio/**
-          filters:
-            - name: JwtAuthFilter
-
-        - id: assets
-          uri: lb://trading-service
-          predicates:
-            - Path=/assets/**
-
         - id: admin
           uri: lb://auth-service
           predicates:
             - Path=/admin/**
           filters:
             - name: AdminRoleFilter
-
-        - id: prices
-          uri: lb://price-service
-          predicates:
-            - Path=/prices/**
-
-        - id: alerts
-          uri: lb://price-service
-          predicates:
-            - Path=/alerts, /alerts/**
-          filters:
-            - name: JwtAuthFilter
 
         - id: wallet
           uri: lb://wallet-service

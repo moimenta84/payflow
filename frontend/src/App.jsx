@@ -15,6 +15,8 @@ import Autonomos from './pages/Autonomos'
 import Wallet from './pages/Wallet'
 import Pay from './pages/Pay'
 import Landing from './pages/Landing'
+import PaymentSuccess from './pages/PaymentSuccess'
+import PaymentCancelled from './pages/PaymentCancelled'
 import ProtectedRoute from './pages/ProtectedRoute'
 import FloatingAssistantButton from './components/FloatingAssistantButton'
 import AppLayout from './components/AppLayout'
@@ -111,6 +113,23 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Pay />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/payment-success"
+              element={
+                <ProtectedRoute>
+                  <PaymentSuccess />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/payment-cancelled"
+              element={
+                <ProtectedRoute>
+                  <PaymentCancelled />
                 </ProtectedRoute>
               }
             />

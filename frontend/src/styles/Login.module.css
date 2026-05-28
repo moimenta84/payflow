@@ -8,7 +8,7 @@
 
 /* ── Left brand panel ── */
 .brand {
-  display: none;
+  display: flex;
   flex: 1;
   background: linear-gradient(145deg, #0c3549 0%, #155e75 60%, #0891b2 100%);
   color: #fff;

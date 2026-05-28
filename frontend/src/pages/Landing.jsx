@@ -22,6 +22,8 @@ const DOT_OPS = Array.from({ length: 35 }, (_, i) => {
   return v > 0.35 ? 0.45 + v * 0.55 : 0.1;
 });
 
+const PLAN_SLUG = { Free: "free", "Autónomos": "autonomos" };
+
 const PRICING = [
   {
     name: "Free",
@@ -31,18 +33,11 @@ const PRICING = [
     hl: false,
   },
   {
-    name: "Plus",
-    price: "4,99",
-    desc: "Para quien envía y recibe a diario",
-    features: ["Todo Free incluido", "Envíos P2P ilimitados", "Cobros por link de pago", "3 cuentas bancarias", "Histórico ilimitado"],
-    hl: true,
-  },
-  {
     name: "Autónomos",
-    price: "14,99",
-    desc: "Para freelancers y pymes en España",
-    features: ["Todo Plus incluido", "Facturas con IVA + IRPF", "Modelo 303 y 130 automáticos", "Bancos ilimitados (Open Banking)", "PDFs personalizables"],
-    hl: false,
+    price: "4,99",
+    desc: "Para freelancers y autónomos en España",
+    features: ["Todo Free incluido", "Facturas con IVA + IRPF", "Modelo 303 y 130 automáticos", "Bancos ilimitados (Open Banking)", "Envíos P2P ilimitados", "PDFs personalizables"],
+    hl: true,
   },
 ];
 
@@ -192,6 +187,9 @@ export default function Landing() {
       <div className={s.orbA}  aria-hidden />
       <div className={s.orbB}  aria-hidden />
 
+      {/* ══════════════ DARK HERO ZONE (nav + hero + stats) ══════════════ */}
+      <div className={s.heroZone}>
+
       {/* ═══════════════════════════════ NAV ═══════════════════════════════ */}
       <nav className={`${s.nav} ${scrolled ? s.navSolid : ""}`}>
         <div className={s.navWrap}>
@@ -206,7 +204,7 @@ export default function Landing() {
           </div>
           <div className={s.navBtns}>
             <button className={s.btnGhost}  onClick={() => navigate("/login")}>Entrar</button>
-            <button className={s.btnYellow} onClick={() => navigate("/registro")}>Empezar →</button>
+            <button className={s.btnYellow} onClick={() => navigate("/registro")}>Empezar</button>
           </div>
         </div>
       </nav>
@@ -273,6 +271,8 @@ export default function Landing() {
         <StatItem target={9997} format="pct"  label="uptime garantizado" />
         <StatItem target={0}                  label="comisiones ocultas" />
       </div>
+
+      </div>{/* /heroZone */}
 
       {/* ════════════════════════════════ BENTO ════════════════════════════ */}
       <section className={s.bentoSection} id="features">
@@ -350,7 +350,7 @@ export default function Landing() {
                 {["Tu banco", "PSD2", "GoCardless", "PayFlow", "Tu app"].map((n, i, arr) => (
                   <React.Fragment key={n}>
                     <div className={s.fNode}>{n}</div>
-                    {i < arr.length - 1 && <span className={s.fArr}>→</span>}
+                    {i < arr.length - 1 && <span className={s.fArr}>·</span>}
                   </React.Fragment>
                 ))}
               </div>
@@ -385,7 +385,7 @@ export default function Landing() {
                 </ul>
                 <button
                   className={p.hl ? s.btnPHL : s.btnPGhost}
-                  onClick={() => navigate("/registro")}
+                  onClick={() => navigate(`/registro?plan=${PLAN_SLUG[p.name]}`)}
                 >
                   {p.price === "0" ? "Empezar gratis" : "Empezar ahora"}
                 </button>
@@ -405,7 +405,7 @@ export default function Landing() {
           </h2>
           <p className={s.ctaP}>Sin tarjeta. Sin contrato. Sin comisiones ocultas.</p>
           <div className={s.ctaBtns}>
-            <button className={s.btnCta}     onClick={() => navigate("/registro")}>Crear cuenta gratis →</button>
+            <button className={s.btnCta}     onClick={() => navigate("/registro")}>Crear cuenta gratis</button>
             <button className={s.btnCtaOut}  onClick={() => navigate("/login")}>Ya tengo cuenta</button>
           </div>
         </div>
@@ -413,16 +413,77 @@ export default function Landing() {
 
       {/* ═══════════════════════════════ FOOTER ════════════════════════════ */}
       <footer className={s.footer}>
-        <div className={s.footWrap}>
-          <span className={s.logo}>
-            <img src="/payflow_logo_gold.svg" alt="" width="32" height="32" style={{ verticalAlign: 'middle', marginRight: '0.5rem' }} />
-            Pay<em>Flow</em>
-          </span>
-          <p className={s.footCopy}>© 2026 PayFlow. Construido con Java, Spring Boot y React.</p>
-          <div className={s.footLinks}>
-            <a href="#features">Producto</a>
-            <a href="#pricing">Precios</a>
-            <span onClick={() => navigate("/login")} className={s.fLink}>Entrar</span>
+        <div className={s.footTop}>
+
+          {/* Brand col */}
+          <div className={s.footBrand}>
+            <div className={s.footLogo}>
+              <img src="/payflow_logo_gold.svg" alt="" width="36" height="36" />
+              <span className={s.footLogoName}>Pay<em>Flow</em></span>
+            </div>
+            <p className={s.footTagline}>
+              Finanzas personales y para autónomos.<br />
+              Rápido, seguro, regulado PSD2.
+            </p>
+            <div className={s.footBadges}>
+              <span className={s.footBadge}>🔒 SSL / TLS 1.3</span>
+              <span className={s.footBadge}>🏦 PSD2</span>
+              <span className={s.footBadge}>🇪🇺 GDPR</span>
+            </div>
+          </div>
+
+          {/* Producto */}
+          <div className={s.footCol}>
+            <h4 className={s.footColTitle}>Producto</h4>
+            <ul className={s.footList}>
+              <li><a href="#features">Funcionalidades</a></li>
+              <li><a href="#pricing">Precios</a></li>
+              <li><a href="#features">Open Banking</a></li>
+              <li><a href="#features">Facturas y IRPF</a></li>
+              <li><a href="#features">Pagos P2P</a></li>
+            </ul>
+          </div>
+
+          {/* Empresa */}
+          <div className={s.footCol}>
+            <h4 className={s.footColTitle}>Empresa</h4>
+            <ul className={s.footList}>
+              <li><span className={s.fLink}>Sobre nosotros</span></li>
+              <li><span className={s.fLink}>Blog</span></li>
+              <li><span className={s.fLink}>Prensa</span></li>
+              <li><span className={s.fLink}>Trabaja con nosotros</span></li>
+              <li><span className={s.fLink}>Contacto</span></li>
+            </ul>
+          </div>
+
+          {/* Soporte */}
+          <div className={s.footCol}>
+            <h4 className={s.footColTitle}>Soporte</h4>
+            <ul className={s.footList}>
+              <li><span className={s.fLink}>Centro de ayuda</span></li>
+              <li><span className={s.fLink}>Estado del servicio</span></li>
+              <li><span className={s.fLink}>API para desarrolladores</span></li>
+              <li><span className={s.fLink}>Seguridad</span></li>
+              <li><a href="mailto:soporte@payflow.es">soporte@payflow.es</a></li>
+            </ul>
+          </div>
+
+        </div>
+
+        {/* Divider */}
+        <div className={s.footDivider} />
+
+        {/* Bottom bar */}
+        <div className={s.footBottom}>
+          <p className={s.footCopy}>
+            © 2026 PayFlow Technologies S.L. · CIF B-XXXXXXXX · Calle Gabriel Miró 14, Vergel
+          </p>
+          <div className={s.footLegal}>
+            <span className={s.fLink}>Política de privacidad</span>
+            <span className={s.fLink}>Política de cookies</span>
+            <span className={s.fLink}>Aviso legal</span>
+            <span className={s.fLink}>Términos y condiciones</span>
+            <span className={s.fLink}>Gestionar cookies</span>
           </div>
         </div>
       </footer>

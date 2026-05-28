@@ -277,7 +277,7 @@ Todas las rutas se consumen a través del API Gateway (`http://localhost:8080`).
 | `MAIL_USER` / `MAIL_PASS` | — | Credenciales SMTP (recuperación de contraseña) |
 
 ---
-
+/
 ## Tests
 
 Tests unitarios de la capa de servicio con JUnit 5 y Mockito:
