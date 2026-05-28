@@ -83,9 +83,12 @@ public class NordigenClient {
     @SuppressWarnings("unchecked")
     public Map<String, Object> createRequisition(String institutionId, String redirectUrl) {
         if (isDemoMode()) {
+            String link = (redirectUrl != null && !redirectUrl.isBlank())
+                ? redirectUrl
+                : "http://localhost:5173/banco?connected=true";
             return Map.of(
                 "id", "demo-req-" + System.currentTimeMillis(),
-                "link", "http://localhost:5173/banco?connected=true"
+                "link", link
             );
         }
         String token = getAccessToken();

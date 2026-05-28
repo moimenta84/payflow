@@ -5,6 +5,8 @@ import com.payflow.transaction.dto.TransactionRequest;
 import com.payflow.transaction.dto.TransactionResponse;
 import com.payflow.transaction.service.PdfReportService;
 import com.payflow.transaction.service.TransactionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -16,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/transactions")
+@Tag(name = "Transacciones", description = "CRUD de movimientos, resúmenes e informes PDF")
 public class TransactionController {
 
     private final TransactionService transactionService;
@@ -27,6 +30,7 @@ public class TransactionController {
         this.pdfReportService   = pdfReportService;
     }
 
+    @Operation(summary = "Crear transacción", description = "Registra un gasto o ingreso del usuario")
     @PostMapping
     public ResponseEntity<TransactionResponse> create(
             @RequestHeader("X-User-Id") String userId,
@@ -34,18 +38,21 @@ public class TransactionController {
         return ResponseEntity.ok(transactionService.create(userId, request));
     }
 
+    @Operation(summary = "Listar transacciones", description = "Devuelve todas las transacciones del usuario")
     @GetMapping
     public ResponseEntity<List<TransactionResponse>> getAll(
             @RequestHeader("X-User-Id") String userId) {
         return ResponseEntity.ok(transactionService.getAll(userId));
     }
 
+    @Operation(summary = "Resumen financiero", description = "Totales de gastos, ingresos y balance")
     @GetMapping("/summary")
     public ResponseEntity<SummaryResponse> getSummary(
             @RequestHeader("X-User-Id") String userId) {
         return ResponseEntity.ok(transactionService.getSummary(userId));
     }
 
+    @Operation(summary = "Informe PDF mensual", description = "Genera un PDF con las transacciones del mes indicado")
     // GET /transactions/report/pdf?year=2025&month=5
     @GetMapping("/report/pdf")
     public ResponseEntity<byte[]> downloadPdf(
@@ -66,6 +73,7 @@ public class TransactionController {
                 .body(pdf);
     }
 
+    @Operation(summary = "Actualizar transacción", description = "Edita una transacción existente del usuario")
     @PutMapping("/{id}")
     public ResponseEntity<TransactionResponse> update(
             @RequestHeader("X-User-Id") String userId,
@@ -74,6 +82,7 @@ public class TransactionController {
         return ResponseEntity.ok(transactionService.update(userId, id, request));
     }
 
+    @Operation(summary = "Eliminar transacción", description = "Borra una transacción por su ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
             @RequestHeader("X-User-Id") String userId,

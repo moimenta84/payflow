@@ -4,6 +4,8 @@ import com.payflow.wallet.dto.LedgerEntryResponse;
 import com.payflow.wallet.dto.SendMoneyRequest;
 import com.payflow.wallet.dto.WalletResponse;
 import com.payflow.wallet.service.WalletService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/wallet")
+@Tag(name = "Cartera", description = "Saldo, movimientos y envíos de dinero P2P")
 public class WalletController {
 
     private final WalletService walletService;
@@ -34,6 +37,7 @@ public class WalletController {
      * Devuelve el saldo y datos de la wallet del usuario autenticado.
      * Si el usuario no tiene wallet, la crea con saldo de bienvenida (50 EUR).
      */
+    @Operation(summary = "Ver mi cartera", description = "Devuelve el saldo; crea la cartera con saldo de bienvenida si no existe")
     @GetMapping("/me")
     public ResponseEntity<WalletResponse> getMyWallet(@RequestHeader("X-User-Id") String userId) {
         return ResponseEntity.ok(walletService.getOrCreateWallet(userId));
@@ -44,6 +48,7 @@ public class WalletController {
      * Devuelve el historial de movimientos (ledger) del usuario, del más reciente al más antiguo.
      * Cada entrada incluye tipo (CREDIT/DEBIT), importe, concepto y saldo resultante.
      */
+    @Operation(summary = "Historial de movimientos", description = "Lista los movimientos del usuario, del más reciente al más antiguo")
     @GetMapping("/movements")
     public ResponseEntity<List<LedgerEntryResponse>> getMovements(
             @RequestHeader("X-User-Id") String userId) {
@@ -60,6 +65,7 @@ public class WalletController {
      * Body: { toUserId, amount, description? }
      * Devuelve la wallet actualizada del remitente.
      */
+    @Operation(summary = "Enviar dinero (P2P)", description = "Transfiere dinero a otro usuario; admite Idempotency-Key")
     @PostMapping("/send")
     public ResponseEntity<WalletResponse> send(
             @RequestHeader("X-User-Id") String userId,

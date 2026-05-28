@@ -15,6 +15,6 @@ public interface InvoiceRepository extends JpaRepository<InvoiceEntity, String> 
     List<InvoiceEntity> findByUserIdAndFechaBetweenAndEstadoNot(
             String userId, LocalDate from, LocalDate to, InvoiceEntity.Estado estado);
 
-    @Query("SELECT COUNT(i) FROM InvoiceEntity i WHERE i.userId = :userId AND FUNCTION('YEAR', i.fecha) = :year")
+    @Query(value = "SELECT COUNT(*) FROM invoices WHERE user_id = :userId AND EXTRACT(YEAR FROM fecha) = :year", nativeQuery = true)
     long countByUserIdAndYear(@Param("userId") String userId, @Param("year") int year);
 }

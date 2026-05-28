@@ -27,6 +27,11 @@ public class SecurityConfig {
             // La validación del JWT ya la hace el api-gateway antes de llegar aquí
             // Este servicio confía en que el gateway solo deja pasar peticiones válidas
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                    "/v3/api-docs/**",
+                    "/swagger-ui/**",
+                    "/swagger-ui.html"
+                ).permitAll()
                 .anyRequest().permitAll()
             );
 
