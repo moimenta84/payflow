@@ -12,6 +12,8 @@
   <properties>
     <java.version>21</java.version>
     <spring-cloud.version>2023.0.1</spring-cloud.version>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
   </properties>
   <dependencies>
 <dependency>
@@ -96,6 +98,14 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>25</source>
+          <target>25</target>
+        </configuration>
       </plugin>
       <!-- Java 17+ requiere abrir java.lang para que Mockito pueda instrumentar clases -->
       <plugin>
