@@ -20,6 +20,16 @@ public class LedgerEntry {
     @Column(nullable = false)
     private String walletId;
 
+    // ── Relación N:1 con la wallet (lado propietario de la navegación) ──
+    // EAGER LOADING justificado: un asiento contable no tiene sentido sin su
+    // wallet, así que al cargar un LedgerEntry traemos también su wallet de una
+    // sola vez. Se mapea sobre la MISMA columna 'walletId' en modo solo lectura
+    // (insertable/updatable = false): la escritura la sigue gestionando el campo
+    // String walletId de arriba, por lo que la lógica de servicio no cambia.
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "walletId", insertable = false, updatable = false)
+    private WalletEntity wallet;
+
     @Column(nullable = false)
     private String userId;
 
@@ -50,6 +60,9 @@ public class LedgerEntry {
 
     public String getWalletId() { return walletId; }
     public void setWalletId(String walletId) { this.walletId = walletId; }
+
+    public WalletEntity getWallet() { return wallet; }
+    public void setWallet(WalletEntity wallet) { this.wallet = wallet; }
 
     public String getUserId() { return userId; }
     public void setUserId(String userId) { this.userId = userId; }
