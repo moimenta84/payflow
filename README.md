@@ -4,7 +4,7 @@
 
 **Plataforma de finanzas personales y pagos basada en una arquitectura de microservicios.**
 
-Gestiona tu dinero, monedero, transacciones, conexión bancaria (Open Banking) y facturación para autónomos desde una única aplicación.
+Gestiona tu dinero, monedero, transacciones, conexión bancaria (Open Banking), facturación para autónomos y suscripciones de pago desde una única aplicación.
 
 ![Java](https://img.shields.io/badge/Java-21-007396?logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.0-6DB33F?logo=springboot&logoColor=white)
@@ -12,6 +12,7 @@ Gestiona tu dinero, monedero, transacciones, conexión bancaria (Open Banking) y
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
 ![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)
+![Stripe](https://img.shields.io/badge/Stripe-test-635BFF?logo=stripe&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-compose-2496ED?logo=docker&logoColor=white)
 
 </div>
@@ -21,10 +22,10 @@ Gestiona tu dinero, monedero, transacciones, conexión bancaria (Open Banking) y
 ## Tabla de contenidos
 
 - [Descripción](#descripción)
-- [Arquitectura](#arquitectura)
 - [Stack tecnológico](#stack-tecnológico)
 - [Estructura del proyecto](#estructura-del-proyecto)
 - [Requisitos previos](#requisitos-previos)
+- [Configuración](#configuración)
 - [Puesta en marcha](#puesta-en-marcha)
 - [Servicios y puertos](#servicios-y-puertos)
 - [Documentación de la API (Swagger)](#documentación-de-la-api-swagger)
@@ -37,23 +38,16 @@ Gestiona tu dinero, monedero, transacciones, conexión bancaria (Open Banking) y
 
 **PayFlow** es una aplicación de finanzas personales construida como **Trabajo de Fin de Grado**. El backend sigue una arquitectura de **microservicios** con Spring Boot y Spring Cloud, mientras que el frontend es una **SPA** desarrollada con React y Vite.
 
-Cada microservicio es independiente, tiene su propia base de datos y se registra en un servidor de descubrimiento (Eureka). Todo el tráfico del cliente entra por un **API Gateway** único, que centraliza el enrutado, la validación de tokens **JWT** y el control de acceso por roles.
+Cada microservicio es independiente, tiene su propia base de datos y se registra en un servidor de descubrimiento (Eureka). Todo el tráfico del cliente entra por un **API Gateway** único, que centraliza el enrutado, la validación de tokens **JWT** y el control de acceso por roles (`USER` / `ADMIN`).
 
 ### Funcionalidades principales
 
-- **Autenticación y usuarios** — registro, login con JWT, gestión de perfil y panel de administración de usuarios/roles.
-- **Monedero (Wallet)** — saldo, envío de dinero entre usuarios y libro mayor (ledger) de movimientos.
+- **Autenticación y usuarios** — registro, login con JWT, recuperación de contraseña por email, gestión de perfil y panel de administración de usuarios/roles.
+- **Monedero (Wallet)** — saldo, envío de dinero entre usuarios y libro mayor (ledger) de movimientos con doble entrada.
 - **Transacciones** — registro de ingresos/gastos, resúmenes y generación de informes en PDF.
 - **Banca (Open Banking)** — conexión con cuentas bancarias reales mediante la API de Nordigen/GoCardless e importación de movimientos.
-- **Facturación** — emisión de facturas y registro de gastos para autónomos, con resumen trimestral y exportación a PDF.
-
----
-
-
-
-- **API Gateway** — punto de entrada único (Spring Cloud Gateway). Valida el JWT, aplica filtros de rol (`JwtAuthFilter`, `AdminRoleFilter`) y gestiona CORS.
-- **Discovery Service** — registro de servicios con Netflix Eureka; el gateway resuelve los servicios por nombre (`lb://`).
-- **Microservicios de negocio** — cada uno expone su API REST, persiste en su propia base de datos PostgreSQL y documenta sus endpoints con Swagger/OpenAPI.
+- **Facturación** — emisión de facturas y registro de gastos para autónomos, con resumen fiscal trimestral (modelos 303 y 130) y exportación a PDF.
+- **Pagos y suscripciones** — pasarela de pago con **Stripe** para contratar el plan *Autónomos*; tras el pago, el plan del usuario se activa automáticamente.
 
 ---
 
@@ -68,6 +62,7 @@ Cada microservicio es independiente, tiene su propia base de datos y se registra
 | Seguridad | Spring Security + JWT (jjwt 0.12.5) |
 | Persistencia | Spring Data JPA + Hibernate |
 | Base de datos | PostgreSQL 16 |
+| Pagos | Stripe (stripe-java) |
 | Documentación | springdoc-openapi (Swagger UI) |
 | Build | Maven |
 
@@ -80,7 +75,7 @@ Cada microservicio es independiente, tiene su propia base de datos y se registra
 | UI | Material UI 7, Bootstrap 5, Tailwind 4 |
 | Gráficas | Recharts |
 | Panel admin | React Admin 5 |
-| Estilos | CSS Modules |
+| Estilos | CSS Modules + SASS (sistema de diseño con tokens) |
 
 ### Infraestructura
 Docker · Docker Compose · PostgreSQL
@@ -94,7 +89,7 @@ TFG/
 ├── backend/
 │   ├── api-gateway/          # Spring Cloud Gateway (entrada única)
 │   ├── discovery-service/    # Eureka (registro de servicios)
-│   ├── auth-service/         # Autenticación, usuarios y roles
+│   ├── auth-service/         # Autenticación, usuarios, roles y pagos (Stripe)
 │   ├── transaction-service/  # Transacciones e informes
 │   ├── wallet-service/       # Monedero y movimientos
 │   ├── bank-service/         # Open Banking (Nordigen)
@@ -104,10 +99,11 @@ TFG/
 │
 └── frontend/                 # SPA React + Vite
     ├── src/
-    │   ├── pages/             # Vistas (Home, Wallet, Banca, etc.)
+    │   ├── pages/             # Vistas (Home, Wallet, Banca, Autónomos, etc.)
     │   ├── components/        # Componentes reutilizables
     │   ├── context/           # Auth y tema (Context API)
     │   ├── admin/             # Panel de administración
+    │   ├── styles/            # Sistema de diseño (SASS) y CSS Modules
     │   └── config/            # Cliente HTTP y servicios
     └── package.json
 ```
@@ -121,6 +117,22 @@ TFG/
 - **Node.js 18+** y npm
 - **PostgreSQL 16** (o Docker para levantarlo)
 - **Docker** y **Docker Compose** *(opcional, recomendado)*
+
+---
+
+## Configuración
+
+Los servicios leen sus secretos de **variables de entorno**, con valores por defecto solo para desarrollo. Antes de desplegar conviene definir al menos:
+
+| Variable | Servicio | Descripción |
+|---|---|---|
+| `JWT_SECRET` | auth-service, api-gateway | Clave de firma de los JWT. **Debe ser la misma** en ambos y fuerte en producción. |
+| `STRIPE_SECRET_KEY` | auth-service | Clave secreta de la API de Stripe (`sk_test_...` en pruebas). |
+| `STRIPE_PRICE_AUTONOMOS` | auth-service | ID del precio recurrente del plan Autónomos (`price_...`). |
+| `FRONTEND_URL` | auth-service | URL del frontend para la redirección tras el pago. |
+| `NORDIGEN_SECRET_ID` / `NORDIGEN_SECRET_KEY` | bank-service | Credenciales de Nordigen/GoCardless. |
+
+> En desarrollo puedes crear un `application-local.properties` en `auth-service` con esas claves y arrancar con el perfil `local` (`SPRING_PROFILES_ACTIVE=local`). Ese archivo está **ignorado por git**, por lo que las claves nunca se versionan. Si auth-service detecta el secreto JWT por defecto, avisa por consola al arrancar.
 
 ---
 
@@ -170,7 +182,7 @@ docker compose up --build
 |---|---|---|---|
 | `discovery-service` | `8761` | — | Registro de servicios (Eureka) |
 | `api-gateway` | `8080` | — | Entrada única, JWT y enrutado |
-| `auth-service` | `8081` | `auth_db` | Autenticación, usuarios y roles |
+| `auth-service` | `8081` | `auth_db` | Autenticación, usuarios, roles y pagos |
 | `transaction-service` | `8082` | `transactions_db` | Transacciones e informes |
 | `wallet-service` | `8083` | `wallet_db` | Monedero y movimientos |
 | `bank-service` | `8085` | `bank_db` | Open Banking (Nordigen) |
@@ -211,6 +223,8 @@ Todas las rutas se consumen a través del API Gateway (`http://localhost:8080`).
 | `GET` | `/admin/users` | ADMIN | Listar usuarios |
 | `PUT` | `/admin/users/{id}/rol` | ADMIN | Cambiar rol |
 | `DELETE` | `/admin/users/{id}` | ADMIN | Eliminar usuario |
+| `POST` | `/payments/create-checkout-session` | JWT | Crear sesión de pago del plan Autónomos |
+| `POST` | `/payments/confirm` | JWT | Confirmar el pago y activar el plan |
 | `GET/POST` | `/transactions/**` | JWT | Gestión de transacciones |
 | `GET/POST` | `/wallet/**` | JWT | Operaciones del monedero |
 | `GET` | `/bank/institutions` | — | Listar bancos disponibles |
@@ -218,7 +232,7 @@ Todas las rutas se consumen a través del API Gateway (`http://localhost:8080`).
 | `*` | `/invoices/**` | JWT | Facturas |
 | `*` | `/expenses/**` | JWT | Gastos |
 
-> Los endpoints protegidos requieren la cabecera `Authorization: Bearer <token>`.
+> Los endpoints protegidos requieren la cabecera `Authorization: Bearer <token>`. El gateway valida el JWT e inyecta la identidad del usuario (`X-User-Id`) en cada microservicio.
 
 ---
 
