@@ -6,9 +6,11 @@ import com.payflow.auth.dto.RegisterRequest;
 import com.payflow.auth.dto.RolRequest;
 import com.payflow.auth.dto.UserResponse;
 import com.payflow.auth.entity.UserEntity;
+import com.payflow.auth.exception.ApiException;
 import com.payflow.auth.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,6 +35,11 @@ public class AuthService {
 
     private static final String CHARS = "ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
 
+    // Secreto JWT de desarrollo que viene por defecto en application.properties.
+    // Si se detecta en ejecución, significa que NO se ha definido la variable de
+    // entorno JWT_SECRET y se está firmando con un secreto público (está en el repo).
+    private static final String INSECURE_DEV_SECRET = "payflow-super-secret-key-2024-tfg";
+
     private final UserRepository  userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender  mailSender;
@@ -54,6 +61,20 @@ public class AuthService {
         this.mailSender      = mailSender;
     }
 
+    // Aviso de seguridad al arrancar: si se está usando el secreto JWT por defecto
+    // (el del repositorio), cualquiera podría forjar tokens válidos. En producción
+    // hay que definir la variable de entorno JWT_SECRET con un valor fuerte y único.
+    @PostConstruct
+    void avisarSecretoInseguro() {
+        if (INSECURE_DEV_SECRET.equals(jwtSecret)) {
+            log.warn("================================================================");
+            log.warn("  SEGURIDAD: usando el secreto JWT por defecto de DESARROLLO.");
+            log.warn("  Define la variable de entorno JWT_SECRET (valor fuerte y único)");
+            log.warn("  antes de desplegar en producción. El gateway debe usar el mismo.");
+            log.warn("================================================================");
+        }
+    }
+
     // ─────────────────────────────────────────────────────────
     // REGISTRO
     // ─────────────────────────────────────────────────────────
@@ -62,7 +83,7 @@ public class AuthService {
         // Comprobamos que no exista ya un usuario con ese email
         // existsByEmail() genera: SELECT COUNT(*) FROM users WHERE email = ?
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("El email ya está registrado");
+            throw ApiException.conflict("El email ya está registrado");
         }
 
         // Construimos la entidad con los datos del DTO
@@ -100,11 +121,11 @@ public class AuthService {
         // Buscamos el usuario por email
         // Usamos el mismo mensaje para email y contraseña incorrectos — no damos pistas
         UserEntity user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Credenciales incorrectas"));
+                .orElseThrow(() -> ApiException.unauthorized("Credenciales incorrectas"));
 
         // matches() compara la contraseña en texto plano con el hash BCrypt de la BD
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Credenciales incorrectas");
+            throw ApiException.unauthorized("Credenciales incorrectas");
         }
 
         // Login correcto — generamos el JWT y devolvemos token + datos del usuario
@@ -119,7 +140,7 @@ public class AuthService {
         // Buscamos por el id que viene en el header X-User-Id (puesto por el gateway)
         // Hibernate genera: SELECT * FROM users WHERE id = ?
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> ApiException.notFound("Usuario no encontrado"));
         return new UserResponse(user);
     }
 
@@ -130,7 +151,7 @@ public class AuthService {
 
         // Recuperamos el usuario actual de la BD
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> ApiException.notFound("Usuario no encontrado"));
 
         // Solo actualizamos los campos editables desde el perfil
         // No permitimos cambiar email ni rol desde este endpoint
@@ -157,7 +178,7 @@ public class AuthService {
     // ─────────────────────────────────────────────────────────
     public UserResponse changeRol(String userId, RolRequest request) {
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> ApiException.notFound("Usuario no encontrado"));
         log.info("Admin cambia rol de {} de {} a {}", user.getEmail(), user.getRol(), request.getRol());
         user.setRol(request.getRol());
         return new UserResponse(userRepository.save(user));
@@ -168,7 +189,7 @@ public class AuthService {
     // ─────────────────────────────────────────────────────────
     public void deleteUser(String userId) {
         if (!userRepository.existsById(userId)) {
-            throw new RuntimeException("Usuario no encontrado");
+            throw ApiException.notFound("Usuario no encontrado");
         }
         log.info("Admin elimina usuario {}", userId);
         userRepository.deleteById(userId);

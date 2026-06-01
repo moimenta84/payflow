@@ -5,6 +5,7 @@ import com.payflow.wallet.dto.SendMoneyRequest;
 import com.payflow.wallet.dto.WalletResponse;
 import com.payflow.wallet.entity.LedgerEntry;
 import com.payflow.wallet.entity.WalletEntity;
+import com.payflow.wallet.exception.ApiException;
 import com.payflow.wallet.repository.LedgerEntryRepository;
 import com.payflow.wallet.repository.WalletRepository;
 import org.springframework.stereotype.Service;
@@ -54,7 +55,7 @@ public class WalletService {
      */
     public List<LedgerEntryResponse> getMovements(String userId) {
         WalletEntity wallet = walletRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Wallet no encontrado"));
+                .orElseThrow(() -> ApiException.notFound("Wallet no encontrado"));
         return ledgerRepository.findByWalletIdOrderByCreatedAtDesc(wallet.getId())
                 .stream().map(LedgerEntryResponse::new).toList();
     }
@@ -77,7 +78,7 @@ public class WalletService {
     @Transactional
     public WalletResponse send(String fromUserId, SendMoneyRequest req, String idempotencyKey) {
         if (fromUserId.equals(req.getToUserId())) {
-            throw new RuntimeException("No puedes enviarte dinero a ti mismo");
+            throw ApiException.badRequest("No puedes enviarte dinero a ti mismo");
         }
 
         // Generar correlationId para idempotencia
@@ -99,7 +100,7 @@ public class WalletService {
 
         // Validar saldo suficiente
         if (from.getBalance() < req.getAmount()) {
-            throw new RuntimeException("Saldo insuficiente: tienes "
+            throw ApiException.badRequest("Saldo insuficiente: tienes "
                     + String.format("%.2f", from.getBalance()) + " EUR");
         }
 

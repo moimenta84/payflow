@@ -1,5 +1,6 @@
 package com.payflow.invoicing.config;
 
+import com.payflow.invoicing.exception.ApiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    // Errores de validación de @Valid → 400 con el detalle por campo
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidation(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
@@ -24,10 +26,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Map<String, String>> handleRuntime(RuntimeException ex) {
-        log.error("Error en invoicing-service: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Map.of("error", ex.getMessage()));
+    // Errores de negocio con su código HTTP propio (404, 403, 409, 401, 400...)
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<Map<String, String>> handleApi(ApiException ex) {
+        log.warn("{} - {}", ex.getStatus().value(), ex.getMessage());
+        return ResponseEntity.status(ex.getStatus()).body(Map.of("error", ex.getMessage()));
+    }
+
+    // Cualquier otro error es inesperado → 500 sin filtrar detalles internos al cliente
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, String>> handleUnexpected(Exception ex) {
+        log.error("Error inesperado en invoicing-service", ex);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("error", "Error interno del servidor"));
     }
 }

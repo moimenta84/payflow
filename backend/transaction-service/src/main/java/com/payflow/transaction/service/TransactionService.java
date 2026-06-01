@@ -5,6 +5,7 @@ import com.payflow.transaction.dto.TransactionRequest;
 import com.payflow.transaction.dto.TransactionResponse;
 import com.payflow.transaction.entity.TransactionEntity;
 import com.payflow.transaction.entity.TransactionEntity.Tipo;
+import com.payflow.transaction.exception.ApiException;
 import com.payflow.transaction.messaging.TransactionPublisher;
 import com.payflow.transaction.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
@@ -72,7 +73,7 @@ public class TransactionService {
 
         TransactionEntity transaction = transactionRepository
                 .findByIdAndUserId(transactionId, userId)
-                .orElseThrow(() -> new RuntimeException("Transacción no encontrada"));
+                .orElseThrow(() -> ApiException.notFound("Transacción no encontrada"));
 
         if (request.getTipo()       != null) transaction.setTipo(request.getTipo());
         if (request.getCategoria()  != null) transaction.setCategoria(request.getCategoria());
@@ -89,7 +90,7 @@ public class TransactionService {
         // Buscamos por id Y userId — un usuario no puede borrar transacciones ajenas
         TransactionEntity transaction = transactionRepository
                 .findByIdAndUserId(transactionId, userId)
-                .orElseThrow(() -> new RuntimeException("Transacción no encontrada"));
+                .orElseThrow(() -> ApiException.notFound("Transacción no encontrada"));
 
         transactionRepository.delete(transaction);
     }

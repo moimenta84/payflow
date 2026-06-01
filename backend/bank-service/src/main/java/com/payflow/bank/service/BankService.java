@@ -5,6 +5,7 @@ import com.payflow.bank.dto.BankConnectionResponse;
 import com.payflow.bank.dto.BankTransactionResponse;
 import com.payflow.bank.entity.BankConnection;
 import com.payflow.bank.entity.BankTransaction;
+import com.payflow.bank.exception.ApiException;
 import com.payflow.bank.repository.BankConnectionRepository;
 import com.payflow.bank.repository.BankTransactionRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,7 +61,7 @@ public class BankService {
     public void procesarCallback(String userId, String requisitionId) {
         BankConnection conn = connectionRepo
                 .findByUserIdAndRequisitionId(userId, requisitionId)
-                .orElseThrow(() -> new RuntimeException("Conexion no encontrada"));
+                .orElseThrow(() -> ApiException.notFound("Conexion no encontrada"));
 
         Map<String, Object> req = nordigenClient.getRequisition(requisitionId);
         String status = (String) req.get("status");
@@ -80,7 +81,7 @@ public class BankService {
     public List<BankTransactionResponse> sincronizarTransacciones(String userId) {
         BankConnection conn = connectionRepo
                 .findFirstByUserIdAndStatusOrderByCreatedAtDesc(userId, BankConnection.Status.LINKED)
-                .orElseThrow(() -> new RuntimeException("No tienes una cuenta bancaria vinculada"));
+                .orElseThrow(() -> ApiException.notFound("No tienes una cuenta bancaria vinculada"));
 
         Map<String, Object> req = nordigenClient.getRequisition(conn.getRequisitionId());
         List<String> accounts = (List<String>) req.get("accounts");
@@ -121,9 +122,9 @@ public class BankService {
 
     public void importarTransaccion(String userId, String bankTransactionId) {
         BankTransaction tx = transactionRepo.findByIdAndUserId(bankTransactionId, userId)
-                .orElseThrow(() -> new RuntimeException("Transaccion no encontrada"));
+                .orElseThrow(() -> ApiException.notFound("Transaccion no encontrada"));
 
-        if (tx.isImportedToPayflow()) throw new RuntimeException("Ya importada a PayFlow");
+        if (tx.isImportedToPayflow()) throw ApiException.conflict("Ya importada a PayFlow");
 
         String tipo = tx.getAmount() >= 0 ? "INGRESO" : "GASTO";
 

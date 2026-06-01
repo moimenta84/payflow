@@ -9,6 +9,7 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.UnitValue;
 import com.payflow.invoicing.entity.InvoiceEntity;
+import com.payflow.invoicing.exception.ApiException;
 import com.payflow.invoicing.repository.InvoiceRepository;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,7 @@ public class InvoicePdfService {
 
     public byte[] generate(String userId, String invoiceId) {
         InvoiceEntity inv = invoiceRepo.findByIdAndUserId(invoiceId, userId)
-                .orElseThrow(() -> new RuntimeException("Factura no encontrada"));
+                .orElseThrow(() -> ApiException.notFound("Factura no encontrada"));
 
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();

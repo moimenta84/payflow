@@ -3,6 +3,7 @@ package com.payflow.invoicing.service;
 import com.payflow.invoicing.dto.*;
 import com.payflow.invoicing.entity.ExpenseEntity;
 import com.payflow.invoicing.entity.InvoiceEntity;
+import com.payflow.invoicing.exception.ApiException;
 import com.payflow.invoicing.repository.ExpenseRepository;
 import com.payflow.invoicing.repository.InvoiceRepository;
 import org.springframework.stereotype.Service;
@@ -58,7 +59,7 @@ public class InvoiceService {
 
     public InvoiceEntity getEntity(String userId, String id) {
         return invoiceRepo.findByIdAndUserId(id, userId)
-                .orElseThrow(() -> new RuntimeException("Factura no encontrada"));
+                .orElseThrow(() -> ApiException.notFound("Factura no encontrada"));
     }
 
     public InvoiceResponse getOne(String userId, String id) {
@@ -124,7 +125,7 @@ public class InvoiceService {
 
     public void deleteExpense(String userId, String id) {
         ExpenseEntity exp = expenseRepo.findByIdAndUserId(id, userId)
-                .orElseThrow(() -> new RuntimeException("Gasto no encontrado"));
+                .orElseThrow(() -> ApiException.notFound("Gasto no encontrado"));
         expenseRepo.delete(exp);
     }
 }
