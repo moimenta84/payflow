@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// API REST de gastos deducibles del autónomo (necesarios para el cálculo del IVA y el IRPF trimestral).
 @RestController
 @RequestMapping("/expenses")
 @Tag(name = "Gastos", description = "Registro de gastos deducibles del autónomo")

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// API REST de facturas del módulo de autónomos: emitir, listar, descargar PDF y resumen trimestral.
 @RestController
 @RequestMapping("/invoices")
 @Tag(name = "Facturas", description = "Emisión, consulta, PDF y resúmenes trimestrales de facturas")

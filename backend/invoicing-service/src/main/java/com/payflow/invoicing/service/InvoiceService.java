@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 
+// Lógica de negocio del módulo de autónomos: facturas, gastos y el resumen fiscal trimestral.
 @Service
 public class InvoiceService {
 
@@ -22,12 +23,13 @@ public class InvoiceService {
         this.expenseRepo = expenseRepo;
     }
 
+    // Crea una factura calculando sus cuotas. Si no se indican tipos, usa los habituales (IVA 21%, IRPF 15%).
     public InvoiceResponse create(String userId, InvoiceRequest req) {
         double tipoIva   = req.getTipoIva()  != null ? req.getTipoIva()  : 21.0;
         double tipoIrpf  = req.getTipoIrpf() != null ? req.getTipoIrpf() : 15.0;
         double base      = req.getBaseImponible();
-        double cuotaIva  = base * tipoIva  / 100.0;
-        double cuotaIrpf = base * tipoIrpf / 100.0;
+        double cuotaIva  = base * tipoIva  / 100.0;  // IVA que se le suma al cliente.
+        double cuotaIrpf = base * tipoIrpf / 100.0;  // IRPF que se le retiene al autónomo.
 
         InvoiceEntity inv = new InvoiceEntity();
         inv.setUserId(userId);
@@ -46,6 +48,7 @@ public class InvoiceService {
         return new InvoiceResponse(invoiceRepo.save(inv));
     }
 
+    // Genera el número de factura correlativo por año y usuario (p. ej. F-2026-001, F-2026-002...).
     private String generarNumero(String userId) {
         int year  = LocalDate.now().getYear();
         long count = invoiceRepo.countByUserIdAndYear(userId, year);
@@ -66,29 +69,36 @@ public class InvoiceService {
         return new InvoiceResponse(getEntity(userId, id));
     }
 
+    // No borramos facturas: las marcamos como CANCELADA para conservar la trazabilidad fiscal.
     public void cancel(String userId, String id) {
         InvoiceEntity inv = getEntity(userId, id);
         inv.setEstado(InvoiceEntity.Estado.CANCELADA);
         invoiceRepo.save(inv);
     }
 
+    // Calcula el resumen fiscal de un trimestre: lo que el autónomo debe declarar a Hacienda.
     public QuarterlySummaryResponse getQuarterlySummary(String userId, int year, int quarter) {
+        // Rango de fechas del trimestre: 1T → ene-mar, 2T → abr-jun, etc.
         LocalDate from = LocalDate.of(year, (quarter - 1) * 3 + 1, 1);
         LocalDate to   = from.plusMonths(3).minusDays(1);
 
+        // Facturas emitidas (no canceladas) y gastos deducibles dentro del trimestre.
         List<InvoiceEntity> facturas = invoiceRepo
                 .findByUserIdAndFechaBetweenAndEstadoNot(userId, from, to, InvoiceEntity.Estado.CANCELADA);
         List<ExpenseEntity> gastos = expenseRepo
                 .findByUserIdAndFechaBetweenAndDeducibleTrue(userId, from, to);
 
+        // Sumamos las bases y cuotas de ingresos (facturas) y de gastos.
         double totalIngresos   = facturas.stream().mapToDouble(InvoiceEntity::getBaseImponible).sum();
-        double ivaRepercutido  = facturas.stream().mapToDouble(InvoiceEntity::getCuotaIva).sum();
-        double retencionesIRPF = facturas.stream().mapToDouble(InvoiceEntity::getCuotaIrpf).sum();
+        double ivaRepercutido  = facturas.stream().mapToDouble(InvoiceEntity::getCuotaIva).sum();   // IVA cobrado a clientes.
+        double retencionesIRPF = facturas.stream().mapToDouble(InvoiceEntity::getCuotaIrpf).sum();  // IRPF ya retenido.
         double totalGastos     = gastos.stream().mapToDouble(ExpenseEntity::getBaseImponible).sum();
-        double ivaSoportado    = gastos.stream()
+        double ivaSoportado    = gastos.stream()                                                    // IVA pagado en compras.
                 .mapToDouble(e -> e.getCuotaIva() != null ? e.getCuotaIva() : 0.0).sum();
 
+        // Modelo 303 (IVA): IVA cobrado − IVA pagado = lo que se ingresa a Hacienda.
         double resultado303  = ivaRepercutido - ivaSoportado;
+        // Modelo 130 (IRPF): 20% del beneficio neto, menos lo ya retenido (nunca negativo).
         double beneficioNeto = totalIngresos - totalGastos;
         double pago130       = Math.max(0, beneficioNeto * 0.20 - retencionesIRPF);
 
@@ -101,6 +111,7 @@ public class InvoiceService {
 
     // ── Expenses ──────────────────────────────────────────────
 
+    // Registra un gasto deducible. Asume IVA del 21% sobre la base para calcular su cuota.
     public ExpenseResponse createExpense(String userId, ExpenseRequest req) {
         double base     = req.getBaseImponible();
         double cuotaIva = base * 0.21;

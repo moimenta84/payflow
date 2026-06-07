@@ -3,6 +3,7 @@ package com.payflow.transaction.entity;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
+// Entidad JPA: una transacción (ingreso o gasto) del usuario. Se mapea a la tabla "transactions".
 @Entity
 @Table(name = "transactions")
 public class TransactionEntity {

@@ -3,6 +3,7 @@ package com.payflow.invoicing.entity;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
+// Entidad JPA: una factura emitida por el autónomo (base, IVA, IRPF, total y estado). Tabla "invoices".
 @Entity
 @Table(name = "invoices")
 public class InvoiceEntity {

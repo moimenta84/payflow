@@ -4,16 +4,17 @@ import { useAuth } from "../context/AuthContext";
 import { api } from "../config/api";
 import s from "../styles/Payment.module.css";
 
+// Pantalla a la que Stripe redirige tras un pago correcto. Confirma la suscripción contra el backend.
 function PaymentSuccess() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { refreshUser } = useAuth();
-  const sessionId = searchParams.get("session_id");
+  const sessionId = searchParams.get("session_id"); // Stripe devuelve el id de la sesión en la URL.
 
   const [estado, setEstado] = useState("loading"); // loading | ok | error
   const [plan, setPlan] = useState(null);
   const [mensaje, setMensaje] = useState("");
-  const yaConfirmado = useRef(false);
+  const yaConfirmado = useRef(false); // Evita confirmar dos veces (React monta el efecto 2x en StrictMode).
 
   useEffect(() => {
     if (yaConfirmado.current) return;
@@ -27,9 +28,10 @@ function PaymentSuccess() {
 
     (async () => {
       try {
+        // El backend valida la sesión con Stripe y activa el plan en el usuario.
         const user = await api.post("/payments/confirm", { sessionId });
         setPlan(user?.plan || null);
-        await refreshUser();
+        await refreshUser(); // Refrescamos el usuario para que la app vea ya el plan activo.
         setEstado("ok");
       } catch (err) {
         setEstado("error");

@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "react-bootstrap";
 
+// Botón reutilizable: envuelve el Button de Bootstrap para usar nuestras propias props en español.
 function Boton(props) {
   return (
     <div className="Boton">

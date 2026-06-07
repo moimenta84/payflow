@@ -4,6 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.jms.annotation.EnableJms;
 
+// Arranque del transaction-service: ingresos/gastos del usuario e informes PDF.
+// @EnableJms activa la mensajería (publica cada transacción nueva en la cola).
 @SpringBootApplication
 @EnableJms
 public class TransactionApplication {

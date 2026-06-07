@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
+// API REST de transacciones. El gateway valida el JWT e inyecta X-User-Id, así que aquí solo se opera.
 @RestController
 @RequestMapping("/transactions")
 @Tag(name = "Transacciones", description = "CRUD de movimientos, resúmenes e informes PDF")

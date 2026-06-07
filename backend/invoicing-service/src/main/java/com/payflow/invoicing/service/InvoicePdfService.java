@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 
+// Genera el PDF de una factura concreta (diseño con colores de marca) usando la librería iText.
 @Service
 public class InvoicePdfService {
 
@@ -24,6 +25,7 @@ public class InvoicePdfService {
         this.invoiceRepo = invoiceRepo;
     }
 
+    // Devuelve la factura como PDF en bytes. Busca por id Y userId para que nadie acceda a facturas ajenas.
     public byte[] generate(String userId, String invoiceId) {
         InvoiceEntity inv = invoiceRepo.findByIdAndUserId(invoiceId, userId)
                 .orElseThrow(() -> ApiException.notFound("Factura no encontrada"));

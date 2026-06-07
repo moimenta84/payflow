@@ -44,12 +44,14 @@ export default function CategoryChart({ transacciones = [] }) {
       return d.getMonth() === mes && d.getFullYear() === anio;
     });
 
+    // Acumulamos el total gastado por cada categoría en un objeto { categoria: total }.
     const bycat = {};
     gastosMes.forEach((t) => {
       const cat = t.categoria || "OTROS";
       bycat[cat] = (bycat[cat] ?? 0) + (t.cantidad ?? 0);
     });
 
+    // Lo convertimos en array ordenado de mayor a menor gasto y le asignamos un color a cada porción.
     return Object.entries(bycat)
       .sort((a, b) => b[1] - a[1])
       .map(([cat, total], i) => ({

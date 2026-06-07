@@ -4,6 +4,8 @@ import style from '../styles/Autonomos.module.css';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
+// Módulo de autónomos: facturas, gastos deducibles y cálculo de impuestos (modelos 303 IVA y 130 IRPF).
+
 const CATEGORIAS = ['MATERIAL', 'SERVICIOS', 'SUMINISTROS', 'OTROS'];
 const CATEGORIA_LABEL = {
   MATERIAL: 'Material', SERVICIOS: 'Servicios',
@@ -19,6 +21,8 @@ function fmt(n) {
     : '0,00';
 }
 
+// Calcula los totales de una factura: el IVA se suma y el IRPF se resta sobre la base imponible.
+// Fórmula real de una factura de autónomo: Total = Base + IVA − IRPF.
 function calcInvoiceTotals(base, tipoIva, tipoIrpf) {
   const b    = parseFloat(base)    || 0;
   const iva  = parseFloat(tipoIva) || 0;
@@ -67,6 +71,7 @@ function TrashIcono() {
 }
 
 function Autonomos() {
+  // La pantalla tiene 3 pestañas: facturas emitidas, gastos deducibles y resumen fiscal del trimestre.
   const [tabActiva, setTabActiva] = useState('facturas');
 
   // Facturas
@@ -115,6 +120,7 @@ function Autonomos() {
     } catch { /* servicio no disponible */ } finally { setCargandoG(false); }
   }, []);
 
+  // Pide al backend el resumen fiscal del trimestre (lo calcula el invoicing-service).
   const cargarResumen = useCallback(async () => {
     setCargandoT(true);
     try {
@@ -125,10 +131,12 @@ function Autonomos() {
 
   useEffect(() => { cargarFacturas(); cargarGastos(); }, [cargarFacturas, cargarGastos]);
 
+  // El resumen trimestral solo se carga al entrar en esa pestaña (ahorramos llamadas).
   useEffect(() => {
     if (tabActiva === 'trimestre') cargarResumen();
   }, [tabActiva, cargarResumen]);
 
+  // Crea una factura nueva en el backend (que asigna número y calcula totales) y refresca la lista.
   const handleCrearFactura = async (e) => {
     e.preventDefault();
     if (!formFactura.clienteNombre || !formFactura.concepto || !formFactura.baseImponible) {
@@ -164,6 +172,7 @@ function Autonomos() {
     } catch { /* ignorar */ }
   };
 
+  // Descarga el PDF de una factura concreta (lo genera el invoicing-service con iText/OpenPDF).
   const handleDescargarPdf = async (id, numeroFactura) => {
     setDescargando(prev => ({ ...prev, [id]: true }));
     try {
@@ -219,10 +228,12 @@ function Autonomos() {
     } catch { /* ignorar */ }
   };
 
+  // Vista previa en vivo de los totales mientras el usuario rellena la factura (no toca el backend).
   const preview = calcInvoiceTotals(
     formFactura.baseImponible, formFactura.tipoIva, formFactura.tipoIrpf
   );
 
+  // Total estimado del gasto (base + IVA) para mostrarlo antes de guardar.
   const fgTotal = (parseFloat(formGasto.baseImponible) || 0) + (parseFloat(formGasto.cuotaIva) || 0);
 
   return (

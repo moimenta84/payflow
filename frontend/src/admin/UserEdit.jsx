@@ -8,6 +8,8 @@ import {
   SaveButton,
 } from 'react-admin';
 
+// Formulario de edición de usuario en el admin. Solo permite cambiar el rol (lo demás es de solo lectura).
+
 const EditToolbar = () => (
   <Toolbar>
     <SaveButton label="Guardar cambios" />
@@ -17,6 +19,7 @@ const EditToolbar = () => (
 export const UserEdit = () => (
   <Edit title="Editar usuario">
     <SimpleForm toolbar={<EditToolbar />}>
+      {/* Campos deshabilitados: se muestran como referencia pero no se pueden modificar desde aquí. */}
       <TextInput source="id"       label="ID"      disabled />
       <TextInput source="nombre"   label="Nombre"  disabled />
       <TextInput source="apellido" label="Apellido" disabled />

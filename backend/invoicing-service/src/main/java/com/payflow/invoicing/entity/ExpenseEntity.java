@@ -3,6 +3,7 @@ package com.payflow.invoicing.entity;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
+// Entidad JPA: un gasto deducible del autónomo (base, IVA soportado, categoría). Tabla "expenses".
 @Entity
 @Table(name = "expenses")
 public class ExpenseEntity {

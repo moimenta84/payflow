@@ -22,6 +22,8 @@ import FloatingAssistantButton from './components/FloatingAssistantButton'
 import AppLayout from './components/AppLayout'
 import AdminApp from './admin/AdminApp'
 
+// Guardián de la zona de administración: doble control en cliente.
+// Si no hay sesión te manda al login; si la hay pero no eres ADMIN, te devuelve al home.
 function AdminRoute() {
   const { user, isAuthenticated } = useAuth()
   if (!isAuthenticated) return <Navigate to="/login" replace />
@@ -29,6 +31,8 @@ function AdminRoute() {
   return <AdminApp />
 }
 
+// Componente raíz: define el enrutado de toda la app y envuelve todo en los providers.
+// AuthProvider (sesión/usuario) y ThemeProvider (modo claro/oscuro) están disponibles globalmente.
 function App() {
   return (
     <BrowserRouter
@@ -40,13 +44,13 @@ function App() {
       <AuthProvider>
         <ThemeProvider>
           <Routes>
-            {/* ── Public routes ── */}
+            {/* Rutas públicas: accesibles sin haber iniciado sesión. */}
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/registro" element={<Register />} />
             <Route path="/recuperar-password" element={<Remember />} />
 
-            {/* ── Authenticated routes wrapped in AppLayout ── */}
+            {/* Rutas privadas: ProtectedRoute exige sesión y AppLayout añade menú/cabecera comunes. */}
             <Route
               path="/home"
               element={
@@ -134,12 +138,14 @@ function App() {
               }
             />
 
+            {/* Zona admin: cualquier ruta /admin/* pasa por el guardián AdminRoute. */}
             <Route path="/admin/*" element={<AdminRoute />} />
 
+            {/* Comodín: cualquier URL desconocida redirige al login. */}
             <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
 
-          {/* Floating assistant — visible everywhere except admin */}
+          {/* Botón flotante del asistente: aparece en todas las pantallas de usuario. */}
           <FloatingAssistantButton />
         </ThemeProvider>
       </AuthProvider>

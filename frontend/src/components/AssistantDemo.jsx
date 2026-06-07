@@ -9,10 +9,12 @@ import "../index.css";
 
 const fmt = (n) => `${n >= 0 ? '' : '-'}€${Math.abs(n).toFixed(2)}`;
 
+// Asistente basado en reglas (no IA): detecta la intención con expresiones regulares
+// y responde con DATOS REALES del usuario (saldo, gastos, movimientos) consultando el backend.
 async function answerFromData(text) {
   const t = text.toLowerCase();
-  const periodo = extractPeriodo(t);
-  const cat     = extractCategoria(t);
+  const periodo = extractPeriodo(t); // Detecta "este mes", "hoy", etc. en la pregunta.
+  const cat     = extractCategoria(t); // Detecta la categoría mencionada, si la hay.
 
   try {
     // Saldo de la cartera
@@ -62,13 +64,13 @@ async function answerFromData(text) {
       return `Resumen de ${periodo.label}:\n\n• Ingresos: ${fmt(r.ingresos)}\n• Gastos: ${fmt(r.gastos)}\n• Balance: **${fmt(r.balance)}** (${sign})`;
     }
 
-    return null; // sin match — cae a la lógica de consejos
+    return null; // Si nada coincide, devolvemos null y se usan los consejos genéricos de abajo.
   } catch (err) {
     return `No he podido consultar tus datos: ${err.message}. ¿Has iniciado sesión?`;
   }
 }
 
-// VERSIÓN DEMO SIN API - Para desarrollo y pruebas
+// Componente del chat del asistente. Combina respuestas con datos reales y consejos pre-escritos.
 function AssistantDemo() {
   const [messages, setMessages] = useState([
     {
@@ -91,7 +93,7 @@ function AssistantDemo() {
     scrollToBottom();
   }, [messages]);
 
-  // Respuestas pre-programadas para demo
+  // Consejos financieros pre-escritos: se usan cuando la pregunta no es sobre datos del usuario.
   const getAutomatedResponse = (userMessage) => {
     const message = userMessage.toLowerCase();
 
@@ -132,12 +134,12 @@ function AssistantDemo() {
     return "Entiendo tu pregunta sobre finanzas. Puedo ayudarte con:\n\n• Crear y gestionar presupuestos\n• Estrategias de ahorro\n• Reducción de gastos\n• Inversiones básicas\n• Gestión de deudas\n• Fondos de emergencia\n\n¿Sobre cuál de estos temas te gustaría saber más?";
   };
 
-  // Intenta responder con datos reales; si no, cae a respuestas pre-programadas
+  // Orquesta la respuesta: primero intenta con datos reales y, si no hay, usa el consejo genérico.
   const sendMessage = async (userMessage) => {
     setIsLoading(true);
     try {
       const dataResponse = await answerFromData(userMessage);
-      const assistantResponse = dataResponse ?? getAutomatedResponse(userMessage);
+      const assistantResponse = dataResponse ?? getAutomatedResponse(userMessage); // ?? = si es null, usa el segundo.
       setMessages((prev) => [
         ...prev,
         { role: "assistant", content: assistantResponse, timestamp: new Date() },

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+// Lógica de negocio de la banca conectada (PSD2): conectar el banco, sincronizar e importar movimientos.
 @Service
 public class BankService {
 
@@ -42,6 +43,7 @@ public class BankService {
         this.restTemplate    = new RestTemplate();
     }
 
+    // Inicia la conexión con un banco: pide a Nordigen el enlace de autorización y guarda la conexión PENDING.
     public BankConnectionResponse iniciarConexion(String userId, String institutionId, String redirectUrl) {
         Map<String, Object> req = nordigenClient.createRequisition(institutionId, redirectUrl);
 
@@ -57,6 +59,7 @@ public class BankService {
         return new BankConnectionResponse(conn);
     }
 
+    // Procesa la vuelta del banco: si Nordigen dice que está vinculada (estado "LN"), la marcamos como LINKED.
     @Transactional
     public void procesarCallback(String userId, String requisitionId) {
         BankConnection conn = connectionRepo
@@ -76,6 +79,7 @@ public class BankService {
                 .map(BankConnectionResponse::new);
     }
 
+    // Descarga los movimientos del banco y los guarda. Evita duplicados usando el id externo de cada uno.
     @SuppressWarnings("unchecked")
     @Transactional
     public List<BankTransactionResponse> sincronizarTransacciones(String userId) {
@@ -92,6 +96,7 @@ public class BankService {
             for (Map<String, Object> raw : rawTxs) {
                 String externalId = (String) raw.get("transactionId");
 
+                // Si ya teníamos guardado este movimiento, lo devolvemos sin volver a crearlo.
                 if (transactionRepo.existsByExternalId(externalId)) {
                     transactionRepo.findByExternalId(externalId)
                             .map(BankTransactionResponse::new)
@@ -120,12 +125,14 @@ public class BankService {
         return resultado;
     }
 
+    // Importa un movimiento bancario al historial de PayFlow, llamando al transaction-service por HTTP.
     public void importarTransaccion(String userId, String bankTransactionId) {
         BankTransaction tx = transactionRepo.findByIdAndUserId(bankTransactionId, userId)
                 .orElseThrow(() -> ApiException.notFound("Transaccion no encontrada"));
 
         if (tx.isImportedToPayflow()) throw ApiException.conflict("Ya importada a PayFlow");
 
+        // Si el importe es positivo es un INGRESO; si es negativo, un GASTO.
         String tipo = tx.getAmount() >= 0 ? "INGRESO" : "GASTO";
 
         Map<String, Object> body = Map.of(
@@ -153,6 +160,7 @@ public class BankService {
         }
     }
 
+    // Desconecta el banco marcando la conexión como EXPIRED (no se borra, se conserva el histórico).
     public void desconectar(String userId) {
         connectionRepo.findFirstByUserIdOrderByCreatedAtDesc(userId).ifPresent(conn -> {
             conn.setStatus(BankConnection.Status.EXPIRED);
@@ -160,6 +168,7 @@ public class BankService {
         });
     }
 
+    // Lista los bancos disponibles para conectar (delegando en el cliente de Nordigen).
     public List<Map<String, Object>> getInstituciones() {
         return nordigenClient.getInstitutions();
     }

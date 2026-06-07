@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+// API REST de Open Banking: conectar el banco, ver estado, sincronizar movimientos e importarlos.
 @RestController
 @RequestMapping("/bank")
 @Tag(name = "Open Banking", description = "Conexión de cuentas bancarias y sincronización vía Nordigen (PSD2)")

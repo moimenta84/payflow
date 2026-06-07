@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { api } from "../config/api";
 
+// Pantalla de pago por enlace: se abre desde el enlace de cobro que genera otro usuario en su wallet.
 export default function Pay() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
+  // Los datos del cobro viajan en la URL (?to=...&amount=...&desc=...).
   const toUserId = searchParams.get("to") || "";
   const amount   = parseFloat(searchParams.get("amount") || "0");
   const desc     = searchParams.get("desc") || "";
@@ -15,12 +17,14 @@ export default function Pay() {
   const [error, setError]     = useState("");
   const [success, setSuccess] = useState(false);
 
+  // Cargamos nuestra wallet para comprobar que tenemos saldo suficiente antes de pagar.
   useEffect(() => {
     api.get("/wallet/me").then(setWallet).catch(() => {});
   }, []);
 
-  const paramsOk = toUserId && amount > 0;
+  const paramsOk = toUserId && amount > 0; // El enlace solo es válido con destinatario e importe.
 
+  // Confirma el pago: reutiliza el mismo endpoint de envío P2P de la wallet.
   const handlePay = async () => {
     setError("");
     setSending(true);
@@ -133,6 +137,7 @@ export default function Pay() {
   );
 }
 
+// Estilos en línea (esta pantalla es independiente y no usa CSS Modules como el resto).
 const styles = {
   page: {
     minHeight: "100vh",

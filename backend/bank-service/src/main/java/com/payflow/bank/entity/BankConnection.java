@@ -3,6 +3,7 @@ package com.payflow.bank.entity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+// Entidad JPA: la vinculación de un usuario con su banco (estado PENDING/LINKED/EXPIRED). Tabla "bank_connections".
 @Entity
 @Table(name = "bank_connections")
 public class BankConnection {

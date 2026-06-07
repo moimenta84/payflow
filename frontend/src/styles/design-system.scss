@@ -251,6 +251,8 @@ $font-family-base: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
 // ───────────────────────────────────────────
 //  DARK MODE
 // ───────────────────────────────────────────
+//  Al añadir la clase .dark al <html>, redefinimos solo los tokens semánticos.
+//  Los componentes no cambian: leen las mismas variables y el tema cambia "en caliente".
 
 .dark {
   // Textos
@@ -387,7 +389,7 @@ code, pre, kbd, samp, .mono {
   gap: var(--spacing-lg);
 }
 
-// ── Animaciones ──
+// ── Animaciones reutilizables (aparición de elementos y pequeño rebote al pasar el ratón) ──
 @keyframes fadeInUp {
   from {
     opacity: 0;

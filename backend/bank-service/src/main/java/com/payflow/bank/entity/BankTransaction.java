@@ -3,6 +3,7 @@ package com.payflow.bank.entity;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
+// Entidad JPA: un movimiento traído del banco real. externalId evita duplicados al sincronizar. Tabla "bank_transactions".
 @Entity
 @Table(name = "bank_transactions")
 public class BankTransaction {

@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
+// Lógica de negocio de los pagos con Stripe: crear la sesión de pago y confirmar la suscripción.
+// Se apoya en StripeGateway para hablar con Stripe y en UserRepository para activar el plan al usuario.
 @Service
 public class StripeService implements StripeOperations {
 
@@ -34,11 +36,13 @@ public class StripeService implements StripeOperations {
         this.stripeGateway  = stripeGateway;
     }
 
+    // Al arrancar, configuramos la clave secreta de Stripe (la lee la librería globalmente).
     @PostConstruct
     void init() {
         Stripe.apiKey = stripeSecretKey;
     }
 
+    // Crea la sesión de pago para el plan Autónomos y devuelve la URL de Stripe a la que ir.
     public String createCheckoutSession(String userId, String planParam) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> ApiException.notFound("Usuario no encontrado"));
@@ -49,6 +53,7 @@ public class StripeService implements StripeOperations {
         }
 
         try {
+            // Reutilizamos el cliente de Stripe del usuario; si aún no tiene, lo creamos y lo guardamos.
             String customerId = user.getStripeCustomerId();
             if (customerId == null || customerId.isBlank()) {
                 customerId = stripeGateway.createCustomer(user.getEmail(), user.getNombre());
@@ -69,6 +74,7 @@ public class StripeService implements StripeOperations {
         }
     }
 
+    // Confirma el pago tras volver de Stripe: verifica que se cobró y activa el plan del usuario.
     public UserResponse confirmSession(String userId, String sessionId) {
         try {
             StripeSessionData data = stripeGateway.retrieveSession(sessionId);

@@ -41,6 +41,7 @@ function CustomTooltip({ active, payload, label }) {
 export default function FinancialChart({ transacciones = [] }) {
   const meses = useMemo(() => ultMeses(6), []);
 
+  // Para cada uno de los 6 meses, sumamos ingresos y gastos de ese mes (agrupación en cliente).
   const data = useMemo(() => {
     return meses.map(({ key, label }) => {
       const [anio, mes] = key.split("-").map(Number);

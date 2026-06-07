@@ -2,7 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import s from "../styles/Landing.module.css";
 
-// ─── Data ─────────────────────────────────────────────────────────────────────
+// Página de aterrizaje (landing) pública: presenta el producto, precios y CTA para registrarse.
+
+// ─── Datos de demostración (mock) que rellenan la maqueta visual del dashboard del hero ───
 
 const FEED = [
   { id: "tx_8a3f", label: "Pago a @juan · Cena",            amount: "− € 22.50",     tag: "p2p",     color: "#22d3ee" },
@@ -22,8 +24,10 @@ const DOT_OPS = Array.from({ length: 35 }, (_, i) => {
   return v > 0.35 ? 0.45 + v * 0.55 : 0.1;
 });
 
+// Mapea el nombre del plan a su slug de URL (se pasa a /registro?plan=...).
 const PLAN_SLUG = { Free: "free", "Autónomos": "autonomos" };
 
+// Definición de los planes que se pintan en la sección de precios.
 const PRICING = [
   {
     name: "Free",
@@ -41,8 +45,9 @@ const PRICING = [
   },
 ];
 
-// ─── Counter hook ─────────────────────────────────────────────────────────────
+// ─── Hook contador animado ──────────────────────────────────────────────────────
 
+// Anima un número de 0 hasta 'target' cuando el elemento entra en pantalla (efecto "subida").
 function useCounter(target, { format = "plain", duration = 1800 } = {}) {
   const [val, setVal] = useState(0);
   const ref = useRef(null);
@@ -50,6 +55,7 @@ function useCounter(target, { format = "plain", duration = 1800 } = {}) {
   useEffect(() => {
     const node = ref.current;
     if (!node) return;
+    // IntersectionObserver detecta cuándo el contador se ve; solo entonces arranca la animación.
     const obs = new IntersectionObserver(([e]) => {
       if (!e.isIntersecting) return;
       obs.disconnect();
@@ -164,12 +170,14 @@ export default function Landing() {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
 
+  // Al hacer scroll, marcamos la barra de navegación como "sólida" (cambia su fondo).
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 48);
     window.addEventListener("scroll", h, { passive: true });
     return () => window.removeEventListener("scroll", h);
   }, []);
 
+  // Efecto de aparición: añade la clase 'visible' a cada bloque .reveal cuando entra en pantalla.
   useEffect(() => {
     const obs = new IntersectionObserver(
       (entries) => entries.forEach((e) => {

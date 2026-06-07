@@ -5,7 +5,10 @@ import { useTheme } from '../context/ThemeContext';
 import PayFlowLogo from './PayFlowLogo';
 import style from './AppLayout.module.css';
 
-/* ── Inline SVG icons ── */
+// Layout común de toda la zona privada: barra lateral con navegación, datos del usuario y contenido.
+// Envuelve cada página autenticada (ver App.jsx) para no repetir el menú en cada una.
+
+/* ── Iconos SVG en línea (uno por cada apartado del menú) ── */
 function IconHome() {
   return (
     <svg className={style.navIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -120,6 +123,7 @@ function IconClose() {
   );
 }
 
+// Apartados del menú lateral. El bucle de abajo los pinta automáticamente a partir de esta lista.
 const NAV_LINKS = [
   { to: '/home',          label: 'Inicio',          Icon: IconHome },
   { to: '/wallet',        label: 'Wallet',          Icon: IconWallet },
@@ -130,10 +134,11 @@ const NAV_LINKS = [
 
 function AppLayout({ children }) {
   const { user, logout } = useAuth();
-  const { isDark, toggleTheme } = useTheme();
+  const { isDark, toggleTheme } = useTheme(); // Tema claro/oscuro desde el contexto global.
   const navigate = useNavigate();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false); // Estado del menú en móvil (hamburguesa).
 
+  // Cierre de sesión con confirmación previa para evitar salir por error.
   const handleLogout = () => {
     if (window.confirm('¿Estás seguro de que deseas cerrar sesión?')) {
       logout();
@@ -143,7 +148,7 @@ function AppLayout({ children }) {
 
   const closeSidebar = () => setSidebarOpen(false);
 
-  /* Generate initials from full name or use stored iniciales */
+  // Iniciales para el avatar: usa las guardadas o las calcula a partir del nombre completo.
   const initials = user?.iniciales
     || (user?.fullName
       ? user.fullName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
@@ -191,6 +196,7 @@ function AppLayout({ children }) {
             </NavLink>
           ))}
 
+          {/* El enlace a Admin solo aparece si el usuario tiene rol ADMIN. */}
           {user?.rol === 'ADMIN' && (
             <a
               href="/admin"

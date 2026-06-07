@@ -4,6 +4,7 @@ import Boton from "../components/Boton";
 import style from "../styles/Transation.module.css";
 import "../index.css";
 
+// Formulario visual de alta de transacción (maqueta). Reutiliza los componentes propios CajaTexto/Eleccion/Boton.
 function Transation() {
   return (
     <div className={style.transation}>

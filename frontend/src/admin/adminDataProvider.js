@@ -1,14 +1,18 @@
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
+// dataProvider: contrato que React-Admin usa para leer/escribir datos. Aquí lo conectamos a nuestra API.
+// Cada método (getList, update, delete...) traduce la operación de React-Admin a una llamada REST nuestra.
+
 const authHeaders = () => ({
   'Content-Type': 'application/json',
   Authorization: `Bearer ${localStorage.getItem('token')}`,
 });
 
-// Caché local de usuarios para simular getOne (nuestra API solo tiene getList)
+// Caché local de usuarios para simular getOne (nuestra API solo expone el listado completo).
 let usersCache = [];
 
 const adminDataProvider = {
+  // Lista de usuarios: la guarda en caché para que getOne/getMany no tengan que volver a pedirla.
   getList: async (resource, params) => {
     const res = await fetch(`${API_BASE}/admin/${resource}`, { headers: authHeaders() });
     if (!res.ok) throw new Error('Error cargando usuarios');
@@ -43,7 +47,7 @@ const adminDataProvider = {
     return { data, total: data.length };
   },
 
-  // Cambiar rol → PUT /admin/users/{id}/rol
+  // En este admin solo se permite cambiar el rol → PUT /admin/users/{id}/rol
   update: async (resource, params) => {
     const res = await fetch(`${API_BASE}/admin/${resource}/${params.id}/rol`, {
       method: 'PUT',

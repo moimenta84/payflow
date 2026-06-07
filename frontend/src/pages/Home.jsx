@@ -7,7 +7,9 @@ import FinancialChart from "../components/FinancialChart";
 import CategoryChart from "../components/CategoryChart";
 import style from "../styles/Home.module.css";
 
-// ── Iconos SVG inline ──────────────────────────────────────────────────────
+// Dashboard principal del usuario: resume saldo, ingresos/gastos del mes y últimas transacciones.
+
+// ── Iconos SVG inline (sin dependencias externas, se colorean con currentColor) ───────────
 
 function IconWallet() {
   return (
@@ -68,6 +70,7 @@ function IconDoc() {
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
+// Devuelve el saludo apropiado según la hora del día.
 function saludar() {
   const h = new Date().getHours();
   if (h < 12) return "Buenos días";
@@ -79,10 +82,12 @@ function mesActual() {
   return new Date().toLocaleString("es-ES", { month: "long", year: "numeric" });
 }
 
+// Formatea un número como importe en euros con el formato español (1.234,56).
 function formatEur(n) {
   return n.toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
+// Traduce los códigos de categoría que devuelve el backend a etiquetas legibles.
 const CAT_LABEL = {
   SALARIO: "Salario", ALIMENTACION: "Alimentación", VIVIENDA: "Vivienda",
   TRANSPORTE: "Transporte", SALUD: "Salud", OCIO: "Ocio",
@@ -99,10 +104,11 @@ export default function Home() {
   const [bankOk,    setBankOk]    = useState(false);
   const [loading,   setLoading]   = useState(true);
 
+  // Carga los datos de tres microservicios a la vez. allSettled: si uno falla, los demás siguen.
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      // Cargar wallet, transacciones y estado bancario en paralelo
+      // Wallet, transacciones y estado bancario en paralelo para que el dashboard cargue rápido.
       const [w, t, b] = await Promise.allSettled([
         api.get("/wallet/me"),
         listTransacciones(),
@@ -116,9 +122,9 @@ export default function Home() {
     }
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => { load(); }, [load]); // Cargamos al montar la pantalla.
 
-  // Cálculos del mes actual
+  // useMemo: recalcula los totales del mes solo cuando cambian las transacciones (evita recalcular en cada render).
   const { ingresosMes, gastosMes, balanceMes, ultimas5 } = useMemo(() => {
     const now   = new Date();
     const mes   = now.getMonth();
@@ -143,6 +149,7 @@ export default function Home() {
     };
   }, [txns]);
 
+  // Nombre a mostrar y sus iniciales para el avatar (p. ej. "Iker Martínez" → "IM").
   const nombre   = user?.fullName || user?.username || "Usuario";
   const iniciales = nombre.split(" ").map(p => p[0]).join("").slice(0, 2).toUpperCase();
 

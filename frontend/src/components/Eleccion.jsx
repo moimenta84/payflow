@@ -1,6 +1,7 @@
 import React from 'react'
 import { Form } from 'react-bootstrap';
 
+// Desplegable de selección (maqueta). Componente de ejemplo usado en el formulario de transacción.
 function Eleccion() {
   return (
     <div>

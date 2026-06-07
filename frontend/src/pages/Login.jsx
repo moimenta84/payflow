@@ -7,31 +7,36 @@ import CajaTexto from "../components/CajaTexto";
 import style from "../styles/Login.module.css";
 import "../index.css";
 
+// Pantalla de inicio de sesión: valida el formulario, controla intentos y llama a login().
 function Login() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login } = useAuth(); // login() vive en el AuthContext y guarda el token JWT.
 
+  // Estado del formulario controlado por React (cada tecla actualiza este objeto).
   const [credenciales, setCredenciales] = useState({
     email: "",
     password: "",
     recordarme: false,
   });
 
-  const [errores, setErrores] = useState({});
-  const [cargando, setCargando] = useState(false);
-  const [mostrarPassword, setMostrarPassword] = useState(false);
+  const [errores, setErrores] = useState({});             // Mensajes de validación por campo.
+  const [cargando, setCargando] = useState(false);        // Deshabilita el botón mientras se envía.
+  const [mostrarPassword, setMostrarPassword] = useState(false); // Toggle del ojo de la contraseña.
 
+  // Rate limiting en cliente: tras 5 intentos fallidos, bloqueamos 15 minutos.
   const [intentos, setIntentos] = useState(0);
   const [bloqueadoHasta, setBloqueadoHasta] = useState(null);
   const MAX_INTENTOS = 5;
   const TIEMPO_BLOQUEO = 15 * 60 * 1000;
 
+  // Actualiza el campo que cambió y borra su error previo para que el usuario lo vea limpio.
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setCredenciales((prev) => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
     if (errores[name]) setErrores((prev) => { const n = { ...prev }; delete n[name]; return n; });
   };
 
+  // Validación en cliente antes de molestar al servidor: email con formato y contraseña mínima.
   const validarFormulario = () => {
     const err = {};
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -43,6 +48,7 @@ function Login() {
     return Object.keys(err).length === 0;
   };
 
+  // Comprueba si estamos en periodo de bloqueo por demasiados intentos fallidos.
   const verificarRateLimiting = () => {
     const ahora = Date.now();
     if (bloqueadoHasta && ahora < bloqueadoHasta) {
@@ -59,19 +65,22 @@ function Login() {
     return true;
   };
 
+  // Envío del formulario: comprueba bloqueo, valida, llama al backend y navega al home si todo va bien.
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Evita que el navegador recargue la página al enviar el form.
     if (!verificarRateLimiting()) return;
     if (!validarFormulario()) return;
 
     setCargando(true);
     setIntentos((p) => p + 1);
     try {
+      // Normalizamos el email a minúsculas para que el login no dependa de mayúsculas.
       await login(credenciales.email.trim().toLowerCase(), credenciales.password);
       setIntentos(0);
       setBloqueadoHasta(null);
       navigate("/home");
     } catch (error) {
+      // Mensaje genérico a propósito: no revelamos si falló el email o la contraseña.
       setErrores({ general: "Email o contraseña incorrectos" });
     } finally {
       setCargando(false);

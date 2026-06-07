@@ -13,9 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+// Implementación real del acceso a Stripe. Aísla las llamadas a la librería de Stripe en un solo sitio
+// (patrón Gateway), de modo que el resto del código no dependa directamente de la API de Stripe.
 @Component
 public class StripeGatewayImpl implements StripeGateway {
 
+    // Crea un cliente en Stripe (Customer) y devuelve su id, que guardamos asociado al usuario.
     @Override
     public String createCustomer(String email, String name) throws StripeException {
         return Customer.create(
@@ -26,12 +29,14 @@ public class StripeGatewayImpl implements StripeGateway {
         ).getId();
     }
 
+    // Crea un Payment Link de Stripe para el plan y devuelve la URL a la que redirigir al usuario.
     @Override
     public String createCheckoutSessionUrl(
             String customerId, String priceId,
             String successUrl, String cancelUrl,
             Map<String, String> metadata) throws StripeException {
 
+        // Líneas del pago: aquí, una sola (el precio del plan) con cantidad 1.
         List<PaymentLinkCreateParams.LineItem> lineItems = new ArrayList<>();
         lineItems.add(PaymentLinkCreateParams.LineItem.builder()
                 .setPrice(priceId)
@@ -60,6 +65,8 @@ public class StripeGatewayImpl implements StripeGateway {
         return link.getUrl();
     }
 
+    // Recupera los datos de una sesión de pago ya creada (estado, suscripción, cliente, metadatos).
+    // El servicio lo usa al confirmar el pago para comprobar que realmente se cobró.
     @Override
     public StripeSessionData retrieveSession(String sessionId) throws StripeException {
         Session s = Session.retrieve(sessionId);

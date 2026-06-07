@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import s from "../styles/Payment.module.css";
 
+// Pantalla a la que Stripe redirige si el usuario cancela el pago. No se realiza ningún cargo.
 function PaymentCancelled() {
   const navigate = useNavigate();
 

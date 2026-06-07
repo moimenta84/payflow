@@ -8,14 +8,16 @@ import CajaTexto from "../components/CajaTexto";
 import style from "../styles/Register.module.css";
 import "../index.css";
 
+// Planes de pago disponibles. Si la URL trae ?plan=autonomos, tras registrarse va a Stripe.
 const PLAN_INFO = {
   autonomos: { label: "Autónomos", price: "4,99€/mes" },
 };
 
+// Pantalla de registro: formulario con validación de contraseña en vivo y flujo de plan de pago.
 function Register() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const plan = (searchParams.get("plan") || "free").toLowerCase();
+  const plan = (searchParams.get("plan") || "free").toLowerCase(); // Plan elegido en la landing.
   const planInfo = PLAN_INFO[plan];
   const { register } = useAuth();
 
@@ -29,6 +31,7 @@ function Register() {
     aceptaTerminos: false,
   });
 
+  // Estado de los requisitos de la contraseña: se actualiza en tiempo real y pinta la checklist.
   const [validacionPassword, setValidacionPassword] = useState({
     longitudMinima: false,
     tieneMayuscula: false,
@@ -66,6 +69,7 @@ function Register() {
     }
   };
 
+  // Evalúa la fortaleza de la contraseña con expresiones regulares para cada requisito.
   const validarPassword = (p) => setValidacionPassword({
     longitudMinima: p.length >= 8,
     tieneMayuscula: /[A-Z]/.test(p),
@@ -74,6 +78,7 @@ function Register() {
     tieneEspecial: /[!@#$%^&*(),.?":{}|<>_\-+=[\]\\/'`~]/.test(p),
   });
 
+  // Validación completa antes de enviar: nombre, email, teléfono, contraseñas y términos.
   const validarFormulario = () => {
     const err = {};
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -118,6 +123,7 @@ function Register() {
     setCargando(true);
     setIntentos((p) => p + 1);
     try {
+      // Creamos la cuenta; register() ya deja la sesión iniciada con el token devuelto.
       await register({
         nombre: usuario.nombre.trim(),
         apellido: usuario.apellido.trim(),
@@ -128,10 +134,10 @@ function Register() {
       setIntentos(0);
       setBloqueadoHasta(null);
 
-      // Plan de pago → Stripe Checkout. Free → directo al dashboard.
+      // Plan de pago → redirige a Stripe Checkout. Plan gratis → directo al dashboard.
       if (plan === "autonomos") {
         const { url } = await api.post("/payments/create-checkout-session", { plan });
-        window.location.href = url;
+        window.location.href = url; // Salimos de la SPA hacia la pasarela de Stripe.
         return;
       }
       setTimeout(() => navigate("/home", { replace: true }), 500);

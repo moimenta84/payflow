@@ -6,6 +6,7 @@ import CajaTexto from "../components/CajaTexto";
 import style from "../styles/Remember.module.css";
 import "../index.css";
 
+// Pantalla "¿Olvidaste tu contraseña?": pide el email y dispara el envío de una contraseña temporal.
 function Remember() {
   const navigate = useNavigate();
   const { resetPassword } = useAuth();
@@ -13,7 +14,7 @@ function Remember() {
   const [email, setEmail] = useState("");
   const [errores, setErrores] = useState({});
   const [cargando, setCargando] = useState(false);
-  const [enviado, setEnviado] = useState(false);
+  const [enviado, setEnviado] = useState(false); // Cambia la vista a la pantalla de "correo enviado".
 
   const [intentos, setIntentos] = useState(0);
   const [bloqueadoHasta, setBloqueadoHasta] = useState(null);
@@ -58,11 +59,12 @@ function Remember() {
     setCargando(true);
     setIntentos((p) => p + 1);
     try {
+      // El backend responde igual exista o no el email (no revelamos si está registrado).
       await resetPassword(email.trim().toLowerCase());
       setEnviado(true);
       setIntentos(0);
       setBloqueadoHasta(null);
-      setTimeout(() => navigate("/login"), 5000);
+      setTimeout(() => navigate("/login"), 5000); // Volvemos al login a los 5 segundos.
     } catch (error) {
       setErrores({ general: "Error al enviar el correo. Intenta de nuevo." });
     } finally {

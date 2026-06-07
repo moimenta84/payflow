@@ -13,6 +13,8 @@ import "../index.css";
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
+// Descarga el informe PDF del mes desde el transaction-service y fuerza su descarga en el navegador.
+// El PDF llega como binario (blob); creamos un enlace temporal y simulamos un clic para guardarlo.
 async function descargarPdf(year, month) {
   const res = await fetch(
     `${API_BASE}/transactions/report/pdf?year=${year}&month=${month}`,
@@ -25,9 +27,10 @@ async function descargarPdf(year, month) {
   a.href = url;
   a.download = `payflow-informe-${year}-${String(month).padStart(2, '0')}.pdf`;
   a.click();
-  URL.revokeObjectURL(url);
+  URL.revokeObjectURL(url); // Liberamos la URL temporal para no dejar memoria colgada.
 }
 
+// Categorías disponibles y sus traducciones/iconos para pintar cada transacción.
 const CATEGORIAS = ["SALARIO","ALIMENTACION","VIVIENDA","TRANSPORTE","SALUD","OCIO","EDUCACION","OTROS"];
 
 const CAT_LABELS = {
@@ -43,15 +46,17 @@ const CAT_FA = {
 };
 
 
+// Pantalla de listado de transacciones: totales, buscador, filtros, borrado e informe PDF.
 function Transacciones() {
   const [transacciones, setTransacciones]   = useState([]);
   const [cargando, setCargando]             = useState(false);
   const [busqueda, setBusqueda]             = useState("");
-  const [filtroTipo, setFiltroTipo]         = useState("todos");
+  const [filtroTipo, setFiltroTipo]         = useState("todos"); // todos | gasto | ingreso
   const [descargandoPdf, setDescargandoPdf] = useState(false);
 
   const { user } = useAuth();
 
+  // Trae las transacciones del backend y las normaliza al formato que usa esta pantalla.
   const cargarTransacciones = useCallback(async () => {
     if (!user) return;
     try {
@@ -60,12 +65,13 @@ function Transacciones() {
       const mapped = data.map((t) => ({
         id:        t.id,
         concepto:  t.descripcion,
+        // Los gastos los guardamos en negativo para mostrarlos y sumarlos con su signo.
         monto:     t.tipo === "GASTO" ? -Math.abs(t.cantidad) : t.cantidad,
         tipo:      t.tipo.toLowerCase(),
         fecha:     t.fecha,
         categoria: t.categoria,
       }));
-      mapped.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+      mapped.sort((a, b) => new Date(b.fecha) - new Date(a.fecha)); // Más recientes primero.
       setTransacciones(mapped);
     } catch (error) {
       console.error("Error cargando transacciones:", error);
@@ -79,10 +85,12 @@ function Transacciones() {
     else setTransacciones([]);
   }, [user, cargarTransacciones]);
 
+  // Totales calculados a partir de la lista (se recalculan en cada render con los datos actuales).
   const gastos   = transacciones.filter((t) => t.tipo === "gasto").reduce((s, t) => s + Math.abs(t.monto), 0);
   const ingresos = transacciones.filter((t) => t.tipo === "ingreso").reduce((s, t) => s + t.monto, 0);
   const balance  = ingresos - gastos;
 
+  // Aplica el buscador (concepto o categoría) y el filtro de tipo sobre la lista.
   const transaccionesFiltradas = transacciones.filter((t) => {
     const matchBusqueda = !busqueda || t.concepto.toLowerCase().includes(busqueda.toLowerCase()) ||
       CAT_LABELS[t.categoria]?.toLowerCase().includes(busqueda.toLowerCase());
@@ -102,6 +110,7 @@ function Transacciones() {
     }
   };
 
+  // Borra una transacción tras confirmar y recarga la lista para reflejar el cambio.
   const handleEliminar = async (id) => {
     if (!window.confirm('¿Eliminar esta transacción?')) return;
     try {

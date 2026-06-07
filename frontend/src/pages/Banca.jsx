@@ -28,11 +28,12 @@ function CheckIcono() {
   );
 }
 
+// Pantalla de Open Banking (PSD2): conecta el banco real vía Nordigen, sincroniza e importa movimientos.
 function Banca() {
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [conexion, setConexion]               = useState(undefined);
+  const [conexion, setConexion]               = useState(undefined); // undefined = aún no sabemos; null = sin conexión.
   const [instituciones, setInstituciones]     = useState([]);
   const [transacciones, setTransacciones]     = useState([]);
   const [selectedInst, setSelectedInst]       = useState('');
@@ -43,6 +44,7 @@ function Banca() {
   const [error, setError]                     = useState(null);
   const [okMsg, setOkMsg]                     = useState(null);
 
+  // Consulta si el usuario ya tiene un banco vinculado (LINKED), pendiente (PENDING) o ninguno.
   const cargarStatus = useCallback(async () => {
     try {
       const data = await api.get('/bank/status');
@@ -76,7 +78,8 @@ function Banca() {
     }
   }, []);
 
-  // Process Nordigen OAuth callback on page load if ?connected=true
+  // Al cargar: si volvemos del banco (?connected=true), procesamos el callback de Nordigen.
+  // El flujo es: el usuario autoriza en la web de su banco y este nos redirige aquí de vuelta.
   useEffect(() => {
     const isCallback = searchParams.get('connected') === 'true';
 
@@ -109,11 +112,13 @@ function Banca() {
     init();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Inicia la conexión: pide a Nordigen el enlace de autorización y redirige al usuario a su banco.
   const handleConectar = async () => {
     if (!selectedInst) return;
     setError(null);
     setCargandoConexion(true);
     try {
+      // Tras autorizar, el banco devolverá al usuario a esta misma página con ?connected=true.
       const redirectUrl = `${window.location.origin}/banco?connected=true`;
       const data = await api.post('/bank/connect', {
         institutionId: selectedInst,
@@ -131,6 +136,7 @@ function Banca() {
     }
   };
 
+  // Importa un movimiento bancario al historial propio de PayFlow (lo crea en el transaction-service).
   const handleImportar = async (txId) => {
     setImportando(prev => ({ ...prev, [txId]: true }));
     try {

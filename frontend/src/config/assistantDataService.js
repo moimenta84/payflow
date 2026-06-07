@@ -1,11 +1,15 @@
 import { api } from './api';
 
+// Servicio de datos del asistente: traduce el lenguaje del usuario a consultas concretas al backend.
+
+// Códigos de categoría → nombre legible para mostrar en las respuestas del asistente.
 const CAT_LABELS = {
   SALARIO: 'salario', ALIMENTACION: 'alimentación', VIVIENDA: 'vivienda',
   TRANSPORTE: 'transporte', SALUD: 'salud', OCIO: 'ocio',
   EDUCACION: 'educación', OTROS: 'otros',
 };
 
+// Diccionario de sinónimos: detecta la categoría aunque el usuario use otra palabra (p. ej. "nómina" → SALARIO).
 const CAT_ALIASES = {
   salario: 'SALARIO', nomina: 'SALARIO', nómina: 'SALARIO',
   alimentacion: 'ALIMENTACION', alimentación: 'ALIMENTACION', comida: 'ALIMENTACION',
@@ -19,6 +23,7 @@ const CAT_ALIASES = {
   otros: 'OTROS',
 };
 
+// Busca en el texto alguna palabra del diccionario de sinónimos y devuelve su categoría.
 export function extractCategoria(text) {
   const t = text.toLowerCase();
   for (const alias of Object.keys(CAT_ALIASES)) {
@@ -27,6 +32,7 @@ export function extractCategoria(text) {
   return null;
 }
 
+// Interpreta expresiones de tiempo ("hoy", "este mes", "año pasado"...) y devuelve un rango de fechas.
 export function extractPeriodo(text) {
   const t = text.toLowerCase();
   const now = new Date();
@@ -63,6 +69,7 @@ export function extractPeriodo(text) {
   return { from: d, to: now, label: 'este mes' };
 }
 
+// Filtra una lista de transacciones para quedarnos solo con las del rango de fechas indicado.
 function filtrarPorPeriodo(txns, periodo) {
   return txns.filter(t => {
     const f = new Date(t.fecha);
@@ -70,11 +77,13 @@ function filtrarPorPeriodo(txns, periodo) {
   });
 }
 
+// Consulta el saldo actual de la wallet del usuario.
 export async function getSaldo() {
   const w = await api.get('/wallet/me');
   return { balance: w.balance, currency: w.currency || 'EUR' };
 }
 
+// Resume ingresos, gastos y balance de un periodo (opcionalmente filtrado por categoría).
 export async function getResumenPeriodo(periodo, categoria = null) {
   const all = await api.get('/transactions');
   let txns = filtrarPorPeriodo(all, periodo);
@@ -86,6 +95,7 @@ export async function getResumenPeriodo(periodo, categoria = null) {
   return { gastos, ingresos, balance: ingresos - gastos, count: txns.length };
 }
 
+// Devuelve las categorías donde más se ha gastado en el periodo, ordenadas de mayor a menor.
 export async function getCategoriaTopGasto(periodo) {
   const all = await api.get('/transactions');
   const txns = filtrarPorPeriodo(all, periodo).filter(t => t.tipo === 'GASTO');
@@ -97,6 +107,7 @@ export async function getCategoriaTopGasto(periodo) {
   return entries.map(([cat, total]) => ({ categoria: cat, label: CAT_LABELS[cat] || cat.toLowerCase(), total }));
 }
 
+// Devuelve las n transacciones más recientes, ordenadas de la más nueva a la más antigua.
 export async function getMovimientosRecientes(n = 5) {
   const all = await api.get('/transactions');
   const sorted = [...all].sort((a,b) => new Date(b.fecha) - new Date(a.fecha));

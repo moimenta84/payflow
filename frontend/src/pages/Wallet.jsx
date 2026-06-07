@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import { api } from "../config/api";
 import style from "../styles/Wallet.module.css";
 
+// Pantalla de la wallet: muestra el saldo, el historial de movimientos y permite enviar/pedir dinero (P2P).
+
 function IconSend() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -45,6 +47,7 @@ export default function Wallet() {
 
   const [form, setForm] = useState({ toUserId: "", amount: "", description: "" });
 
+  // Carga el saldo y el historial a la vez desde el wallet-service.
   const loadWallet = useCallback(async () => {
     try {
       const [w, m] = await Promise.all([
@@ -62,12 +65,14 @@ export default function Wallet() {
 
   useEffect(() => { loadWallet(); }, [loadWallet]);
 
+  // Envío de dinero P2P: valida, llama al backend y recarga el saldo para reflejar el cambio.
   const handleSend = async (e) => {
     e.preventDefault();
     setSendError(""); setSendSuccess("");
     if (!form.toUserId.trim() || !form.amount) { setSendError("Destinatario e importe son obligatorios"); return; }
     setSending(true);
     try {
+      // El backend es idempotente y atómico: descuenta al emisor y abona al receptor en una transacción.
       await api.post("/wallet/send", {
         toUserId: form.toUserId.trim(),
         amount: parseFloat(form.amount),
@@ -89,6 +94,7 @@ export default function Wallet() {
     return new Date(dt).toLocaleString("es-ES", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
   };
 
+  // Partimos el saldo en parte entera y decimales para mostrarlos con distinto tamaño de fuente.
   const balanceFormatted = wallet
     ? wallet.balance.toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
     : "0,00";
@@ -252,6 +258,7 @@ export default function Wallet() {
                 />
               </div>
 
+              {/* En cuanto hay importe, generamos un enlace de cobro que el otro usuario abrirá en /pay. */}
               {requestAmount && parseFloat(requestAmount) > 0 && (
                 <div style={{ background: '#f0f9ff', border: '1px solid #0891b2', borderRadius: '10px', padding: '12px', marginTop: '8px' }}>
                   <p style={{ fontSize: '0.8rem', color: '#0c3549', margin: '0 0 6px', fontWeight: 600 }}>Enlace de cobro generado:</p>

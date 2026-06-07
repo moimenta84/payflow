@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 
+// Variante del filtro JWT exclusiva para las rutas /admin: además de validar el token, exige rol ADMIN.
 @Component
 public class AdminRoleFilter extends AbstractGatewayFilterFactory<Object> {
 
@@ -36,6 +37,7 @@ public class AdminRoleFilter extends AbstractGatewayFilterFactory<Object> {
                 var claims = Jwts.parser().verifyWith(key).build()
                         .parseSignedClaims(token).getPayload();
 
+                // Comprobación extra de autorización: si no es ADMIN, devolvemos 403 (prohibido) y registramos el intento.
                 String rol = claims.get("rol", String.class);
                 if (!"ADMIN".equals(rol)) {
                     log.warn("Acceso denegado a /admin por usuario con rol {}", rol);

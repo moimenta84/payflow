@@ -1,3 +1,4 @@
+// Logotipo de PayFlow como SVG (escalable y nítido a cualquier tamaño). Dos variantes: dorada y blanca.
 function PayFlowLogo({ size = 48, className = '', variant = 'golden' }) {
   if (variant === 'golden') {
     return (

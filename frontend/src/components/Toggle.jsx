@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "../styles/Toggle.module.css";
 
+// Botón independiente para alternar tema claro/oscuro (variante que gestiona su propio estado).
 function Toggle() {
   // Función helper para localStorage con manejo de errores
   const getStoredTheme = () => {

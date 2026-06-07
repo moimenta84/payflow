@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+// Genera el informe mensual de transacciones en PDF usando la librería iText.
 @Service
 public class PdfReportService {
 
@@ -32,7 +33,9 @@ public class PdfReportService {
         this.transactionRepository = transactionRepository;
     }
 
+    // Devuelve el PDF como array de bytes (no se guarda en disco; el controlador lo envía al navegador).
     public byte[] generateMonthlyReport(String userId, int year, int month) {
+        // Calculamos el primer y último día del mes pedido para acotar la consulta.
         LocalDate from = LocalDate.of(year, month, 1);
         LocalDate to   = from.withDayOfMonth(from.lengthOfMonth());
 
@@ -68,6 +71,7 @@ public class PdfReportService {
             addHeaderCell(table, "Categoría");
             addHeaderCell(table, "Cantidad");
 
+            // Recorremos las transacciones: cada una es una fila y vamos acumulando los totales.
             double totalIngresos = 0;
             double totalGastos   = 0;
 

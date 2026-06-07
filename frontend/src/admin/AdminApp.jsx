@@ -7,6 +7,10 @@ import { UserEdit }   from './UserEdit';
 import dataProvider   from './adminDataProvider';
 import authProvider   from './adminAuthProvider';
 
+// Panel de administración construido con React-Admin: librería que monta CRUDs casi sin código.
+// Solo le damos un dataProvider (de dónde saca los datos) y un authProvider (cómo valida al admin).
+
+// Barra superior personalizada con un botón para volver a la app de usuario normal.
 const AdminAppBar = () => (
   <AppBar>
     <TitlePortal />
@@ -32,6 +36,7 @@ export default function AdminApp() {
       authProvider={authProvider}
       disableTelemetry
     >
+      {/* Cada Resource es una entidad gestionable. Aquí solo gestionamos "users" (listar y editar). */}
       <Resource
         name="users"
         list={UserList}

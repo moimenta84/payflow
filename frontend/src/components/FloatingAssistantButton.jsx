@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import style from "../styles/FloatingAssistantButton.module.css";
 import AssistantDemo from "./AssistantDemo";
 
+// Botón flotante (esquina inferior) que abre/cierra la ventana del asistente financiero.
 function FloatingAssistantButton() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false); // Controla si la ventana del chat está abierta.
 
   const toggleAssistant = () => {
     setIsOpen(!isOpen);

@@ -11,6 +11,9 @@ import {
   FunctionField,
 } from 'react-admin';
 
+// Vista de listado de usuarios del panel admin (tabla con acciones de editar rol y eliminar).
+
+// Etiqueta de color para el rol: azul si es ADMIN, gris si es USER.
 const RolBadge = () => {
   const record = useRecordContext();
   if (!record) return null;

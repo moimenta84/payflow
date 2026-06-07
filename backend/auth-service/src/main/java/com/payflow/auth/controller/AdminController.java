@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// Endpoints solo para administradores (listar usuarios, cambiar rol, eliminar).
+// El acceso lo blinda el gateway con AdminRoleFilter: aquí ya solo llegan peticiones de un ADMIN.
 @RestController
 @RequestMapping("/admin")
 @Tag(name = "Administración", description = "Gestión de usuarios y roles (solo administradores)")
