@@ -202,7 +202,7 @@ export default function Landing() {
       <nav className={`${s.nav} ${scrolled ? s.navSolid : ""}`}>
         <div className={s.navWrap}>
           <span className={s.logo}>
-            <img src="/payflow_logo_gold.svg" alt="" width="32" height="32" style={{ verticalAlign: 'middle', marginRight: '0.5rem' }} />
+            <img src="/payflow_logo_gold.svg" alt="" loading="lazy" width="32" height="32" style={{ verticalAlign: 'middle', marginRight: '0.5rem' }} />
             Pay<em>Flow</em>
           </span>
           <div className={s.navLinks}>
@@ -426,7 +426,7 @@ export default function Landing() {
           {/* Brand col */}
           <div className={s.footBrand}>
             <div className={s.footLogo}>
-              <img src="/payflow_logo_gold.svg" alt="" width="36" height="36" />
+              <img src="/payflow_logo_gold.svg" alt="" loading="lazy" width="36" height="36" />
               <span className={s.footLogoName}>Pay<em>Flow</em></span>
             </div>
             <p className={s.footTagline}>

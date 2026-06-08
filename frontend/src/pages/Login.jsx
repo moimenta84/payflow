@@ -93,7 +93,7 @@ function Login() {
       <div className={style.brand}>
         <div className={style.brandInner}>
           <div className={style.brandLogo}>
-            <img src="/payflow_logo_gold.svg" alt="PayFlow" style={{ width: '56px', height: '56px' }} />
+            <img src="/payflow_logo_gold.svg" alt="PayFlow" loading="lazy" style={{ width: '56px', height: '56px' }} />
             <span className={style.brandName}>PayFlow</span>
           </div>
           <h2 className={style.brandTagline}>
