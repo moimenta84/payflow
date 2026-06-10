@@ -49,10 +49,14 @@ const PRICING = [
 
 // Anima un número de 0 hasta 'target' cuando el elemento entra en pantalla (efecto "subida").
 function useCounter(target, { format = "plain", duration = 1800 } = {}) {
-  const [val, setVal] = useState(0);
+  // Si el usuario pidió movimiento reducido, arrancamos ya en el valor final (sin animar).
+  const reduced = typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  const [val, setVal] = useState(reduced ? target : 0);
   const ref = useRef(null);
 
   useEffect(() => {
+    if (reduced) return;
     const node = ref.current;
     if (!node) return;
     // IntersectionObserver detecta cuándo el contador se ve; solo entonces arranca la animación.
@@ -70,7 +74,7 @@ function useCounter(target, { format = "plain", duration = 1800 } = {}) {
     }, { threshold: 0.5 });
     obs.observe(node);
     return () => obs.disconnect();
-  }, [target, duration]);
+  }, [target, duration, reduced]);
 
   let text;
   if (format === "M")   text = `$${(val / 1e6).toFixed(1)}M`;
@@ -128,6 +132,26 @@ function IconCheck({ className }) {
   );
 }
 
+function IconPlay({ className }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" width="26" height="26" className={className} aria-hidden>
+      <path d="M8 5.14v13.72a1 1 0 0 0 1.54.84l10.79-6.86a1 1 0 0 0 0-1.68L9.54 4.3A1 1 0 0 0 8 5.14z" />
+    </svg>
+  );
+}
+
+function IconPause({ className }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" width="26" height="26" className={className} aria-hidden>
+      <rect x="6" y="5" width="4" height="14" rx="1.2" />
+      <rect x="14" y="5" width="4" height="14" rx="1.2" />
+    </svg>
+  );
+}
+
+// Alturas (en %) de las barras del ecualizador del podcast; patrón fijo y reproducible.
+const EQ_BARS = Array.from({ length: 32 }, (_, i) => 28 + Math.round(40 * Math.abs(Math.sin(i * 0.9))));
+
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
 function StatItem({ target, prefix = "", suffix = "", format, label }) {
@@ -170,6 +194,15 @@ export default function Landing() {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
 
+  // Reproductor del podcast del CEO: ref al <audio> y estado play/pausa para animar el ecualizador.
+  const podAudioRef = useRef(null);
+  const [podPlaying, setPodPlaying] = useState(false);
+  const togglePod = () => {
+    const a = podAudioRef.current;
+    if (!a) return;
+    if (a.paused) a.play(); else a.pause();
+  };
+
   // Al hacer scroll, marcamos la barra de navegación como "sólida" (cambia su fondo).
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 48);
@@ -208,6 +241,7 @@ export default function Landing() {
           <div className={s.navLinks}>
             <a href="#features">Producto</a>
             <a href="#pricing">Precios</a>
+            <a href="#podcast">Podcast</a>
             <a href="#" onClick={(e) => { e.preventDefault(); navigate("/login"); }}>Demo</a>
           </div>
           <div className={s.navBtns}>
@@ -368,6 +402,74 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* ═══════════════════════════════ PODCAST CEO ═══════════════════════ */}
+      <section className={s.podSection} id="podcast">
+        <div className={s.podGlowA} aria-hidden />
+        <div className={s.podGlowB} aria-hidden />
+        <div className={s.podWrap}>
+          <p className={s.podEyebrow}>Detrás de PayFlow</p>
+          <h2 className={`${s.podH2} ${s.reveal}`}>
+            Escucha al CEO.<br />
+            <span className={s.podGrad}>La historia, sin filtros.</span>
+          </h2>
+
+          <div className={`${s.podCard} ${podPlaying ? s.podCardLive : ""} ${s.reveal}`}>
+            {/* Carátula con logo y ecualizador animado */}
+            <div className={s.podArt}>
+              <span className={s.podEp}>EP. 01</span>
+              <img className={s.podArtLogo} src="/payflow_logo_gold.svg" alt="" loading="lazy" width="84" height="84" />
+              <div className={`${s.podEq} ${podPlaying ? s.podEqLive : ""}`} aria-hidden>
+                {EQ_BARS.map((h, i) => (
+                  <span key={i} className={s.podEqBar} style={{ height: `${h}%`, animationDelay: `${(i % 8) * 0.09}s` }} />
+                ))}
+              </div>
+            </div>
+
+            {/* Contenido del episodio */}
+            <div className={s.podBody}>
+              <span className={s.podTag}>
+                <i className={s.podTagDot} />
+                Podcast · {podPlaying ? "Reproduciendo" : "Episodio 1"}
+              </span>
+              <h3 className={s.podTitle}>PayFlow y la arquitectura de microservicios, en solitario</h3>
+              <p className={s.podHost}>
+                <span className={s.podAvatar}>IM</span>
+                <span className={s.podHostMeta}>
+                  <strong>Iker Martínez</strong>
+                  <em>CEO &amp; Fundador de PayFlow</em>
+                </span>
+              </p>
+              <p className={s.podDesc}>
+                Cómo se construye una plataforma fintech de finanzas y pagos desde cero:
+                microservicios, Open Banking, seguridad con JWT y las decisiones de producto
+                detrás de cada euro que se mueve.
+              </p>
+
+              <div className={s.podPlayer}>
+                <button
+                  className={s.podPlayBtn}
+                  onClick={togglePod}
+                  aria-label={podPlaying ? "Pausar podcast" : "Reproducir podcast"}
+                >
+                  {podPlaying ? <IconPause /> : <IconPlay />}
+                  <span className={s.podPlayRing} aria-hidden />
+                </button>
+                <audio
+                  ref={podAudioRef}
+                  className={s.podAudio}
+                  src="/podcast_ceo_payflow.m4a"
+                  preload="metadata"
+                  controls
+                  onPlay={() => setPodPlaying(true)}
+                  onPause={() => setPodPlaying(false)}
+                  onEnded={() => setPodPlaying(false)}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ═══════════════════════════════ PRICING ═══════════════════════════ */}
       <section className={s.pricingSection} id="pricing">
         <div className={s.pricingWrap}>
@@ -409,7 +511,7 @@ export default function Landing() {
           <p className={s.ctaEye}>Empieza hoy</p>
           <h2 className={s.ctaH2}>
             Tu app financiera<br />
-            <span className={s.grad}>lista en 2 minutos.</span>
+            <span className={s.gradG}>lista en 2 minutos.</span>
           </h2>
           <p className={s.ctaP}>Sin tarjeta. Sin contrato. Sin comisiones ocultas.</p>
           <div className={s.ctaBtns}>
