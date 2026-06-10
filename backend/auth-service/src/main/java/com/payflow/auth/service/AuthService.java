@@ -2,6 +2,7 @@ package com.payflow.auth.service;
 
 import com.payflow.auth.dto.AuthResponse;
 import com.payflow.auth.dto.LoginRequest;
+import com.payflow.auth.dto.LookupResponse;
 import com.payflow.auth.dto.RegisterRequest;
 import com.payflow.auth.dto.RolRequest;
 import com.payflow.auth.dto.UserResponse;
@@ -96,6 +97,7 @@ public class AuthService {
 
         user.setNombre(request.getNombre());
         user.setApellido(request.getApellido());
+        user.setTelefono(normalizeTelefono(request.getTelefono()));
 
         // Si no manda saldoInicial usamos 0.0 como valor por defecto
         user.setSaldoInicial(request.getSaldoInicial() != null ? request.getSaldoInicial() : 0.0);
@@ -145,6 +147,30 @@ public class AuthService {
     }
 
     // ─────────────────────────────────────────────────────────
+    // BUSCAR USUARIO POR TELÉFONO (para enviar dinero por número)
+    // Devuelve solo userId + nombre; nunca datos sensibles del destinatario.
+    // ─────────────────────────────────────────────────────────
+    public LookupResponse lookupByTelefono(String telefono) {
+        String norm = normalizeTelefono(telefono);
+        UserEntity user = (norm == null) ? null
+                : userRepository.findByTelefono(norm).orElse(null);
+        if (user == null) {
+            throw ApiException.notFound("No hay ningún usuario PayFlow con ese número");
+        }
+        String fullName = user.getNombre()
+                + (user.getApellido() != null ? " " + user.getApellido() : "");
+        return new LookupResponse(user.getId(), fullName);
+    }
+
+    // Normaliza un teléfono a solo dígitos (quita espacios, guiones, paréntesis, +).
+    // Así "+34 600 11 22 33" y "600112233" se comparan de forma consistente.
+    private String normalizeTelefono(String telefono) {
+        if (telefono == null) return null;
+        String digits = telefono.replaceAll("[^0-9]", "");
+        return digits.isBlank() ? null : digits;
+    }
+
+    // ─────────────────────────────────────────────────────────
     // ACTUALIZAR PERFIL
     // ─────────────────────────────────────────────────────────
     public UserResponse updateUser(String userId, RegisterRequest request) {
@@ -157,6 +183,7 @@ public class AuthService {
         // No permitimos cambiar email ni rol desde este endpoint
         if (request.getNombre() != null)       user.setNombre(request.getNombre());
         if (request.getApellido() != null)     user.setApellido(request.getApellido());
+        if (request.getTelefono() != null)     user.setTelefono(normalizeTelefono(request.getTelefono()));
         if (request.getSaldoInicial() != null) user.setSaldoInicial(request.getSaldoInicial());
 
         // Guardamos los cambios — Hibernate genera: UPDATE users SET ... WHERE id = ?

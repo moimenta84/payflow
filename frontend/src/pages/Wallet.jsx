@@ -45,7 +45,7 @@ export default function Wallet() {
   const [requestDesc, setRequestDesc]     = useState("");
   const [copiado, setCopiado]             = useState(false);
 
-  const [form, setForm] = useState({ toUserId: "", amount: "", description: "" });
+  const [form, setForm] = useState({ phone: "", amount: "", description: "" });
 
   // Carga el saldo y el historial a la vez desde el wallet-service.
   const loadWallet = useCallback(async () => {
@@ -69,21 +69,24 @@ export default function Wallet() {
   const handleSend = async (e) => {
     e.preventDefault();
     setSendError(""); setSendSuccess("");
-    if (!form.toUserId.trim() || !form.amount) { setSendError("Destinatario e importe son obligatorios"); return; }
+    if (!form.phone.trim() || !form.amount) { setSendError("Teléfono e importe son obligatorios"); return; }
     setSending(true);
     try {
-      // El backend es idempotente y atómico: descuenta al emisor y abona al receptor en una transacción.
+      // 1) Resolvemos el teléfono al userId del destinatario (estilo Bizum).
+      const dest = await api.get(`/auth/lookup?telefono=${encodeURIComponent(form.phone.trim())}`);
+      // 2) Enviamos. El backend es idempotente y atómico: descuenta al emisor y abona al receptor.
       await api.post("/wallet/send", {
-        toUserId: form.toUserId.trim(),
+        toUserId: dest.userId,
         amount: parseFloat(form.amount),
         description: form.description.trim() || undefined,
       });
-      setSendSuccess(`Enviados ${parseFloat(form.amount).toFixed(2)} EUR correctamente.`);
-      setForm({ toUserId: "", amount: "", description: "" });
+      setSendSuccess(`Enviados ${parseFloat(form.amount).toFixed(2)} EUR a ${dest.fullName}.`);
+      setForm({ phone: "", amount: "", description: "" });
       await loadWallet();
       setTimeout(() => { setShowSend(false); setSendSuccess(""); }, 2000);
     } catch (e) {
-      setSendError(e.message || "Error al enviar");
+      // 404 del lookup → número sin usuario; el resto, error del envío (p. ej. saldo).
+      setSendError(e.status === 404 ? "No hay ningún usuario PayFlow con ese número" : (e.message || "Error al enviar"));
     } finally {
       setSending(false);
     }
@@ -178,12 +181,14 @@ export default function Wallet() {
 
             <form onSubmit={handleSend} className={style.modalForm}>
               <div className={style.formGroup}>
-                <label className={style.label}>ID del destinatario</label>
+                <label className={style.label}>Teléfono del destinatario</label>
                 <input
                   className={style.input}
-                  value={form.toUserId}
-                  onChange={(e) => setForm((p) => ({ ...p, toUserId: e.target.value }))}
-                  placeholder="ID de usuario PayFlow"
+                  type="tel"
+                  inputMode="tel"
+                  value={form.phone}
+                  onChange={(e) => setForm((p) => ({ ...p, phone: e.target.value }))}
+                  placeholder="Ej: 600 11 22 33"
                   required
                 />
               </div>

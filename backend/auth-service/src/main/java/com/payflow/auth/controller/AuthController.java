@@ -2,6 +2,7 @@ package com.payflow.auth.controller;
 
 import com.payflow.auth.dto.AuthResponse;
 import com.payflow.auth.dto.LoginRequest;
+import com.payflow.auth.dto.LookupResponse;
 import com.payflow.auth.dto.RegisterRequest;
 import com.payflow.auth.dto.UserResponse;
 import com.payflow.auth.service.AuthService;
@@ -81,6 +82,18 @@ public class AuthController {
             @RequestHeader("X-User-Id") String userId,
             @RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authService.updateUser(userId, request));
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // GET /auth/lookup?telefono=...
+    // Ruta protegida — requiere JWT (solo usuarios logueados resuelven números).
+    // Resuelve un teléfono al userId del destinatario para poder enviarle dinero.
+    // ─────────────────────────────────────────────────────────
+    @Operation(summary = "Buscar usuario por teléfono",
+            description = "Resuelve un teléfono al userId del destinatario para enviar dinero (P2P)")
+    @GetMapping("/lookup")
+    public ResponseEntity<LookupResponse> lookup(@RequestParam String telefono) {
+        return ResponseEntity.ok(authService.lookupByTelefono(telefono));
     }
 
     // ─────────────────────────────────────────────────────────

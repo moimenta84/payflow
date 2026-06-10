@@ -22,7 +22,7 @@ spring:
         - id: auth-protected
           uri: lb://auth-service
           predicates:
-            - Path=/auth/me
+            - Path=/auth/me, /auth/lookup
           filters:
             - name: JwtAuthFilter
 

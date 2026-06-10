@@ -18,4 +18,8 @@ public interface UserRepository extends JpaRepository<UserEntity, String> {
     // Genera: SELECT COUNT(*) FROM users WHERE email = ?
     // Se usa en el registro para evitar emails duplicados
     boolean existsByEmail(String email);
+
+    // Genera: SELECT * FROM users WHERE telefono = ?
+    // Resuelve un teléfono al usuario para enviar dinero por número (P2P).
+    Optional<UserEntity> findByTelefono(String telefono);
 }

@@ -35,6 +35,11 @@ public class UserEntity {
     // Opcional — no tiene restricciones en BD
     private String apellido;
 
+    // Teléfono del usuario, identificador para enviar dinero P2P (estilo Bizum).
+    // Se guarda normalizado (solo dígitos). Opcional: los usuarios sin teléfono
+    // no pueden recibir envíos por número.
+    private String telefono;
+
     // Saldo de partida del usuario para calcular el balance real en el dashboard
     // Por defecto 0.0 si no se especifica al registrarse
     private Double saldoInicial = 0.0;
@@ -76,6 +81,8 @@ public class UserEntity {
 
     public String getApellido() { return apellido; }
 
+    public String getTelefono() { return telefono; }
+
     public Double getSaldoInicial() { return saldoInicial; }
 
     public Rol getRol() { return rol; }
@@ -96,6 +103,8 @@ public class UserEntity {
     public void setNombre(String nombre) { this.nombre = nombre; }
 
     public void setApellido(String apellido) { this.apellido = apellido; }
+
+    public void setTelefono(String telefono) { this.telefono = telefono; }
 
     public void setSaldoInicial(Double saldoInicial) { this.saldoInicial = saldoInicial; }
 

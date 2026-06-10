@@ -20,14 +20,17 @@ const API = (process.env.API_URL || "http://localhost:8080").replace(/\/$/, "");
 
 // Credenciales de la cuenta demo (las que usa el botón "Demo" de la landing).
 const DEMO = {
-  nombre: "Lucía", apellido: "Demo",
+  nombre: "Iker", apellido: "Demo",
   email: "demo@payflow.com", password: "demo1234",
+  telefono: "660655985",
   saldoInicial: 8450.0,
 };
-// Contacto secundario: solo sirve para generar movimientos P2P realistas.
+// Contacto secundario: genera movimientos P2P y sirve de destinatario para
+// probar el envío por número (su teléfono es el que se introduce en la wallet).
 const CONTACT = {
   nombre: "Carlos", apellido: "Ruiz",
   email: "carlos.demo@payflow.com", password: "demo1234",
+  telefono: "600333444",
 };
 
 async function call(method, path, { token, body, idem } = {}) {
@@ -89,6 +92,12 @@ const TX = [
   console.log(`demo:     ${DEMO.email} (${demo.created ? "creado" : "ya existía"})`);
   const contact = await ensureUser(CONTACT);
   console.log(`contacto: ${CONTACT.email} (${contact.created ? "creado" : "ya existía"})`);
+
+  // Backfill: si las cuentas ya existían (de una siembra anterior), el registro no
+  // se repite, así que fijamos nombre/apellido/teléfono vía PUT /auth/me.
+  await call("PUT", "/auth/me", { token: demo.token, body: { nombre: DEMO.nombre, apellido: DEMO.apellido, telefono: DEMO.telefono } });
+  await call("PUT", "/auth/me", { token: contact.token, body: { nombre: CONTACT.nombre, apellido: CONTACT.apellido, telefono: CONTACT.telefono } });
+  console.log(`perfil: demo=${DEMO.nombre} (${DEMO.telefono}), contacto=${CONTACT.nombre} (${CONTACT.telefono})`);
 
   // Transacciones: solo si la cuenta aún no tiene ninguna.
   const existing = await call("GET", "/transactions", { token: demo.token });
