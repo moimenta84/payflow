@@ -348,6 +348,8 @@
   box-sizing: border-box;
 }
 
+.input::placeholder { color: #94a3b8; }
+
 .input:focus {
   border-color: #0891b2;
   background: #fff;
@@ -415,6 +417,17 @@
 :global(.dark) .movDesc,
 :global(.dark) .modalTitle,
 :global(.dark) .panelTitle { color: #f1f5f9; }
+
+/* Inputs en modo oscuro: caja oscura con texto claro (antes quedaban ilegibles). */
+:global(.dark) .input {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f1f5f9;
+}
+:global(.dark) .input::placeholder { color: #94a3b8; }
+:global(.dark) .input:focus { background: #0f172a; border-color: #22d3ee; }
+:global(.dark) .label { color: #e2e8f0; }
+:global(.dark) .optional { color: #94a3b8; }
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
