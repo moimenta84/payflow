@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import s from "../styles/Landing.module.css";
+
+// Credenciales de la cuenta de demostración (sembrada con backend/seed-demo.mjs).
+const DEMO_EMAIL = "demo@payflow.com";
+const DEMO_PASSWORD = "demo1234";
 
 // Página de aterrizaje (landing) pública: presenta el producto, precios y CTA para registrarse.
 
@@ -192,7 +197,25 @@ function Feed({ height = 200 }) {
 
 export default function Landing() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [scrolled, setScrolled] = useState(false);
+  const [demoLoading, setDemoLoading] = useState(false);
+
+  // Entra con la cuenta de demostración de un clic. Si algo falla (cuenta no
+  // disponible), cae al login normal para no dejar al usuario bloqueado.
+  const handleDemo = async (e) => {
+    e?.preventDefault();
+    if (demoLoading) return;
+    setDemoLoading(true);
+    try {
+      await login(DEMO_EMAIL, DEMO_PASSWORD);
+      navigate("/home");
+    } catch {
+      navigate("/login");
+    } finally {
+      setDemoLoading(false);
+    }
+  };
 
   // Reproductor del podcast del CEO: ref al <audio> y estado play/pausa para animar el ecualizador.
   const podAudioRef = useRef(null);
@@ -242,7 +265,7 @@ export default function Landing() {
             <a href="#features">Producto</a>
             <a href="#pricing">Precios</a>
             <a href="#podcast">Podcast</a>
-            <a href="#" onClick={(e) => { e.preventDefault(); navigate("/login"); }}>Demo</a>
+            <a href="#" onClick={handleDemo}>{demoLoading ? "Entrando…" : "Demo"}</a>
           </div>
           <div className={s.navBtns}>
             <button className={s.btnGhost}  onClick={() => navigate("/login")}>Entrar</button>
@@ -268,7 +291,7 @@ export default function Landing() {
           </p>
           <div className={s.heroBtns}>
             <button className={s.btnHero}    onClick={() => navigate("/registro")}>Crear cuenta gratis</button>
-            <button className={s.btnHeroOut} onClick={() => navigate("/login")}>Ver demo ↗</button>
+            <button className={s.btnHeroOut} onClick={handleDemo} disabled={demoLoading}>{demoLoading ? "Entrando…" : "Ver demo ↗"}</button>
           </div>
           <div className={s.proof}>
             <div className={s.avatars}>
