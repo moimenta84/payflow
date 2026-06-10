@@ -1,7 +1,7 @@
-/* Estilos globales: importa Tailwind y la fuente Geist, y define tokens y overrides de Bootstrap.
+/* Estilos globales: importa Tailwind y define tokens y overrides de Bootstrap.
+   La fuente Geist se carga vía <link> en index.html (junto al resto de fuentes).
    Convive con design-system.scss; ambos comparten la misma filosofía de design tokens. */
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap');
 
 .btn {
   background-color: var(--bt-primary-bg) !important;
