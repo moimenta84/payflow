@@ -183,24 +183,43 @@
   align-items: center;
 }
 
-.passwordWrap > * {
+/* Solo el campo (no el botón del ojo) ocupa todo el ancho. */
+.passwordWrap > :global(.CajaTexto) {
   width: 100%;
+}
+
+/* Reserva espacio a la derecha para que el texto no quede bajo el ojo. */
+.passwordWrap :global(.form-control) {
+  padding-right: 44px !important;
 }
 
 .eye {
   position: absolute;
-  right: 12px;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
   background: none;
   border: none;
+  border-radius: 6px;
   cursor: pointer;
   color: var(--color-gray-400, #9ca3af);
-  padding: 4px;
-  transition: color 0.2s;
+  padding: 0;
+  transition: color 0.2s, background 0.2s;
   z-index: 1;
 }
 
 .eye:hover {
   color: var(--color-gray-700, #374151);
+}
+
+.eye:focus-visible {
+  outline: 2px solid rgba(8, 145, 178, 0.5);
+  outline-offset: 1px;
 }
 
 .reqList {
