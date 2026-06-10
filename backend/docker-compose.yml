@@ -50,6 +50,9 @@ services:
       - DB_USER=payflow
       - DB_PASS=payflow123
       - EUREKA_URI=http://discovery-service:8761/eureka
+      # auth-service trae eureka.client.enabled=${EUREKA_ENABLED:false} por defecto,
+      # así que en la pila completa hay que activarlo o el gateway no lo encuentra (503).
+      - EUREKA_ENABLED=true
       - JWT_SECRET=payflow-super-secret-key-2024-tfg
 
   transaction-service:
